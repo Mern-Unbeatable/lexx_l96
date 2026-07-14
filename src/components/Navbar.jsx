@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { Search, Plus, Calendar, User } from 'lucide-react'
 
 const linkBase =
@@ -13,13 +13,31 @@ function navClass({ isActive }) {
 export default function Navbar() {
   return (
     <header className="border-b border-line bg-white">
-      <nav className="mx-auto flex container items-center justify-between px-4 sm:px-6">
-        <NavLink to="/" className={navClass} end>
-          <Search size={18} strokeWidth={1.75} />
-          Find Games
-        </NavLink>
+      <nav className="container mx-auto grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
+        <div className="flex items-center justify-start">
+          <NavLink to="/" className={navClass} end>
+            <Search size={18} strokeWidth={1.75} />
+            <span className="hidden sm:inline">Find Games</span>
+          </NavLink>
+        </div>
 
-        <div className="flex items-center gap-6 sm:gap-10">
+        <Link
+          to="/"
+          className="flex items-center gap-2.5 px-2 py-3 sm:gap-3"
+        >
+          <img
+            src="/logo.png"
+            alt="Golf Links"
+            className="h-8 w-auto object-contain sm:h-9"
+          />
+          <span className="font-serif text-sm tracking-tight text-ink sm:text-lg">
+            <span className="font-semibold">Golf Links</span>
+            <span className="mx-1 text-muted sm:mx-1.5">·</span>
+            <span className="italic text-muted">Premium Pairings</span>
+          </span>
+        </Link>
+
+        <div className="flex items-center justify-end gap-4 sm:gap-8">
           <NavLink to="/host" className={navClass}>
             <Plus size={18} strokeWidth={1.75} />
             <span className="hidden sm:inline">Host Game</span>
