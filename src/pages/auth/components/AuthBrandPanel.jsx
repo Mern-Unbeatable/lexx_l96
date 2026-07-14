@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const stats = [
-  { value: '12,400+', label: 'Active Players' },
-  { value: '840', label: 'Courses Listed' },
-  { value: '238', label: 'Games Today' },
-]
+  { value: "12,400+", label: "Active Players" },
+  { value: "840", label: "Courses Listed" },
+  { value: "238", label: "Games Today" },
+];
 
 export default function AuthBrandPanel() {
   return (
@@ -15,14 +15,14 @@ export default function AuthBrandPanel() {
           alt=""
           className="h-14 w-auto object-contain drop-shadow-sm xl:h-16"
         />
-        <span className="font-serif text-2xl font-semibold tracking-tight xl:text-3xl">
+        <span className="font-inter text-2xl font-semibold tracking-tight xl:text-3xl">
           Golf Links
         </span>
       </Link>
 
       <div className="flex flex-1 flex-col justify-center pb-16">
         <div className="max-w-md">
-          <h1 className="font-serif text-5xl font-semibold leading-[1.15] tracking-tight xl:text-[64px]">
+          <h1 className="font-inter text-4xl font-bold leading-[1.15] tracking-tight xl:text-[48px] 2xl:text-[64px]">
             Golf on your own terms.
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-white/80">
@@ -34,10 +34,10 @@ export default function AuthBrandPanel() {
         <div className="mt-16 grid max-w-lg grid-cols-3 gap-8">
           {stats.map((stat) => (
             <div key={stat.label}>
-              <p className="font-serif text-2xl font-semibold text-[#d4a017] xl:text-[1.75rem]">
+              <p className="font-serif text-2xl font-semibold text-[#D39000] xl:text-[1.75rem]">
                 {stat.value}
               </p>
-              <p className="mt-1.5 text-xs text-white/65">{stat.label}</p>
+              <p className="mt-1.5 text-xs text-white">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -45,5 +45,5 @@ export default function AuthBrandPanel() {
 
       <p className="text-xs text-white/45">© 2026 Golf Links</p>
     </aside>
-  )
+  );
 }
