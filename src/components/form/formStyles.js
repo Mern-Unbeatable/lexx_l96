@@ -6,4 +6,5 @@ export const inputErrorClass =
 
 export const labelClass = 'mb-1.5 block text-sm font-medium text-ink'
 
-export const errorClass = 'mt-1.5 text-xs text-red-500'
+export const errorClass = 'mt-1.5 text-xs text-[#C45C3A]'
+

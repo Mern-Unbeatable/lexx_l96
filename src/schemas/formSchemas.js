@@ -9,24 +9,35 @@ export const loginSchema = z.object({
 })
 
 export const registerSchema = z.object({
-  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
+  fullName: z.string().min(1, 'Full name is required'),
   email: z
     .string()
-    .min(1, 'Email is required')
+    .min(1, 'Email address is required')
     .email('Enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .min(8, 'Password must be at least 8 characters'),
   gender: z.enum(['male', 'female', 'other', 'prefer-not'], {
     message: 'Please select a gender',
   }),
-  age: z.coerce
-    .number({ message: 'Age is required' })
-    .int('Age must be a whole number')
-    .min(1, 'Enter a valid age')
-    .max(120, 'Enter a valid age'),
-  handicap: z.coerce
-    .number({ message: 'Handicap is required' })
-    .min(0, 'Handicap must be 0 or higher')
-    .max(54, 'Handicap cannot exceed 54'),
+  age: z.preprocess(
+    (val) =>
+      val === '' || val === null || val === undefined ? undefined : Number(val),
+    z
+      .number({ message: 'Age is required' })
+      .int('Age must be a whole number')
+      .min(1, 'Age is required')
+      .max(120, 'Enter a valid age'),
+  ),
+  handicap: z.preprocess(
+    (val) =>
+      val === '' || val === null || val === undefined ? undefined : Number(val),
+    z
+      .number({ message: 'Handicap is required' })
+      .min(0, 'Handicap must be 0 or higher')
+      .max(54, 'Handicap cannot exceed 54'),
+  ),
 })
 
 export const hostSchema = z
