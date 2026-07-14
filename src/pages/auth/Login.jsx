@@ -1,13 +1,32 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import AuthBrandPanel from './components/AuthBrandPanel'
+import FormField from '../../components/form/FormField'
+import { inputClass, inputErrorClass } from '../../components/form/formStyles'
+import { loginSchema } from '../../schemas/formSchemas'
 
 const Login = () => {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  const onSubmit = (data) => {
+    console.log('Login form:', data)
+    navigate('/')
   }
 
   return (
@@ -28,23 +47,16 @@ const Login = () => {
             Please enter your details to sign in to your account.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-ink"
-              >
-                Email address
-              </label>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+            <FormField label="Email address" htmlFor="email" error={errors.email?.message}>
               <div className="relative">
                 <input
                   id="email"
-                  name="email"
                   type="email"
-                  required
                   autoComplete="email"
                   placeholder="Enter your email"
-                  className="w-full rounded-lg border border-line bg-white py-3 pl-4 pr-11 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-forest focus:ring-2 focus:ring-forest/15"
+                  className={`${inputClass} pr-11 ${errors.email ? inputErrorClass : ''}`}
+                  {...register('email')}
                 />
                 <Mail
                   size={18}
@@ -52,24 +64,17 @@ const Login = () => {
                   className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted"
                 />
               </div>
-            </div>
+            </FormField>
 
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-ink"
-              >
-                Password
-              </label>
+            <FormField label="Password" htmlFor="password" error={errors.password?.message}>
               <div className="relative">
                 <input
                   id="password"
-                  name="password"
                   type={showPassword ? 'text' : 'password'}
-                  required
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="w-full rounded-lg border border-line bg-white py-3 pl-4 pr-20 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-forest focus:ring-2 focus:ring-forest/15"
+                  className={`${inputClass} pr-20 ${errors.password ? inputErrorClass : ''}`}
+                  {...register('password')}
                 />
                 <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
                   <button
@@ -92,19 +97,20 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <div className="mt-2 flex justify-end">
-                <button
-                  type="button"
-                  className="text-sm font-medium text-forest transition hover:underline"
-                >
-                  Forgot password?
-                </button>
-              </div>
+            </FormField>
+            <div className="-mt-3 flex justify-end">
+              <button
+                type="button"
+                className="text-sm font-medium text-forest transition hover:underline"
+              >
+                Forgot password?
+              </button>
             </div>
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99]"
+              disabled={isSubmitting}
+              className="w-full rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99] disabled:opacity-60"
             >
               Sign In
             </button>

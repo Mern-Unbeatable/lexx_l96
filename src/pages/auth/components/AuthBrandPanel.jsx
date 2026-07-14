@@ -21,7 +21,7 @@ const AuthBrandPanel = () => (
 
     <div className="flex flex-1 flex-col justify-center pb-16">
       <div className="max-w-md">
-        <h1 className="font-inter text-4xl font-bold leading-[1.15] tracking-tight xl:text-[48px] 2xl:text-[64px]">
+        <h1 className="font-inter text-4xl font-bold leading-[1.15] tracking-tight lg:text-[48px] 2xl:text-[64px]">
           Golf on your own terms.
         </h1>
         <p className="mt-6 max-w-md text-base leading-relaxed text-white/80">
@@ -33,10 +33,10 @@ const AuthBrandPanel = () => (
       <div className="mt-16 grid max-w-lg grid-cols-3 gap-8">
         {stats.map((stat) => (
           <div key={stat.label}>
-            <p className="font-serif text-2xl font-semibold text-[#D39000] xl:text-[1.75rem]">
+            <p className="font-inter text-2xl font-semibold text-[#D39000] xl:text-4xl">
               {stat.value}
             </p>
-            <p className="mt-1.5 text-xs text-white">{stat.label}</p>
+            <p className="mt-1.5 text-base text-white">{stat.label}</p>
           </div>
         ))}
       </div>

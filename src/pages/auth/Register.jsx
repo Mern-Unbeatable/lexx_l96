@@ -1,18 +1,36 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronDown, Eye, EyeOff } from 'lucide-react'
 import AuthBrandPanel from './components/AuthBrandPanel'
-
-const inputClass =
-  'w-full rounded-lg border border-line bg-white py-3 px-4 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-forest focus:ring-2 focus:ring-forest/15'
-
-const labelClass = 'mb-1.5 block text-sm font-medium text-ink'
+import FormField from '../../components/form/FormField'
+import { inputClass, inputErrorClass } from '../../components/form/formStyles'
+import { registerSchema } from '../../schemas/formSchemas'
 
 const Register = () => {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      fullName: '',
+      email: '',
+      password: '',
+      gender: '',
+      age: '',
+      handicap: '',
+    },
+  })
+
+  const onSubmit = (data) => {
+    console.log('Register form:', data)
+    navigate('/')
   }
 
   return (
@@ -33,51 +51,38 @@ const Register = () => {
             Join the community and find your perfect round today.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-7 space-y-4">
-            <div>
-              <label htmlFor="fullName" className={labelClass}>
-                Full name
-              </label>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-7 space-y-4" noValidate>
+            <FormField label="Full name" htmlFor="fullName" error={errors.fullName?.message}>
               <input
                 id="fullName"
-                name="fullName"
                 type="text"
-                required
                 autoComplete="name"
                 placeholder="Enter your name"
-                className={inputClass}
+                className={`${inputClass} ${errors.fullName ? inputErrorClass : ''}`}
+                {...register('fullName')}
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label htmlFor="email" className={labelClass}>
-                Email address
-              </label>
+            <FormField label="Email address" htmlFor="email" error={errors.email?.message}>
               <input
                 id="email"
-                name="email"
                 type="email"
-                required
                 autoComplete="email"
                 placeholder="Enter your email"
-                className={inputClass}
+                className={`${inputClass} ${errors.email ? inputErrorClass : ''}`}
+                {...register('email')}
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label htmlFor="password" className={labelClass}>
-                Password
-              </label>
+            <FormField label="Password" htmlFor="password" error={errors.password?.message}>
               <div className="relative">
                 <input
                   id="password"
-                  name="password"
                   type={showPassword ? 'text' : 'password'}
-                  required
-                  minLength={8}
                   autoComplete="new-password"
                   placeholder="Min. 8 characters"
-                  className={`${inputClass} pr-11`}
+                  className={`${inputClass} pr-11 ${errors.password ? inputErrorClass : ''}`}
+                  {...register('password')}
                 />
                 <button
                   type="button"
@@ -92,19 +97,14 @@ const Register = () => {
                   )}
                 </button>
               </div>
-            </div>
+            </FormField>
 
-            <div>
-              <label htmlFor="gender" className={labelClass}>
-                Gender
-              </label>
+            <FormField label="Gender" htmlFor="gender" error={errors.gender?.message}>
               <div className="relative">
                 <select
                   id="gender"
-                  name="gender"
-                  required
-                  defaultValue=""
-                  className={`${inputClass} appearance-none pr-10`}
+                  className={`${inputClass} appearance-none pr-10 ${errors.gender ? inputErrorClass : ''}`}
+                  {...register('gender')}
                 >
                   <option value="" disabled>
                     Select gender
@@ -120,45 +120,34 @@ const Register = () => {
                   className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted"
                 />
               </div>
-            </div>
+            </FormField>
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="age" className={labelClass}>
-                  Age
-                </label>
+              <FormField label="Age" htmlFor="age" error={errors.age?.message}>
                 <input
                   id="age"
-                  name="age"
                   type="number"
-                  required
-                  min={1}
-                  max={120}
                   placeholder="e.g. 35"
-                  className={inputClass}
+                  className={`${inputClass} ${errors.age ? inputErrorClass : ''}`}
+                  {...register('age')}
                 />
-              </div>
-              <div>
-                <label htmlFor="handicap" className={labelClass}>
-                  Handicap
-                </label>
+              </FormField>
+              <FormField label="Handicap" htmlFor="handicap" error={errors.handicap?.message}>
                 <input
                   id="handicap"
-                  name="handicap"
                   type="number"
-                  required
-                  min={0}
-                  max={54}
-                  step={0.1}
+                  step="0.1"
                   placeholder="e.g. 12"
-                  className={inputClass}
+                  className={`${inputClass} ${errors.handicap ? inputErrorClass : ''}`}
+                  {...register('handicap')}
                 />
-              </div>
+              </FormField>
             </div>
 
             <button
               type="submit"
-              className="mt-2 w-full rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99]"
+              disabled={isSubmitting}
+              className="mt-2 w-full rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99] disabled:opacity-60"
             >
               Create Account
             </button>
