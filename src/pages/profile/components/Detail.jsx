@@ -1,9 +1,9 @@
-const Detail = ({ label, value, valueClassName = 'text-ink' }) => (
+const Detail = ({ label, value, valueClassName = 'text-[#122424]' }) => (
   <div>
-    <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
+    <p className="text-sm font-medium uppercase tracking-wide text-muted">
       {label}
     </p>
-    <p className={`mt-1 text-sm font-medium sm:text-[15px] ${valueClassName}`}>
+    <p className={`mt-1  font-medium text-base ${valueClassName}`}>
       {value}
     </p>
   </div>

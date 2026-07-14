@@ -1,40 +1,55 @@
 const MembershipCard = ({ profile, fullName }) => (
-  <section className="relative overflow-hidden rounded-xl bg-forest p-5 text-white shadow-[0_1px_3px_rgba(26,46,38,0.08)] sm:p-6">
+  <section
+    className="relative overflow-hidden rounded-2xl p-6 text-white sm:p-7"
+    style={{
+      backgroundImage: 'linear-gradient(90deg, #122424 0%, #2D6A4F 100%)',
+    }}
+  >
     <div
-      className="pointer-events-none absolute -right-8 -top-8 size-40 rounded-full border border-white/10"
       aria-hidden="true"
+      className="pointer-events-none absolute right-[-52px] top-[-36px] size-[190px] rounded-full"
+      style={{ background: 'rgba(155, 210, 180, 0.16)' }}
     />
     <div
-      className="pointer-events-none absolute -right-2 top-6 size-28 rounded-full border border-white/10"
       aria-hidden="true"
+      className="pointer-events-none absolute right-[-78px] bottom-[-110px] size-[280px] rounded-full"
+      style={{ background: 'rgba(155, 210, 180, 0.13)' }}
     />
 
-    <div className="relative flex items-center gap-2.5">
-      <img src="/logo.png" alt="" className="h-7 w-auto object-contain" />
-      <span className="text-sm font-semibold tracking-wide">Golf Links</span>
-    </div>
-
-    <div className="relative mt-8">
-      <p className="text-[11px] font-medium uppercase tracking-wide text-white/55">
-        Member
-      </p>
-      <p className="mt-1 font-serif text-2xl font-semibold tracking-tight">
-        {fullName}
-      </p>
-    </div>
-
-    <div className="relative mt-8 flex items-end justify-between gap-4">
-      <div>
-        <p className="text-[11px] font-medium uppercase tracking-wide text-white/55">
-          Member Since
-        </p>
-        <p className="mt-1 text-sm font-medium">{profile.memberSince}</p>
+    <div className="relative z-10 flex min-h-[200px] flex-col justify-between">
+      <div className="flex items-center gap-2.5">
+        <img
+          src="/logo.png"
+          alt=""
+          className="h-8 w-auto object-contain drop-shadow-sm"
+        />
+        <span className="font-serif text-base font-semibold tracking-wide">
+          Golf Links
+        </span>
       </div>
-      <div className="text-right">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-white/55">
-          Tier
+
+      <div className="py-8">
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/50">
+          Member
         </p>
-        <p className="mt-1 text-sm font-medium">{profile.membership}</p>
+        <p className="mt-1 font-serif text-[28px] font-semibold leading-none tracking-tight">
+          {fullName}
+        </p>
+      </div>
+
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/50">
+            Member Since
+          </p>
+          <p className="mt-1 text-[15px] font-semibold">{profile.memberSince}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/50">
+            Tier
+          </p>
+          <p className="mt-1 text-[15px] font-semibold">{profile.membership}</p>
+        </div>
       </div>
     </div>
   </section>

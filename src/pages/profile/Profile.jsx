@@ -15,9 +15,9 @@ const Profile = () => {
         <ProfileHeader profile={profile} fullName={fullName} />
         <ProfileStats profile={profile} />
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+        <div className="mt-6 grid items-stretch gap-5 lg:grid-cols-2">
           <PersonalDetails profile={profile} />
-          <div className="space-y-5">
+          <div className="flex flex-col gap-5">
             <GolfDetails profile={profile} />
             <MembershipCard profile={profile} fullName={fullName} />
           </div>
