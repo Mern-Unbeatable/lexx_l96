@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, LandPlot } from 'lucide-react'
 import RequestCard from './RequestCard'
 
 const GameGroup = ({ game, defaultOpen = true }) => {
@@ -12,8 +12,10 @@ const GameGroup = ({ game, defaultOpen = true }) => {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center gap-3 rounded-xl border border-line/80 bg-white px-4 py-3.5 text-left shadow-[0_1px_2px_rgba(26,46,38,0.04)] transition hover:bg-[#fafafa] sm:px-5"
       >
-        <span
-          className="size-3.5 shrink-0 rounded-[3px] bg-forest"
+        <LandPlot
+          size={18}
+          strokeWidth={1.75}
+          className="shrink-0 text-forest"
           aria-hidden="true"
         />
         <span className="min-w-0 flex-1 text-sm sm:text-[15px]">
