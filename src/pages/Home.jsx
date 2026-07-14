@@ -1,57 +1,4 @@
-function PinIcon({ className }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z" />
-      <circle cx="12" cy="10" r="2.5" />
-    </svg>
-  )
-}
-
-function SlidersIcon({ className }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <line x1="4" y1="8" x2="20" y2="8" />
-      <line x1="4" y1="16" x2="20" y2="16" />
-      <circle cx="9" cy="8" r="2" fill="currentColor" stroke="none" />
-      <circle cx="15" cy="16" r="2" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
-
-function ChevronDownIcon({ className }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  )
-}
+import { MapPin, SlidersHorizontal, ChevronDown } from 'lucide-react'
 
 function Detail({ label, value }) {
   return (
@@ -76,7 +23,7 @@ const game = {
 
 export default function Home() {
   return (
-    <div className="mx-auto container  px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
       <header className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="font-serif text-4xl tracking-tight text-ink sm:text-5xl">
@@ -92,16 +39,16 @@ export default function Home() {
             type="button"
             className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
           >
-            <PinIcon className="size-4 text-muted" />
+            <MapPin size={16} strokeWidth={1.75} className="text-muted" />
             Find my Location
           </button>
           <button
             type="button"
             className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
           >
-            <SlidersIcon className="size-4 text-muted" />
+            <SlidersHorizontal size={16} strokeWidth={1.75} className="text-muted" />
             Filters
-            <ChevronDownIcon className="size-4 text-muted" />
+            <ChevronDown size={16} strokeWidth={1.75} className="text-muted" />
           </button>
         </div>
       </header>
