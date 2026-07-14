@@ -4,7 +4,7 @@ export const inputClass =
 export const inputErrorClass =
   'border-red-400 focus:border-red-400 focus:ring-red-400/20'
 
-export const labelClass = 'mb-1.5 block text-sm font-medium text-ink'
+export const labelClass = 'mb-1.5 block text-base font-medium text-ink'
 
-export const errorClass = 'mt-1.5 text-xs text-[#C45C3A]'
+export const errorClass = 'mt-1.5 text-sm text-red-500'
 
