@@ -3,7 +3,7 @@ import { Search, Calendar, Clock, ChevronDown } from 'lucide-react'
 const inputClass =
   'w-full rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-forest focus:ring-2 focus:ring-forest/15'
 
-const labelClass = 'mb-1.5 block text-sm font-medium text-ink'
+const labelClass = 'mb-1.5 block text-base font-medium text-ink'
 
 const Host = () => {
   const handleSubmit = (e) => {
@@ -11,12 +11,12 @@ const Host = () => {
   }
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
       <header className="mb-8">
-        <h1 className="font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+        <h1 className="font-serif text-4xl font-bold  text-ink sm:text-5xl">
           Host a Game
         </h1>
-        <p className="mt-2 text-sm text-muted sm:text-[15px]">
+        <p className="mt-2 text-base text-muted sm:text-[15px]">
           Set up a round and find the right partners to join you on the links.
         </p>
       </header>
