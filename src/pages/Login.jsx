@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
-
-const stats = [
-  { value: '12,400+', label: 'Active Players' },
-  { value: '840', label: 'Courses Listed' },
-  { value: '238', label: 'Games Today' },
-]
+import AuthBrandPanel from '../components/AuthBrandPanel'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -17,41 +12,14 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen bg-forest font-sans antialiased">
-      <aside className="relative hidden w-[46%] flex-col justify-between px-10 py-10 text-white lg:flex xl:px-14">
-        <p className="text-sm font-semibold tracking-wide">Golf Links</p>
+      <AuthBrandPanel />
 
-        <div className="max-w-md">
-          <h1 className="font-serif text-4xl font-semibold leading-tight tracking-tight xl:text-5xl">
-            Golf on your own terms.
-          </h1>
-          <p className="mt-5 text-[15px] leading-relaxed text-white/75">
-            Find solo golfers nearby who match your age group and handicap. No
-            more awkward pairings — just great rounds.
-          </p>
-
-          <div className="mt-14 grid grid-cols-3 gap-6">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <p className="font-serif text-2xl font-semibold text-[#d4a017] xl:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-xs text-white/70">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <p className="text-xs text-white/50">© 2026 Golf Links</p>
-      </aside>
-
-      <main className="flex flex-1 flex-col justify-center bg-white px-6 py-12 sm:px-12 lg:rounded-l-[4.5rem] lg:px-16 xl:px-24">
+      <main className="flex flex-1 flex-col justify-center bg-white px-6 py-12 sm:px-12 lg:rounded-l-[5rem] lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-md">
-          <div className="mb-8 flex items-center gap-2.5 lg:hidden">
+          <Link to="/" className="mb-10 flex items-center gap-2.5 lg:hidden">
             <img src="/logo.png" alt="" className="h-8 w-auto" />
-            <span className="font-serif text-lg font-semibold text-ink">
-              Golf Links
-            </span>
-          </div>
+            <span className="text-base font-semibold text-ink">Golf Links</span>
+          </Link>
 
           <h2 className="font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Welcome back
