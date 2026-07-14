@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom'
-import { Search, Plus, Calendar, User } from 'lucide-react'
+import { Search, Plus, Calendar, User, LogIn } from 'lucide-react'
 
 const linkBase =
   'inline-flex items-center gap-2 border-b-2 py-5 text-sm transition-colors'
@@ -50,6 +50,13 @@ export default function Navbar() {
             <User size={18} strokeWidth={1.75} />
             <span className="hidden sm:inline">Profile</span>
           </NavLink>
+          <Link
+            to="/login"
+            className="ml-1 inline-flex items-center gap-2 rounded-lg bg-forest px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] sm:ml-2"
+          >
+            <LogIn size={16} strokeWidth={1.75} />
+            <span className="hidden sm:inline">Sign In</span>
+          </Link>
         </div>
       </nav>
     </header>
