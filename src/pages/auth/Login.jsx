@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
-import AuthBrandPanel from '../components/AuthBrandPanel'
+import AuthBrandPanel from './components/AuthBrandPanel'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)

@@ -21,11 +21,11 @@ export default function AuthBrandPanel() {
       </Link>
 
       <div className="flex flex-1 flex-col justify-center pb-16">
-        <div className="max-w-[28rem]">
-          <h1 className="font-serif text-5xl font-semibold leading-[1.15] tracking-tight xl:text-[3.5rem]">
+        <div className="max-w-md">
+          <h1 className="font-serif text-5xl font-semibold leading-[1.15] tracking-tight xl:text-[64px]">
             Golf on your own terms.
           </h1>
-          <p className="mt-6 max-w-sm text-base leading-relaxed text-white/80">
+          <p className="mt-6 max-w-md text-base leading-relaxed text-white/80">
             Find solo golfers nearby who match your age group and handicap. No
             more awkward pairings — just great rounds.
           </p>

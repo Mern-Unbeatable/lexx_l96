@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, Eye, EyeOff } from 'lucide-react'
-import AuthBrandPanel from '../components/AuthBrandPanel'
+import AuthBrandPanel from './components/AuthBrandPanel'
 
 const inputClass =
   'w-full rounded-lg border border-line bg-white py-3 px-4 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-forest focus:ring-2 focus:ring-forest/15'
