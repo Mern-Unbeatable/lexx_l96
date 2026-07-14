@@ -1,13 +1,11 @@
 import { MapPin, SlidersHorizontal, ChevronDown } from 'lucide-react'
 
-function Detail({ label, value }) {
-  return (
-    <div>
-      <p className="text-xs uppercase tracking-wide text-muted">{label}</p>
-      <p className="mt-1 text-[15px] font-medium text-ink">{value}</p>
-    </div>
-  )
-}
+const Detail = ({ label, value }) => (
+  <div>
+    <p className="text-xs uppercase tracking-wide text-muted">{label}</p>
+    <p className="mt-1 text-[15px] font-medium text-ink">{value}</p>
+  </div>
+)
 
 const game = {
   host: { name: 'James H.', initials: 'JH' },
@@ -21,15 +19,15 @@ const game = {
   notes: 'Happy to share a buggy. Meeting at the pro shop 15 mins before.',
 }
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
       <header className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-serif text-4xl tracking-tight text-ink sm:text-5xl">
+          <h1 className="font-serif text-4xl font-bold text-ink sm:text-5xl">
             Find a Game
           </h1>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-base text-muted">
             Your profile: Age 38 · Handicap 14
           </p>
         </div>
@@ -100,3 +98,6 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home
+

@@ -8,20 +8,20 @@ import Register from '../pages/auth/Register'
 import NotFound from '../pages/NotFound'
 import Layout from '../components/Layout'
 
-export default function AppRouter() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="host" element={<Host />} />
-          <Route path="my-games" element={<MyGames />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </Router>
-  )
-}
+const AppRouter = () => (
+  <Router>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Register />} />
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="host" element={<Host />} />
+        <Route path="my-games" element={<MyGames />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  </Router>
+)
+
+export default AppRouter

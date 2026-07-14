@@ -5,8 +5,8 @@ const inputClass =
 
 const labelClass = 'mb-1.5 block text-sm font-medium text-ink'
 
-export default function Host() {
-  function handleSubmit(e) {
+const Host = () => {
+  const handleSubmit = (e) => {
     e.preventDefault()
   }
 
@@ -196,3 +196,5 @@ export default function Host() {
     </div>
   )
 }
+
+export default Host

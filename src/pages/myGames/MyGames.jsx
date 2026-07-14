@@ -64,7 +64,7 @@ const pastGames = [
   },
 ]
 
-function Stars({ rating }) {
+const Stars = ({ rating }) => {
   const filled = Math.round(rating ?? 0)
   return (
     <span className="inline-flex items-center gap-0.5" aria-hidden="true">
@@ -80,60 +80,58 @@ function Stars({ rating }) {
   )
 }
 
-function RequestCard({ request }) {
-  return (
-    <article className="rounded-xl border border-line/70 bg-white p-4 shadow-[0_1px_3px_rgba(26,46,38,0.05)] sm:p-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex min-w-0 flex-1 gap-3">
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-sm font-semibold text-ink">
-            {request.initials}
-          </div>
-          <div className="min-w-0">
-            <p className="font-semibold text-ink">{request.name}</p>
-            <p className="mt-0.5 text-sm text-muted">
-              Age {request.age} · Handicap {request.handicap}
+const RequestCard = ({ request }) => (
+  <article className="rounded-xl border border-line/70 bg-white p-4 shadow-[0_1px_3px_rgba(26,46,38,0.05)] sm:p-5">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex min-w-0 flex-1 gap-3">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-sm font-semibold text-ink">
+          {request.initials}
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold text-ink">{request.name}</p>
+          <p className="mt-0.5 text-sm text-muted">
+            Age {request.age} · Handicap {request.handicap}
+          </p>
+          {request.reviews > 0 ? (
+            <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm text-ink">
+              <span className="font-medium">{request.rating.toFixed(1)}</span>
+              <Stars rating={request.rating} />
+              <span className="text-muted">· {request.reviews} reviews</span>
             </p>
-            {request.reviews > 0 ? (
-              <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm text-ink">
-                <span className="font-medium">{request.rating.toFixed(1)}</span>
-                <Stars rating={request.rating} />
-                <span className="text-muted">· {request.reviews} reviews</span>
-              </p>
-            ) : (
-              <p className="mt-1.5 text-sm text-muted">No reviews yet</p>
-            )}
-          </div>
-        </div>
-
-        <div className="min-w-0 flex-1 lg:px-4">
-          <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
-            Message
-          </p>
-          <p className="mt-1 font-serif text-[15px] italic leading-relaxed text-ink/80">
-            &ldquo;{request.message}&rdquo;
-          </p>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2 self-stretch lg:self-center">
-          <button
-            type="button"
-            className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-medium text-ink transition hover:bg-cream"
-          >
-            Decline
-          </button>
-          <button
-            type="button"
-            className="rounded-lg bg-forest px-4 py-2 text-sm font-medium text-white transition hover:bg-[#244a37]"
-          >
-            Accept
-          </button>
+          ) : (
+            <p className="mt-1.5 text-sm text-muted">No reviews yet</p>
+          )}
         </div>
       </div>
-    </article>
-  )
-}
 
-function GameGroup({ game, defaultOpen = true }) {
+      <div className="min-w-0 flex-1 lg:px-4">
+        <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
+          Message
+        </p>
+        <p className="mt-1 font-serif text-[15px] italic leading-relaxed text-ink/80">
+          &ldquo;{request.message}&rdquo;
+        </p>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2 self-stretch lg:self-center">
+        <button
+          type="button"
+          className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-medium text-ink transition hover:bg-cream"
+        >
+          Decline
+        </button>
+        <button
+          type="button"
+          className="rounded-lg bg-forest px-4 py-2 text-sm font-medium text-white transition hover:bg-[#244a37]"
+        >
+          Accept
+        </button>
+      </div>
+    </div>
+  </article>
+)
+
+const GameGroup = ({ game, defaultOpen = true }) => {
   const [open, setOpen] = useState(defaultOpen)
 
   return (
@@ -187,7 +185,7 @@ function GameGroup({ game, defaultOpen = true }) {
   )
 }
 
-export default function MyGames() {
+const MyGames = () => {
   const [tab, setTab] = useState('hosting')
   const games = tab === 'hosting' ? hostedGames : pastGames
   const upcomingCount = hostedGames.length
@@ -254,3 +252,5 @@ export default function MyGames() {
     </div>
   )
 }
+
+export default MyGames

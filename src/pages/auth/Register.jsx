@@ -8,10 +8,10 @@ const inputClass =
 
 const labelClass = 'mb-1.5 block text-sm font-medium text-ink'
 
-export default function Register() {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault()
   }
 
@@ -178,3 +178,5 @@ export default function Register() {
     </div>
   )
 }
+
+export default Register

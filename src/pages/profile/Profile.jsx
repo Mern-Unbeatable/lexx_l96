@@ -20,36 +20,32 @@ const profile = {
 const cardClass =
   'rounded-xl border border-line/70 bg-white p-5 shadow-[0_1px_3px_rgba(26,46,38,0.05)]'
 
-function StatCard({ icon: Icon, value, label }) {
-  return (
-    <div className={`${cardClass} flex items-start gap-3`}>
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#e8f0ea] text-forest">
-        <Icon size={18} strokeWidth={1.75} />
-      </div>
-      <div>
-        <p className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
-          {value}
-        </p>
-        <p className="mt-0.5 text-xs text-muted sm:text-sm">{label}</p>
-      </div>
+const StatCard = ({ icon: Icon, value, label }) => (
+  <div className={`${cardClass} flex items-start gap-3`}>
+    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#e8f0ea] text-forest">
+      <Icon size={18} strokeWidth={1.75} />
     </div>
-  )
-}
-
-function Detail({ label, value, valueClassName = 'text-ink' }) {
-  return (
     <div>
-      <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
-        {label}
-      </p>
-      <p className={`mt-1 text-sm font-medium sm:text-[15px] ${valueClassName}`}>
+      <p className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
         {value}
       </p>
+      <p className="mt-0.5 text-xs text-muted sm:text-sm">{label}</p>
     </div>
-  )
-}
+  </div>
+)
 
-export default function Profile() {
+const Detail = ({ label, value, valueClassName = 'text-ink' }) => (
+  <div>
+    <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
+      {label}
+    </p>
+    <p className={`mt-1 text-sm font-medium sm:text-[15px] ${valueClassName}`}>
+      {value}
+    </p>
+  </div>
+)
+
+const Profile = () => {
   const fullName = `${profile.firstName} ${profile.lastName}`
 
   return (
@@ -199,3 +195,5 @@ export default function Profile() {
     </div>
   )
 }
+
+export default Profile

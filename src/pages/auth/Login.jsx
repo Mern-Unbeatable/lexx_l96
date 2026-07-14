@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import AuthBrandPanel from './components/AuthBrandPanel'
 
-export default function Login() {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault()
   }
 
@@ -124,3 +124,5 @@ export default function Login() {
     </div>
   )
 }
+
+export default Login
