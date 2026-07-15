@@ -1,4 +1,4 @@
-import { Pencil, Check } from 'lucide-react'
+import { Pencil, Check } from "lucide-react";
 
 const ProfileHeader = ({ profile, fullName, onEdit }) => (
   <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -29,6 +29,6 @@ const ProfileHeader = ({ profile, fullName, onEdit }) => (
       Edit Profile
     </button>
   </header>
-)
+);
 
-export default ProfileHeader
+export default ProfileHeader;
