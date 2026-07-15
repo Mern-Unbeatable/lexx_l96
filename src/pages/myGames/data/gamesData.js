@@ -49,6 +49,60 @@ export const hostedGames = [
   },
 ]
 
+export const myJoinRequests = [
+  {
+    id: 101,
+    course: 'Walton Heath Golf Club',
+    date: 'Saturday 26 Jul',
+    time: '07:50',
+    status: 'accepted',
+    message: 'Happy to join — can arrive 20 mins early.',
+    host: {
+      id: 'h1',
+      initials: 'JH',
+      name: 'James H.',
+      age: 41,
+      handicap: 9,
+      rating: 4.8,
+      reviews: 12,
+    },
+  },
+  {
+    id: 102,
+    course: 'The Berkshire',
+    date: 'Sunday 27 Jul',
+    time: '09:00',
+    status: 'pending',
+    message: 'Looking for a steady fourball — handicap 14.',
+    host: {
+      id: 'h2',
+      initials: 'AL',
+      name: 'Amy L.',
+      age: 36,
+      handicap: 11,
+      rating: 4.5,
+      reviews: 6,
+    },
+  },
+  {
+    id: 103,
+    course: 'St George\'s Hill',
+    date: 'Friday 1 Aug',
+    time: '08:15',
+    status: 'pending',
+    message: 'Would love to play this course.',
+    host: {
+      id: 'h3',
+      initials: 'MK',
+      name: 'Mark K.',
+      age: 48,
+      handicap: 15,
+      rating: null,
+      reviews: 0,
+    },
+  },
+]
+
 export const pastGames = [
   {
     id: 3,

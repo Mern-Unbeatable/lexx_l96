@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { hostedGames, pastGames } from './data/gamesData'
+import { hostedGames, myJoinRequests, pastGames } from './data/gamesData'
 import {
   showAcceptSuccess,
   simulateAcceptDelay,
@@ -10,12 +10,21 @@ import GamesList from './components/GamesList'
 import MyGamesFooter from './components/MyGamesFooter'
 import MatchChat from './components/MatchChat'
 
+const gamesByTab = {
+  hosting: hostedGames,
+  joined: myJoinRequests,
+  past: pastGames,
+}
+
 const MyGames = () => {
   const [tab, setTab] = useState('hosting')
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
-  const games = tab === 'hosting' ? hostedGames : pastGames
-  const upcomingCount = hostedGames.length
+
+  const games = gamesByTab[tab]
+  const hostingCount = hostedGames.length
+  const joinedCount = myJoinRequests.length
+  const reviewCount = pastGames.filter((game) => game.needsReview).length
 
   const handleAccept = async (player) => {
     await simulateAcceptDelay()
@@ -31,11 +40,18 @@ const MyGames = () => {
     <div className="flex min-h-[calc(100vh-4.5rem)] flex-col">
       <div className="mx-auto w-full container flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <MyGamesHeader />
-        <MyGamesTabs tab={tab} onTabChange={setTab} />
+        <MyGamesTabs
+          tab={tab}
+          onTabChange={setTab}
+          hostingCount={hostingCount}
+          joinedCount={joinedCount}
+          reviewCount={reviewCount}
+        />
         <GamesList
           tab={tab}
           games={games}
-          upcomingCount={upcomingCount}
+          upcomingCount={hostingCount}
+          joinedCount={joinedCount}
           acceptedIds={acceptedIds}
           onAccept={handleAccept}
           onOpenChat={openChat}
