@@ -1,6 +1,6 @@
 import { Pencil, Check } from 'lucide-react'
 
-const ProfileHeader = ({ profile, fullName }) => (
+const ProfileHeader = ({ profile, fullName, onEdit }) => (
   <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
     <div className="flex items-start gap-4">
       <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-lg font-semibold text-ink sm:size-[4.5rem] sm:text-xl">
@@ -22,6 +22,7 @@ const ProfileHeader = ({ profile, fullName }) => (
 
     <button
       type="button"
+      onClick={onEdit}
       className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-line bg-white px-3.5 py-2 text-sm font-medium text-ink transition hover:bg-cream"
     >
       <Pencil size={15} strokeWidth={1.75} />

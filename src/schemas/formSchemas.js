@@ -106,3 +106,16 @@ export const hostSchema = z
     message: 'Max handicap must be greater than or equal to min handicap',
     path: ['handicapMax'],
   })
+
+export const editPersonalDetailsSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Enter a valid email address'),
+  phone: z.string().min(1, 'Phone is required'),
+  location: z.string().min(1, 'Location is required'),
+  homeCourse: z.string().min(1, 'Home course is required'),
+  about: z.string().min(1, 'About is required'),
+})
