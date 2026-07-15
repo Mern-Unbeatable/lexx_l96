@@ -1,4 +1,5 @@
 import { MapPin, SlidersHorizontal, ChevronDown } from 'lucide-react'
+import PaymentInfoBox from '../../components/PaymentInfoBox'
 
 const Detail = ({ label, value }) => (
   <div>
@@ -50,6 +51,10 @@ const Home = () => {
           </button>
         </div>
       </header>
+
+      <div className="mt-6">
+        <PaymentInfoBox />
+      </div>
 
       <article className="mt-8 rounded-xl border border-line/60 bg-white p-6 shadow-[0_1px_3px_rgba(26,46,38,0.06)] sm:p-8">
         <div className="flex items-start justify-between gap-4">

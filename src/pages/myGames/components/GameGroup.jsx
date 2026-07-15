@@ -3,7 +3,14 @@ import { Link } from 'react-router-dom'
 import { ChevronDown, LandPlot } from 'lucide-react'
 import RequestCard from './RequestCard'
 
-const GameGroup = ({ game, defaultOpen = true }) => {
+const GameGroup = ({
+  game,
+  defaultOpen = true,
+  acceptedIds,
+  onAccept,
+  onDecline,
+  onOpenChat,
+}) => {
   const [open, setOpen] = useState(defaultOpen)
 
   return (
@@ -59,7 +66,14 @@ const GameGroup = ({ game, defaultOpen = true }) => {
       {open && game.requests.length > 0 && (
         <div className="space-y-2.5">
           {game.requests.map((request) => (
-            <RequestCard key={request.id} request={request} />
+            <RequestCard
+              key={request.id}
+              request={request}
+              accepted={acceptedIds?.has(request.id)}
+              onAccept={(player) => onAccept?.(player, game)}
+              onDecline={onDecline}
+              onOpenChat={(player) => onOpenChat?.(player, game)}
+            />
           ))}
         </div>
       )}
