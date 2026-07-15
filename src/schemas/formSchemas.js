@@ -15,12 +15,14 @@ export const forgotPasswordEmailSchema = z.object({
     .email('Enter a valid email address'),
 })
 
-export const forgotPasswordOtpSchema = z.object({
+export const otpSchema = z.object({
   otp: z
     .string()
     .min(1, 'OTP is required')
     .regex(/^\d{6}$/, 'Enter the 6-digit OTP'),
 })
+
+export const forgotPasswordOtpSchema = otpSchema
 
 export const resetPasswordSchema = z
   .object({
