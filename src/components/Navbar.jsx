@@ -40,7 +40,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-[#ffffff]">
       {/* Mobile bar — stays white when menu opens */}
-      <div className="relative z-[70] flex items-center justify-between bg-[#ffffff] px-4 py-3 md:hidden">
+      <div className="relative z-[70] flex items-center justify-between bg-[#ffffff] px-4 py-3 xl:hidden">
         <Link to="/" className="flex items-center gap-2.5" onClick={closeMenu}>
           <img
             src="/logo.png"
@@ -87,7 +87,7 @@ const Navbar = () => {
       {/* Backdrop below header so header color never changes */}
       <button
         type="button"
-        className={`fixed inset-x-0 bottom-0 top-[57px] z-[60] bg-ink/25 transition-opacity duration-300 ease-out md:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-[57px] z-[60] bg-ink/25 transition-opacity duration-300 ease-out xl:hidden ${
           menuOpen
             ? 'pointer-events-auto opacity-100'
             : 'pointer-events-none opacity-0'
@@ -99,7 +99,7 @@ const Navbar = () => {
 
       {/* Dropdown opens from top under the header */}
       <div
-        className={`absolute inset-x-0 top-full z-[65] overflow-hidden border-b border-line bg-[#ffffff] shadow-[0_12px_30px_rgba(26,46,38,0.12)] transition-all duration-300 ease-out md:hidden ${
+        className={`absolute inset-x-0 top-full z-[65] overflow-hidden border-b border-line bg-[#ffffff] shadow-[0_12px_30px_rgba(26,46,38,0.12)] transition-all duration-300 ease-out xl:hidden ${
           menuOpen
             ? 'pointer-events-auto max-h-[28rem] translate-y-0 opacity-100'
             : 'pointer-events-none max-h-0 -translate-y-2 opacity-0'
@@ -148,7 +148,7 @@ const Navbar = () => {
       </div>
 
       {/* Desktop bar */}
-      <nav className="container mx-auto hidden grid-cols-[1fr_auto_1fr] items-center bg-[#ffffff] px-4 sm:px-6 md:grid">
+      <nav className="container mx-auto hidden grid-cols-[1fr_auto_1fr] items-center bg-[#ffffff] px-4 sm:px-6 xl:grid">
         <div className="flex items-center justify-start">
           <NavLink to="/" className={navClass} end>
             <Search size={18} strokeWidth={1.75} />

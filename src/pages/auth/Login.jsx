@@ -99,12 +99,12 @@ const Login = () => {
               </div>
             </FormField>
             <div className="-mt-3 flex justify-end">
-              <button
-                type="button"
+              <Link
+                to="/forgot-password"
                 className="text-sm font-medium text-forest transition hover:underline"
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             <button

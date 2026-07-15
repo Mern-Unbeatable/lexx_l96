@@ -8,6 +8,33 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
+export const forgotPasswordEmailSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Enter a valid email address'),
+})
+
+export const forgotPasswordOtpSchema = z.object({
+  otp: z
+    .string()
+    .min(1, 'OTP is required')
+    .regex(/^\d{6}$/, 'Enter the 6-digit OTP'),
+})
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(1, 'Password is required')
+      .min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string().min(1, 'Confirm your password'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
+
 export const registerSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
   email: z

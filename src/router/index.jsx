@@ -6,6 +6,7 @@ import JoinRequests from '../pages/joinRequests/JoinRequests'
 import Profile from '../pages/profile/Profile'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
+import ForgotPassword from '../pages/auth/ForgotPassword'
 import NotFound from '../pages/NotFound'
 import Layout from '../components/Layout'
 
@@ -14,6 +15,7 @@ const AppRouter = () => (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="host" element={<Host />} />
