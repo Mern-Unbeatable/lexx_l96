@@ -1,4 +1,4 @@
-import { LandPlot, MessageCircle } from 'lucide-react'
+import { LandPlot, MapPin, MessageCircle } from 'lucide-react'
 import Stars from './Stars'
 
 const statusStyles = {
@@ -22,6 +22,17 @@ const JoinedRequestCard = ({ item, onOpenChat }) => {
               <p className="mt-0.5 text-sm text-muted">
                 {item.date} · {item.time}
               </p>
+              {item.location && (
+                <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
+                  <MapPin
+                    size={14}
+                    strokeWidth={1.75}
+                    className="shrink-0 text-forest"
+                    aria-hidden="true"
+                  />
+                  <span>{item.location}</span>
+                </p>
+              )}
             </div>
           </div>
           <span

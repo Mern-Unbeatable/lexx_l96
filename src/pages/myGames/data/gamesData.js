@@ -55,6 +55,7 @@ export const myJoinRequests = [
     course: 'Walton Heath Golf Club',
     date: 'Saturday 26 Jul',
     time: '07:50',
+    location: 'Tadworth, Surrey',
     status: 'accepted',
     message: 'Happy to join — can arrive 20 mins early.',
     host: {
@@ -72,6 +73,7 @@ export const myJoinRequests = [
     course: 'The Berkshire',
     date: 'Sunday 27 Jul',
     time: '09:00',
+    location: 'Ascot, Berkshire',
     status: 'pending',
     message: 'Looking for a steady fourball — handicap 14.',
     host: {
@@ -86,9 +88,10 @@ export const myJoinRequests = [
   },
   {
     id: 103,
-    course: 'St George\'s Hill',
+    course: "St George's Hill",
     date: 'Friday 1 Aug',
     time: '08:15',
+    location: 'Weybridge, Surrey',
     status: 'pending',
     message: 'Would love to play this course.',
     host: {
