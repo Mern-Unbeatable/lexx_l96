@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { Search, Plus, Calendar, User, LogIn, Menu, X } from 'lucide-react'
 
 const linkBase =
-  'inline-flex items-center gap-2 border-b-2 py-5 text-sm transition-colors'
+  'inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors'
 
 const navClass = ({ isActive }) =>
   isActive
@@ -148,8 +148,8 @@ const Navbar = () => {
       </div>
 
       {/* Desktop bar */}
-      <nav className="container mx-auto hidden grid-cols-[1fr_auto_1fr] items-center bg-[#ffffff] px-4 sm:px-6 xl:grid">
-        <div className="flex items-center justify-start">
+      <nav className="container mx-auto hidden h-[4.5rem] grid-cols-[1fr_auto_1fr] items-stretch bg-[#ffffff] px-4 sm:px-6 xl:grid 2xl:h-[5rem]">
+        <div className="flex items-stretch justify-start">
           <NavLink to="/" className={navClass} end>
             <Search size={18} strokeWidth={1.75} />
             Find Games
@@ -158,7 +158,7 @@ const Navbar = () => {
 
         <Link
           to="/"
-          className="flex items-center gap-2.5 px-2 py-2 xl:gap-3"
+          className="flex items-center gap-2.5 px-2 xl:gap-3"
         >
           <img
             src="/logo.png"
@@ -172,7 +172,7 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="flex items-center justify-end gap-4 sm:gap-6 2xl:gap-8">
+        <div className="flex items-stretch justify-end gap-4 sm:gap-6 2xl:gap-8">
           <NavLink to="/host" className={navClass}>
             <Plus size={18} strokeWidth={1.75} />
             Host Game
@@ -185,13 +185,15 @@ const Navbar = () => {
             <User size={18} strokeWidth={1.75} />
             Profile
           </NavLink>
-          <Link
-            to="/login"
-            className="ml-1 inline-flex items-center gap-2 rounded-lg bg-forest px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] sm:ml-2"
-          >
-            <LogIn size={16} strokeWidth={1.75} />
-            Sign In
-          </Link>
+          <div className="flex items-center">
+            <Link
+              to="/login"
+              className="ml-1 inline-flex items-center gap-2 rounded-lg bg-forest px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] sm:ml-2"
+            >
+              <LogIn size={16} strokeWidth={1.75} />
+              Sign In
+            </Link>
+          </div>
         </div>
       </nav>
     </header>
