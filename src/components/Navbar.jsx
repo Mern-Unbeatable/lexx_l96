@@ -1,41 +1,41 @@
-import { useEffect, useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
-import { Search, Plus, Calendar, User, LogIn, Menu, X } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
+import { Search, Plus, Calendar, User, LogIn, Menu, X } from "lucide-react";
 
 const linkBase =
-  'inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors'
+  "inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors";
 
 const navClass = ({ isActive }) =>
   isActive
     ? `${linkBase} border-ink font-semibold text-ink`
-    : `${linkBase} border-transparent text-muted hover:text-ink`
+    : `${linkBase} border-transparent text-muted hover:text-ink`;
 
 const mobileLinkBase =
-  'flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition'
+  "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition";
 
 const mobileNavClass = ({ isActive }) =>
   isActive
     ? `${mobileLinkBase} bg-[#e8f0ea] text-forest`
-    : `${mobileLinkBase} text-ink hover:bg-[#f5f5f5]`
+    : `${mobileLinkBase} text-ink hover:bg-[#f5f5f5]`;
 
 const navItems = [
-  { to: '/', label: 'Find Games', icon: Search, end: true },
-  { to: '/host', label: 'Host Game', icon: Plus },
-  { to: '/my-games', label: 'My Games', icon: Calendar },
-  { to: '/profile', label: 'Profile', icon: User },
-]
+  { to: "/", label: "Find Games", icon: Search, end: true },
+  { to: "/host", label: "Host Game", icon: Plus },
+  { to: "/my-games", label: "My Games", icon: Calendar },
+  { to: "/profile", label: "Profile", icon: User },
+];
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const closeMenu = () => setMenuOpen(false)
+  const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => {
-      document.body.style.overflow = ''
-    }
-  }, [menuOpen])
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-[#ffffff]">
@@ -59,7 +59,7 @@ const Navbar = () => {
           onClick={() => setMenuOpen((open) => !open)}
           className="inline-flex size-10 items-center justify-center rounded-lg border border-line bg-[#ffffff] text-ink transition hover:bg-[#f5f5f5]"
           aria-expanded={menuOpen}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
         >
           <span className="relative size-5">
             <Menu
@@ -67,8 +67,8 @@ const Navbar = () => {
               strokeWidth={1.75}
               className={`absolute inset-0 transition-all duration-300 ease-out ${
                 menuOpen
-                  ? 'rotate-90 scale-75 opacity-0'
-                  : 'rotate-0 scale-100 opacity-100'
+                  ? "rotate-90 scale-75 opacity-0"
+                  : "rotate-0 scale-100 opacity-100"
               }`}
             />
             <X
@@ -76,8 +76,8 @@ const Navbar = () => {
               strokeWidth={1.75}
               className={`absolute inset-0 transition-all duration-300 ease-out ${
                 menuOpen
-                  ? 'rotate-0 scale-100 opacity-100'
-                  : '-rotate-90 scale-75 opacity-0'
+                  ? "rotate-0 scale-100 opacity-100"
+                  : "-rotate-90 scale-75 opacity-0"
               }`}
             />
           </span>
@@ -89,8 +89,8 @@ const Navbar = () => {
         type="button"
         className={`fixed inset-x-0 bottom-0 top-[57px] z-[60] bg-ink/25 transition-opacity duration-300 ease-out xl:hidden ${
           menuOpen
-            ? 'pointer-events-auto opacity-100'
-            : 'pointer-events-none opacity-0'
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
         }`}
         aria-label="Close menu"
         tabIndex={menuOpen ? 0 : -1}
@@ -101,8 +101,8 @@ const Navbar = () => {
       <div
         className={`absolute inset-x-0 top-full z-[65] overflow-hidden border-b border-line bg-[#ffffff] shadow-[0_12px_30px_rgba(26,46,38,0.12)] transition-all duration-300 ease-out xl:hidden ${
           menuOpen
-            ? 'pointer-events-auto max-h-[28rem] translate-y-0 opacity-100'
-            : 'pointer-events-none max-h-0 -translate-y-2 opacity-0'
+            ? "pointer-events-auto max-h-[28rem] translate-y-0 opacity-100"
+            : "pointer-events-none max-h-0 -translate-y-2 opacity-0"
         }`}
       >
         <nav className="flex flex-col gap-1 bg-[#ffffff] px-4 py-3">
@@ -118,11 +118,11 @@ const Navbar = () => {
               <span
                 className={`inline-flex items-center gap-3 transition-all duration-300 ease-out ${
                   menuOpen
-                    ? 'translate-x-0 opacity-100'
-                    : '-translate-x-2 opacity-0'
+                    ? "translate-x-0 opacity-100"
+                    : "-translate-x-2 opacity-0"
                 }`}
                 style={{
-                  transitionDelay: menuOpen ? `${80 + index * 40}ms` : '0ms',
+                  transitionDelay: menuOpen ? `${80 + index * 40}ms` : "0ms",
                 }}
               >
                 <Icon size={18} strokeWidth={1.75} />
@@ -135,11 +135,9 @@ const Navbar = () => {
             onClick={closeMenu}
             tabIndex={menuOpen ? 0 : -1}
             className={`mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-forest px-3.5 py-3 text-sm font-medium text-white transition-all duration-300 ease-out hover:bg-[#244a37] ${
-              menuOpen
-                ? 'translate-y-0 opacity-100'
-                : 'translate-y-2 opacity-0'
+              menuOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
             }`}
-            style={{ transitionDelay: menuOpen ? '240ms' : '0ms' }}
+            style={{ transitionDelay: menuOpen ? "240ms" : "0ms" }}
           >
             <LogIn size={16} strokeWidth={1.75} />
             Sign In
@@ -156,10 +154,7 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        <Link
-          to="/"
-          className="flex items-center gap-2.5 px-2 xl:gap-3"
-        >
+        <Link to="/" className="flex items-center gap-2.5 px-2 xl:gap-3">
           <img
             src="/logo.png"
             alt="Golf Links"
@@ -197,7 +192,7 @@ const Navbar = () => {
         </div>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
