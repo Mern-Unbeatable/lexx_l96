@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { MapPin, SlidersHorizontal, ChevronDown } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
+import LocationPreferencesModal from './components/LocationPreferencesModal'
 
 const Detail = ({ label, value }) => (
   <div>
@@ -21,6 +23,12 @@ const game = {
 }
 
 const Home = () => {
+  const [locationOpen, setLocationOpen] = useState(false)
+  const [locationPrefs, setLocationPrefs] = useState({
+    location: '',
+    radius: '',
+  })
+
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
       <header className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -30,12 +38,20 @@ const Home = () => {
           </h1>
           <p className="mt-2 text-base text-muted">
             Your profile: Age 38 · Handicap 14
+            {locationPrefs.location
+              ? ` · Near ${locationPrefs.location}${
+                  locationPrefs.radius
+                    ? ` (${locationPrefs.radius} km)`
+                    : ''
+                }`
+              : ''}
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
+            onClick={() => setLocationOpen(true)}
             className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
           >
             <MapPin size={16} strokeWidth={1.75} className="text-muted" />
@@ -100,9 +116,16 @@ const Home = () => {
           Request to Join
         </button>
       </article>
+
+      <LocationPreferencesModal
+        open={locationOpen}
+        onClose={() => setLocationOpen(false)}
+        initialLocation={locationPrefs.location}
+        initialRadius={locationPrefs.radius}
+        onApply={setLocationPrefs}
+      />
     </div>
   )
 }
 
 export default Home
-
