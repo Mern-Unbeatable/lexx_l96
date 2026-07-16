@@ -99,9 +99,9 @@ const LocationInput = ({
   const showError = geoError || error
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative w-full min-w-0">
       <div
-        className={`flex overflow-hidden rounded-lg border bg-white transition focus-within:ring-2 ${
+        className={`flex w-full min-w-0 overflow-hidden rounded-lg border bg-white transition focus-within:ring-2 ${
           showError
             ? 'border-red-400 focus-within:border-red-400 focus-within:ring-red-400/20'
             : 'border-line focus-within:border-forest focus-within:ring-forest/15'

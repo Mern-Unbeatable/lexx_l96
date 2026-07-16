@@ -40,7 +40,7 @@ const Host = () => {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto w-full max-w-4xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
       <header className="mb-8">
         <h1 className="font-serif text-4xl font-bold text-ink sm:text-5xl">
           Host a Game
@@ -50,8 +50,12 @@ const Host = () => {
         </p>
       </header>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full min-w-0 space-y-5"
+        noValidate
+      >
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
           <FormField
             label="Course Name"
             htmlFor="course"
@@ -96,9 +100,9 @@ const Host = () => {
           </FormField>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField label="Date" htmlFor="date" error={errors.date?.message}>
-            <div className="relative">
+            <div className="relative w-full min-w-0">
               <input
                 id="date"
                 type="date"
@@ -113,11 +117,11 @@ const Host = () => {
             </div>
           </FormField>
           <FormField label="Time" htmlFor="time" error={errors.time?.message}>
-            <div className="relative min-w-0">
+            <div className="relative w-full min-w-0">
               <input
                 id="time"
                 type="time"
-                className={`${inputClass} relative min-w-0 pr-10 ${errors.time ? inputErrorClass : ''}`}
+                className={`${inputClass} relative pr-10 ${errors.time ? inputErrorClass : ''}`}
                 {...register('time')}
               />
               <Clock
@@ -154,7 +158,7 @@ const Host = () => {
 
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink">Age Range</p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4">
             <FormField htmlFor="ageMin" error={errors.ageMin?.message}>
               <input
                 id="ageMin"
@@ -178,7 +182,7 @@ const Host = () => {
 
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink">Handicap Range</p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4">
             <FormField htmlFor="handicapMin" error={errors.handicapMin?.message}>
               <input
                 id="handicapMin"

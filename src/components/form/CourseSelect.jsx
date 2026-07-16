@@ -51,7 +51,7 @@ const CourseSelect = ({
   }
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative w-full min-w-0">
       <button
         id={id}
         type="button"

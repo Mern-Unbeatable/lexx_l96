@@ -1,7 +1,7 @@
 import { labelClass, errorClass } from './formStyles'
 
 const FormField = ({ label, htmlFor, error, children }) => (
-  <div>
+  <div className="min-w-0">
     {label && (
       <label htmlFor={htmlFor} className={labelClass}>
         {label}
