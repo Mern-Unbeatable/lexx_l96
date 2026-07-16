@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Search, Calendar, Clock, ChevronDown } from 'lucide-react'
+import { Calendar, Clock, ChevronDown } from 'lucide-react'
 import FormField from '../../components/form/FormField'
+import LocationInput from '../../components/form/LocationInput'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { hostSchema } from '../../schemas/formSchemas'
 
@@ -11,12 +12,14 @@ const Host = () => {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(hostSchema),
     defaultValues: {
       course: '',
+      location: '',
       date: '',
       time: '',
       spots: '',
@@ -46,22 +49,39 @@ const Host = () => {
       </header>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-        <FormField label="Course" htmlFor="course" error={errors.course?.message}>
-          <div className="relative">
-            <Search
-              size={18}
-              strokeWidth={1.75}
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"
-            />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField
+            label="Course Name"
+            htmlFor="course"
+            error={errors.course?.message}
+          >
             <input
               id="course"
-              type="search"
-              placeholder="Search courses in England..."
-              className={`${inputClass} pl-10 ${errors.course ? inputErrorClass : ''}`}
+              type="text"
+              placeholder="e.g. Sunningdale Golf Club"
+              className={`${inputClass} ${errors.course ? inputErrorClass : ''}`}
               {...register('course')}
             />
-          </div>
-        </FormField>
+          </FormField>
+
+          <FormField label="Location" htmlFor="location">
+            <Controller
+              name="location"
+              control={control}
+              render={({ field }) => (
+                <LocationInput
+                  id="location"
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.location?.message}
+                  placeholder="e.g. London, SW1A 1AA"
+                />
+              )}
+            />
+          </FormField>
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Date" htmlFor="date" error={errors.date?.message}>

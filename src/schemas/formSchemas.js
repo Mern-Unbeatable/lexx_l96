@@ -71,7 +71,8 @@ export const registerSchema = z.object({
 
 export const hostSchema = z
   .object({
-    course: z.string().min(2, 'Course is required'),
+    course: z.string().min(2, 'Course name is required'),
+    location: z.string().min(2, 'Location is required'),
     date: z.string().min(1, 'Date is required'),
     time: z.string().min(1, 'Time is required'),
     spots: z.enum(['1', '2', '3'], {
