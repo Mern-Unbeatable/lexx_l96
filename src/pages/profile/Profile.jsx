@@ -37,7 +37,7 @@ const Profile = () => {
         <div className="mt-6 grid items-stretch gap-5 lg:grid-cols-2">
           <PersonalDetails profile={profile} />
           <div className="flex flex-col gap-5">
-            <GolfDetails profile={profile} />
+            {/* <GolfDetails profile={profile} /> */}
             <MembershipCard profile={profile} fullName={fullName} />
           </div>
         </div>

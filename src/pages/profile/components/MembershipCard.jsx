@@ -19,7 +19,7 @@ const MembershipCard = ({ profile, fullName }) => (
     <div className="relative z-10 flex min-h-[200px] flex-col justify-between">
       <div className="flex items-center gap-2.5">
         <img
-          src="/logo.png"
+          src="/logoWhite.png"
           alt=""
           className="h-8 w-auto object-contain drop-shadow-sm"
         />
@@ -44,12 +44,12 @@ const MembershipCard = ({ profile, fullName }) => (
           </p>
           <p className="mt-1 text-[15px] font-semibold">{profile.memberSince}</p>
         </div>
-        <div className="text-right">
+        {/* <div className="text-right">
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/50">
             Tier
           </p>
           <p className="mt-1 text-[15px] font-semibold">{profile.membership}</p>
-        </div>
+        </div> */}
       </div>
     </div>
   </section>

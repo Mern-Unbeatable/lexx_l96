@@ -10,7 +10,7 @@ const AuthBrandPanel = () => (
   <aside className="relative hidden w-[48%] flex-col px-12 py-10 text-white lg:flex xl:px-16">
     <Link to="/" className="mt-10 flex items-center gap-4 xl:mt-14">
       <img
-        src="/logo.png"
+        src="/logoWhite.png"
         alt=""
         className="h-14 w-auto object-contain drop-shadow-sm xl:h-16"
       />
