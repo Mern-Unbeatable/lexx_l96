@@ -8,7 +8,7 @@ const GolfDetails = ({ profile }) => (
         <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
           Handicap Index
         </p>
-        <p className="mt-1 text-3xl font-semibold tracking-tight text-[#2D6A4F]">
+        <p className="mt-1 text-3xl font-semibold tracking-tight text-forest">
           {profile.handicap}
         </p>
       </div>
