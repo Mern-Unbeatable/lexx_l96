@@ -89,12 +89,6 @@ const Login = () => {
                       <Eye size={18} strokeWidth={1.75} />
                     )}
                   </button>
-                  <Lock
-                    size={18}
-                    strokeWidth={1.75}
-                    className="text-muted"
-                    aria-hidden="true"
-                  />
                 </div>
               </div>
             </FormField>
@@ -115,7 +109,6 @@ const Login = () => {
               Sign In
             </button>
           </form>
-
           <p className="mt-8 text-center text-sm text-muted">
             Don&apos;t have an account?{' '}
             <Link
