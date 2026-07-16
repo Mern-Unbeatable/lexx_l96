@@ -74,7 +74,7 @@ const Home = () => {
             <MapPin size={16} strokeWidth={1.75} className="text-muted" />
             Find my Location
           </button>
-          <FiltersDropdown value={filters} onChange={setFilters} />
+          {/* <FiltersDropdown value={filters} onChange={setFilters} /> */}
         </div>
       </header>
 
