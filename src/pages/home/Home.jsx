@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { MapPin, SlidersHorizontal, ChevronDown } from 'lucide-react'
+import Swal from 'sweetalert2'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
+import RequestToJoinModal from './components/RequestToJoinModal'
 
 const Detail = ({ label, value }) => (
   <div>
@@ -24,11 +26,23 @@ const game = {
 
 const Home = () => {
   const [locationOpen, setLocationOpen] = useState(false)
+  const [requestOpen, setRequestOpen] = useState(false)
   const [locationPrefs, setLocationPrefs] = useState({
     location: '',
     radius: '',
   })
 
+  const handleJoinRequest = async ({ message }) => {
+    console.log('Join request:', { game, message })
+    await new Promise((resolve) => window.setTimeout(resolve, 500))
+    await Swal.fire({
+      icon: 'success',
+      title: 'Request sent!',
+      text: `Your join request was sent to ${game.host.name}.`,
+      confirmButtonText: 'Got it',
+      confirmButtonColor: '#2D6A4F',
+    })
+  }
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
       <header className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -111,6 +125,7 @@ const Home = () => {
 
         <button
           type="button"
+          onClick={() => setRequestOpen(true)}
           className="mt-8 w-full rounded-lg bg-forest px-4 py-3.5 text-center text-[15px] font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99]"
         >
           Request to Join
@@ -123,6 +138,13 @@ const Home = () => {
         initialLocation={locationPrefs.location}
         initialRadius={locationPrefs.radius}
         onApply={setLocationPrefs}
+      />
+
+      <RequestToJoinModal
+        open={requestOpen}
+        game={game}
+        onClose={() => setRequestOpen(false)}
+        onSubmit={handleJoinRequest}
       />
     </div>
   )
