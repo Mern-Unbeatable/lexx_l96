@@ -41,7 +41,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 border-b border-line bg-[#ffffff]">
       {/* Mobile bar — stays white when menu opens */}
       <div className="relative z-[70] flex items-center justify-between bg-[#ffffff] px-4 py-3 xl:hidden">
-        <Link to="/" className="flex items-center gap-2.5" onClick={closeMenu}>
+        <Link to="/" className="flex items-center gap-1" onClick={closeMenu}>
           <img
             src="/logo.png"
             alt="Golf Links"
@@ -156,20 +156,23 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        <Link to="/" className="flex items-center gap-2.5 px-2 py-3 sm:gap-3">
+        <Link
+          to="/"
+          className="flex items-center gap-2.5 px-2 py-2 xl:gap-3"
+        >
           <img
             src="/logo.png"
             alt="Golf Links"
-            className="h-8 w-auto object-contain sm:h-9"
+            className="h-14 w-auto object-contain 2xl:h-16"
           />
-          <span className="font-serif text-sm tracking-tight text-ink sm:text-lg">
+          <span className="font-serif text-lg tracking-tight text-ink whitespace-nowrap 2xl:text-xl">
             <span className="font-semibold">Golf Links</span>
-            <span className="mx-1 text-muted sm:mx-1.5">·</span>
+            <span className="mx-1.5 text-muted">·</span>
             <span className="italic text-muted">Premium Pairings</span>
           </span>
         </Link>
 
-        <div className="flex items-center justify-end gap-4 sm:gap-8">
+        <div className="flex items-center justify-end gap-4 sm:gap-6 2xl:gap-8">
           <NavLink to="/host" className={navClass}>
             <Plus size={18} strokeWidth={1.75} />
             Host Game
