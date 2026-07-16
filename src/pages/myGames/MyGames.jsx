@@ -4,11 +4,13 @@ import {
   showAcceptSuccess,
   simulateAcceptDelay,
 } from '../../utils/acceptFeedback'
+import Swal from 'sweetalert2'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
 import GamesList from './components/GamesList'
 import MyGamesFooter from './components/MyGamesFooter'
 import MatchChat from './components/MatchChat'
+import LeaveReviewModal from './components/LeaveReviewModal'
 
 const gamesByTab = {
   hosting: hostedGames,
@@ -19,12 +21,24 @@ const gamesByTab = {
 const MyGames = () => {
   const [tab, setTab] = useState('hosting')
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
+  const [declinedIds, setDeclinedIds] = useState(() => new Set())
+  const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
+  const [reviewGame, setReviewGame] = useState(null)
 
-  const games = gamesByTab[tab]
+  const games =
+    tab === 'past'
+      ? pastGames.map((game) => ({
+          ...game,
+          needsReview: game.needsReview && !reviewedIds.has(game.id),
+        }))
+      : gamesByTab[tab]
+
   const hostingCount = hostedGames.length
   const joinedCount = myJoinRequests.length
-  const reviewCount = pastGames.filter((game) => game.needsReview).length
+  const reviewCount = pastGames.filter(
+    (game) => game.needsReview && !reviewedIds.has(game.id),
+  ).length
 
   const handleAccept = async (player) => {
     await simulateAcceptDelay()
@@ -32,8 +46,45 @@ const MyGames = () => {
     await showAcceptSuccess(player.name)
   }
 
+  const handleDecline = async (player) => {
+    await simulateAcceptDelay(500)
+    setDeclinedIds((prev) => new Set(prev).add(player.id))
+    await Swal.fire({
+      icon: 'info',
+      title: 'Request declined',
+      text: `${player.name}'s join request was declined.`,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#2D6A4F',
+    })
+  }
+
   const openChat = (player, game) => {
-    setChat({ player, game })
+    setChat({
+      player: {
+        ...player,
+        id: player.id || player.name,
+      },
+      game: {
+        ...game,
+        id: game.id,
+        course: game.course,
+        date: game.date,
+        time: game.time,
+      },
+    })
+  }
+
+  const handleReviewSubmit = async (payload) => {
+    console.log('Review submitted:', payload)
+    await simulateAcceptDelay(600)
+    setReviewedIds((prev) => new Set(prev).add(payload.gameId))
+    await Swal.fire({
+      icon: 'success',
+      title: 'Review submitted!',
+      text: 'Thanks for rating your round.',
+      confirmButtonText: 'Got it',
+      confirmButtonColor: '#2D6A4F',
+    })
   }
 
   return (
@@ -53,8 +104,11 @@ const MyGames = () => {
           upcomingCount={hostingCount}
           joinedCount={joinedCount}
           acceptedIds={acceptedIds}
+          declinedIds={declinedIds}
           onAccept={handleAccept}
+          onDecline={handleDecline}
           onOpenChat={openChat}
+          onLeaveReview={setReviewGame}
         />
       </div>
       <MyGamesFooter />
@@ -64,6 +118,13 @@ const MyGames = () => {
         player={chat?.player}
         game={chat?.game}
         onClose={() => setChat(null)}
+      />
+
+      <LeaveReviewModal
+        open={Boolean(reviewGame)}
+        game={reviewGame}
+        onClose={() => setReviewGame(null)}
+        onSubmit={handleReviewSubmit}
       />
     </div>
   )

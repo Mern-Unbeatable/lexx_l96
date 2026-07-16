@@ -88,7 +88,7 @@ const JoinedRequestCard = ({ item, onOpenChat }) => {
                 Chat
               </button>
             ) : (
-              <p className="text-sm text-muted">Waiting for host</p>
+              <p className="text-sm text-muted">Awaiting hosts approval</p>
             )}
           </div>
         </div>

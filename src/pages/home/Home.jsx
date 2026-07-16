@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { MapPin, SlidersHorizontal, ChevronDown } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import Swal from 'sweetalert2'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
 import RequestToJoinModal from './components/RequestToJoinModal'
+import FiltersDropdown from './components/FiltersDropdown'
 
 const Detail = ({ label, value }) => (
   <div>
@@ -27,6 +28,7 @@ const game = {
 const Home = () => {
   const [locationOpen, setLocationOpen] = useState(false)
   const [requestOpen, setRequestOpen] = useState(false)
+  const [filters, setFilters] = useState('all')
   const [locationPrefs, setLocationPrefs] = useState({
     location: '',
     radius: '',
@@ -43,6 +45,7 @@ const Home = () => {
       confirmButtonColor: '#2D6A4F',
     })
   }
+
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
       <header className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -71,14 +74,7 @@ const Home = () => {
             <MapPin size={16} strokeWidth={1.75} className="text-muted" />
             Find my Location
           </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
-          >
-            <SlidersHorizontal size={16} strokeWidth={1.75} className="text-muted" />
-            Filters
-            <ChevronDown size={16} strokeWidth={1.75} className="text-muted" />
-          </button>
+          <FiltersDropdown value={filters} onChange={setFilters} />
         </div>
       </header>
 

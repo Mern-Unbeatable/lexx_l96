@@ -5,20 +5,53 @@ import Stars from './Stars'
 const RequestCard = ({
   request,
   accepted = false,
+  declined = false,
   onAccept,
   onDecline,
   onOpenChat,
 }) => {
   const [accepting, setAccepting] = useState(false)
+  const [declining, setDeclining] = useState(false)
 
   const handleAccept = async () => {
-    if (accepting) return
+    if (accepting || declining) return
     setAccepting(true)
     try {
       await onAccept?.(request)
     } finally {
       setAccepting(false)
     }
+  }
+
+  const handleDecline = async () => {
+    if (accepting || declining) return
+    setDeclining(true)
+    try {
+      await onDecline?.(request)
+    } finally {
+      setDeclining(false)
+    }
+  }
+
+  if (declined) {
+    return (
+      <article className="rounded-xl border border-line/80 bg-white p-4 opacity-70 shadow-[0_1px_2px_rgba(26,46,38,0.04)] sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-sm font-semibold text-ink">
+              {request.initials}
+            </div>
+            <div>
+              <p className="font-semibold text-ink">{request.name}</p>
+              <p className="text-sm text-muted">Request declined</p>
+            </div>
+          </div>
+          <span className="rounded-full bg-[#f0eeea] px-2.5 py-1 text-xs font-medium text-muted">
+            Declined
+          </span>
+        </div>
+      </article>
+    )
   }
 
   return (
@@ -65,15 +98,15 @@ const RequestCard = ({
         <div className="relative flex min-h-10 shrink-0 items-center justify-end gap-2">
           <div
             className={`flex items-center gap-2 transition-all duration-300 ${
-              accepted || accepting
+              accepted || accepting || declining
                 ? 'pointer-events-none absolute opacity-0 scale-95'
                 : 'opacity-100 scale-100'
             }`}
           >
             <button
               type="button"
-              onClick={() => onDecline?.(request)}
-              disabled={accepting}
+              onClick={handleDecline}
+              disabled={accepting || declining}
               className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-medium text-ink transition hover:bg-[#f5f5f5] disabled:opacity-50"
             >
               Decline
@@ -81,17 +114,17 @@ const RequestCard = ({
             <button
               type="button"
               onClick={handleAccept}
-              disabled={accepting}
+              disabled={accepting || declining}
               className="inline-flex min-w-[5.5rem] items-center justify-center gap-2 rounded-lg bg-forest px-4 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] disabled:opacity-80"
             >
               Accept
             </button>
           </div>
 
-          {accepting && !accepted && (
+          {(accepting || declining) && !accepted && (
             <div className="inline-flex min-w-[5.5rem] items-center justify-center gap-2 rounded-lg bg-forest px-4 py-2 text-sm font-medium text-white">
               <Loader2 size={16} strokeWidth={2} className="animate-spin" />
-              Accepting…
+              {declining ? 'Declining…' : 'Accepting…'}
             </div>
           )}
 

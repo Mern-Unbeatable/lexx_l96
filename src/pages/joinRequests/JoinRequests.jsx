@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import { hostedGames } from '../myGames/data/gamesData'
 import {
   showAcceptSuccess,
@@ -17,12 +18,25 @@ const JoinRequests = () => {
     hostedGames.find((item) => String(item.id) === String(gameId)) ||
     hostedGames[0]
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
+  const [declinedIds, setDeclinedIds] = useState(() => new Set())
   const [chatPlayer, setChatPlayer] = useState(null)
 
   const handleAccept = async (player) => {
     await simulateAcceptDelay()
     setAcceptedIds((prev) => new Set(prev).add(player.id))
     await showAcceptSuccess(player.name)
+  }
+
+  const handleDecline = async (player) => {
+    await simulateAcceptDelay(500)
+    setDeclinedIds((prev) => new Set(prev).add(player.id))
+    await Swal.fire({
+      icon: 'info',
+      title: 'Request declined',
+      text: `${player.name}'s join request was declined.`,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#2D6A4F',
+    })
   }
 
   return (
@@ -35,7 +49,9 @@ const JoinRequests = () => {
         <PendingRequestsList
           requests={game.requests}
           acceptedIds={acceptedIds}
+          declinedIds={declinedIds}
           onAccept={handleAccept}
+          onDecline={handleDecline}
           onOpenChat={setChatPlayer}
         />
       </div>

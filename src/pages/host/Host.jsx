@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Calendar, Clock, ChevronDown } from 'lucide-react'
 import FormField from '../../components/form/FormField'
 import LocationInput from '../../components/form/LocationInput'
+import CourseSelect from '../../components/form/CourseSelect'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { hostSchema } from '../../schemas/formSchemas'
 
@@ -14,6 +15,7 @@ const Host = () => {
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(hostSchema),
@@ -55,12 +57,23 @@ const Host = () => {
             htmlFor="course"
             error={errors.course?.message}
           >
-            <input
-              id="course"
-              type="text"
-              placeholder="e.g. Sunningdale Golf Club"
-              className={`${inputClass} ${errors.course ? inputErrorClass : ''}`}
-              {...register('course')}
+            <Controller
+              name="course"
+              control={control}
+              render={({ field }) => (
+                <CourseSelect
+                  id="course"
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.course?.message}
+                  onSelectCourse={(course) => {
+                    setValue('course', course.name, { shouldValidate: true })
+                    setValue('location', course.location, { shouldValidate: true })
+                  }}
+                />
+              )}
             />
           </FormField>
 
@@ -83,7 +96,7 @@ const Host = () => {
           </FormField>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField label="Date" htmlFor="date" error={errors.date?.message}>
             <div className="relative">
               <input
@@ -100,11 +113,11 @@ const Host = () => {
             </div>
           </FormField>
           <FormField label="Time" htmlFor="time" error={errors.time?.message}>
-            <div className="relative">
+            <div className="relative min-w-0">
               <input
                 id="time"
                 type="time"
-                className={`${inputClass} relative pr-10 ${errors.time ? inputErrorClass : ''}`}
+                className={`${inputClass} relative min-w-0 pr-10 ${errors.time ? inputErrorClass : ''}`}
                 {...register('time')}
               />
               <Clock
@@ -195,6 +208,10 @@ const Host = () => {
             className={`${inputClass} ${errors.cost ? inputErrorClass : ''}`}
             {...register('cost')}
           />
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Golfers arrange their own payments for green fees and extras. Golf
+            Links does not process or take responsibility for any transactions.
+          </p>
         </FormField>
 
         <FormField label="Notes" htmlFor="notes" error={errors.notes?.message}>

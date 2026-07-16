@@ -7,11 +7,16 @@ const GameGroup = ({
   game,
   defaultOpen = true,
   acceptedIds,
+  declinedIds,
   onAccept,
   onDecline,
   onOpenChat,
+  onLeaveReview,
 }) => {
   const [open, setOpen] = useState(defaultOpen)
+  const visibleRequests = (game.requests || []).filter(
+    (request) => !declinedIds?.has(request.id),
+  )
 
   return (
     <div className="space-y-2.5">
@@ -45,9 +50,13 @@ const GameGroup = ({
           </Link>
         )}
         {game.needsReview && (
-          <span className="shrink-0 rounded-full bg-[#d4a017] px-2.5 py-1 text-xs font-medium text-white">
-            Review
-          </span>
+          <button
+            type="button"
+            onClick={() => onLeaveReview?.(game)}
+            className="shrink-0 rounded-full bg-[#d4a017] px-2.5 py-1 text-xs font-medium text-white transition hover:bg-[#b88912]"
+          >
+            Leave review
+          </button>
         )}
         <button
           type="button"
@@ -63,26 +72,38 @@ const GameGroup = ({
         </button>
       </div>
 
-      {open && game.requests.length > 0 && (
+      {open && visibleRequests.length > 0 && (
         <div className="space-y-2.5">
-          {game.requests.map((request) => (
+          {visibleRequests.map((request) => (
             <RequestCard
               key={request.id}
               request={request}
               accepted={acceptedIds?.has(request.id)}
+              declined={declinedIds?.has(request.id)}
               onAccept={(player) => onAccept?.(player, game)}
-              onDecline={onDecline}
+              onDecline={(player) => onDecline?.(player, game)}
               onOpenChat={(player) => onOpenChat?.(player, game)}
             />
           ))}
         </div>
       )}
 
-      {open && game.requests.length === 0 && (
+      {open && visibleRequests.length === 0 && (
         <div className="rounded-xl border border-line/80 bg-white px-5 py-8 text-center text-sm text-muted shadow-[0_1px_2px_rgba(26,46,38,0.04)]">
-          {game.needsReview
-            ? 'Leave a review for your playing partners.'
-            : 'No pending requests.'}
+          {game.needsReview ? (
+            <div className="space-y-3">
+              <p>Leave a review for your playing partners.</p>
+              <button
+                type="button"
+                onClick={() => onLeaveReview?.(game)}
+                className="rounded-lg bg-forest px-4 py-2 text-sm font-medium text-white transition hover:bg-[#244a37]"
+              >
+                Leave a review
+              </button>
+            </div>
+          ) : (
+            'No pending requests.'
+          )}
         </div>
       )}
     </div>

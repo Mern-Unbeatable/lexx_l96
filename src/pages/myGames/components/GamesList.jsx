@@ -14,9 +14,11 @@ const GamesList = ({
   upcomingCount,
   joinedCount,
   acceptedIds,
+  declinedIds,
   onAccept,
   onDecline,
   onOpenChat,
+  onLeaveReview,
 }) => (
   <>
     {(tab === 'hosting' || tab === 'joined') && (
@@ -47,9 +49,11 @@ const GamesList = ({
               key={game.id}
               game={game}
               acceptedIds={acceptedIds}
+              declinedIds={declinedIds}
               onAccept={onAccept}
               onDecline={onDecline}
               onOpenChat={onOpenChat}
+              onLeaveReview={onLeaveReview}
             />
           ))}
     </div>
