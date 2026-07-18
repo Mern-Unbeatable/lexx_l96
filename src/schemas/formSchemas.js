@@ -69,6 +69,15 @@ export const registerSchema = z.object({
   ),
 })
 
+const requiredNumber = (schema) =>
+  z.preprocess(
+    (value) =>
+      value === '' || value === null || value === undefined
+        ? undefined
+        : Number(value),
+    schema,
+  )
+
 export const hostSchema = z
   .object({
     course: z.string().min(2, 'Course name is required'),
@@ -78,24 +87,18 @@ export const hostSchema = z
     spots: z.enum(['1', '2', '3'], {
       message: 'Select available spots',
     }),
-    ageMin: z.coerce
-      .number({ message: 'Min age is required' })
-      .int()
-      .min(1)
-      .max(120),
-    ageMax: z.coerce
-      .number({ message: 'Max age is required' })
-      .int()
-      .min(1)
-      .max(120),
-    handicapMin: z.coerce
-      .number({ message: 'Min handicap is required' })
-      .min(0)
-      .max(54),
-    handicapMax: z.coerce
-      .number({ message: 'Max handicap is required' })
-      .min(0)
-      .max(54),
+    ageMin: requiredNumber(
+      z.number({ message: 'Min age is required' }).int().min(1).max(120),
+    ),
+    ageMax: requiredNumber(
+      z.number({ message: 'Max age is required' }).int().min(1).max(120),
+    ),
+    handicapMin: requiredNumber(
+      z.number({ message: 'Min handicap is required' }).min(0).max(54),
+    ),
+    handicapMax: requiredNumber(
+      z.number({ message: 'Max handicap is required' }).min(0).max(54),
+    ),
     cost: z.string().optional(),
     notes: z.string().optional(),
   })

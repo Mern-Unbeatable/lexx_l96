@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Calendar, Clock, ChevronDown } from 'lucide-react'
+import { Calendar, Clock, ChevronDown, CircleAlert } from 'lucide-react'
 import FormField from '../../components/form/FormField'
 import LocationInput from '../../components/form/LocationInput'
 import CourseSelect from '../../components/form/CourseSelect'
@@ -15,7 +15,6 @@ const Host = () => {
     register,
     control,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(hostSchema),
@@ -25,10 +24,10 @@ const Host = () => {
       date: '',
       time: '',
       spots: '',
-      ageMin: 18,
-      ageMax: 70,
-      handicapMin: 0,
-      handicapMax: 36,
+      ageMin: '',
+      ageMax: '',
+      handicapMin: '',
+      handicapMax: '',
       cost: '',
       notes: '',
     },
@@ -48,6 +47,22 @@ const Host = () => {
         <p className="mt-2 text-base text-muted sm:text-[15px]">
           Set up a round and find the right partners to join you on the links.
         </p>
+        <div
+          role="alert"
+          className="mt-6 flex items-start gap-3 border-l-4 border-amber-500 bg-amber-50 px-4 py-4 text-base leading-relaxed text-amber-700"
+        >
+          <CircleAlert
+            size={16}
+            strokeWidth={2}
+            className="mt-0.5 shrink-0 text-amber-500"
+            aria-hidden="true"
+          />
+          <p>
+            <strong className="font-semibold">Important:</strong> Please ensure
+            you have booked your appropriate tee times directly with your
+            selected club. Hosting a game here does not reserve a tee time.
+          </p>
+        </div>
       </header>
 
       <form
@@ -72,10 +87,6 @@ const Host = () => {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   error={errors.course?.message}
-                  onSelectCourse={(course) => {
-                    setValue('course', course.name, { shouldValidate: true })
-                    setValue('location', course.location, { shouldValidate: true })
-                  }}
                 />
               )}
             />
@@ -163,7 +174,7 @@ const Host = () => {
               <input
                 id="ageMin"
                 type="number"
-                placeholder="18"
+                placeholder="Minimum age"
                 className={`${inputClass} ${errors.ageMin ? inputErrorClass : ''}`}
                 {...register('ageMin')}
               />
@@ -172,7 +183,7 @@ const Host = () => {
               <input
                 id="ageMax"
                 type="number"
-                placeholder="70"
+                placeholder="Maximum age"
                 className={`${inputClass} ${errors.ageMax ? inputErrorClass : ''}`}
                 {...register('ageMax')}
               />
@@ -187,7 +198,7 @@ const Host = () => {
               <input
                 id="handicapMin"
                 type="number"
-                placeholder="0"
+                placeholder="Minimum handicap"
                 className={`${inputClass} ${errors.handicapMin ? inputErrorClass : ''}`}
                 {...register('handicapMin')}
               />
@@ -196,7 +207,7 @@ const Host = () => {
               <input
                 id="handicapMax"
                 type="number"
-                placeholder="36"
+                placeholder="Maximum handicap"
                 className={`${inputClass} ${errors.handicapMax ? inputErrorClass : ''}`}
                 {...register('handicapMax')}
               />

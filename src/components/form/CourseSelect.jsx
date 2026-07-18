@@ -1,13 +1,12 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Check, ChevronDown, LandPlot, Search } from 'lucide-react'
-import { englandCourses, searchEnglandCourses } from '../../data/englandCourses'
+import { courseOptions, searchCourseOptions } from '../../data/courseOptions'
 import { inputClass, inputErrorClass } from './formStyles'
 
 const CourseSelect = ({
   id,
   value = '',
   onChange,
-  onSelectCourse,
   onBlur,
   error,
   name,
@@ -20,12 +19,12 @@ const CourseSelect = ({
   const [query, setQuery] = useState('')
 
   const selected = useMemo(
-    () => englandCourses.find((course) => course.name === value) ?? null,
+    () => courseOptions.find((course) => course === value) ?? null,
     [value],
   )
 
   const options = useMemo(
-    () => (query.trim() ? searchEnglandCourses(query, 200) : englandCourses),
+    () => searchCourseOptions(query),
     [query],
   )
 
@@ -45,8 +44,7 @@ const CourseSelect = ({
   }, [open])
 
   const pick = (course) => {
-    onChange?.(course.name)
-    onSelectCourse?.(course)
+    onChange?.(course)
     setOpen(false)
   }
 
@@ -66,7 +64,7 @@ const CourseSelect = ({
         }`}
       >
         <span className={`min-w-0 truncate ${selected ? 'text-ink' : 'text-muted/70'}`}>
-          {selected ? selected.name : placeholder}
+          {selected || placeholder}
         </span>
         <ChevronDown
           size={18}
@@ -98,9 +96,9 @@ const CourseSelect = ({
               <li className="px-3.5 py-3 text-sm text-muted">No courses found</li>
             ) : (
               options.map((course) => {
-                const isActive = course.name === value
+                const isActive = course === value
                 return (
-                  <li key={`${course.name}-${course.location}`} role="option" aria-selected={isActive}>
+                  <li key={course} role="option" aria-selected={isActive}>
                     <button
                       type="button"
                       onMouseDown={(event) => event.preventDefault()}
@@ -116,10 +114,7 @@ const CourseSelect = ({
                       />
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm font-medium text-ink">
-                          {course.name}
-                        </span>
-                        <span className="block text-xs text-muted">
-                          {course.location}
+                          {course}
                         </span>
                       </span>
                       {isActive && (
@@ -131,10 +126,6 @@ const CourseSelect = ({
               })
             )}
           </ul>
-
-          {/* <p className="border-t border-line px-3.5 py-2 text-[11px] text-muted">
-            {options.length} of {englandCourses.length} England courses
-          </p> */}
         </div>
       )}
     </div>
