@@ -86,6 +86,26 @@ const Example = () => {
 The query only runs when an auth token exists. A `401` response clears the
 invalid session automatically.
 
+Update the authenticated user's personal profile:
+
+```text
+PATCH /api/profile/me
+```
+
+```json
+{
+  "firstName": "James",
+  "lastName": "Whitfield",
+  "phone": "+44 7700 900142",
+  "location": "Surrey, England",
+  "homeCourse": "Sunningdale Golf Club",
+  "about": "Passionate golfer with a love for links courses."
+}
+```
+
+After a successful update, the `['auth', 'me']` query is invalidated so the UI
+is refreshed from the backend response.
+
 API errors are rejected in this shape:
 
 ```js

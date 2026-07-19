@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getMyProfile } from '../services/profileApi'
+import { queryKeys } from '../api/queryKeys'
 import {
   authChangeEvent,
   clearAccessToken,
@@ -16,7 +17,6 @@ import {
 } from '../utils/authStorage'
 
 const AuthContext = createContext(null)
-const CURRENT_USER_QUERY_KEY = ['auth', 'me']
 
 export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient()
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const profileQuery = useQuery({
-    queryKey: CURRENT_USER_QUERY_KEY,
+    queryKey: queryKeys.auth.me,
     queryFn: getMyProfile,
     enabled: isAuthenticated,
     retry: false,

@@ -12,10 +12,11 @@ import {
   ProfileSignInRequired,
 } from './components/ProfilePageStates'
 import {
-  getInitials,
   getProfileFullName,
   mapUserToProfile,
 } from './utils/profileMapper'
+import { useUpdateProfileMutation } from '../../hooks/useProfileMutations'
+import { showSuccessAlert } from '../../utils/toast'
 
 const Profile = () => {
   const {
@@ -25,20 +26,21 @@ const Profile = () => {
     userError,
     refetchUser,
   } = useAuth()
-  const [profileEdits, setProfileEdits] = useState({})
+  const updateProfileMutation = useUpdateProfileMutation()
   const [editOpen, setEditOpen] = useState(false)
-  const profile = useMemo(
-    () => ({ ...mapUserToProfile(user), ...profileEdits }),
-    [profileEdits, user],
-  )
+  const profile = useMemo(() => mapUserToProfile(user), [user])
   const fullName = getProfileFullName(profile)
 
-  const handleSave = (data) => {
-    setProfileEdits((prev) => ({
-      ...prev,
-      ...data,
-      initials: getInitials(data.firstName, data.lastName),
-    }))
+  const handleSave = async (data) => {
+    await updateProfileMutation.mutateAsync({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      location: data.location,
+      homeCourse: data.homeCourse,
+      about: data.about,
+    })
+    await showSuccessAlert('Your personal details have been saved.')
   }
 
   if (isLoadingUser) return <ProfileLoading />

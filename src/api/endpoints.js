@@ -17,7 +17,7 @@ export const API_ENDPOINTS = {
   profile: {
     me: '/api/profile/me',
     details: '/profile',
-    update: '/profile',
+    update: '/api/profile/me',
   },
 
   courses: {

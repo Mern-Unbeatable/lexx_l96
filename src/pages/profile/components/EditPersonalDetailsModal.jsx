@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 import FormField from '../../../components/form/FormField'
 import { inputClass, inputErrorClass } from '../../../components/form/formStyles'
 import { editPersonalDetailsSchema } from '../../../schemas/formSchemas'
+import { showErrorAlert } from '../../../utils/toast'
 
 const ENTER_MS = 20
 const EXIT_MS = 280
@@ -64,13 +65,17 @@ const EditPersonalDetailsModal = ({ open, profile, onClose, onSave }) => {
   if (!mounted) return null
 
   const onSubmit = async (data) => {
-    await onSave?.(data)
-    onClose()
+    try {
+      await onSave?.(data)
+      onClose()
+    } catch (error) {
+      await showErrorAlert(error?.message || 'Unable to update profile')
+    }
   }
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center p-0 sm:items-center sm:p-6"
+      className="fixed inset-0 z-80 flex items-end justify-center p-0 sm:items-center sm:p-6"
       role="presentation"
     >
       <button
@@ -158,7 +163,8 @@ const EditPersonalDetailsModal = ({ open, profile, onClose, onSave }) => {
                 id="email"
                 type="email"
                 autoComplete="email"
-                className={`${inputClass} ${errors.email ? inputErrorClass : ''}`}
+                readOnly
+                className={`${inputClass} cursor-not-allowed bg-cream text-muted ${errors.email ? inputErrorClass : ''}`}
                 {...register('email')}
               />
             </FormField>
