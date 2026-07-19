@@ -16,9 +16,7 @@ import {
 } from '../utils/authStorage'
 
 const AuthContext = createContext(null)
-
-const getUserFromResponse = (response) =>
-  response?.data?.user ?? response?.data ?? response?.user ?? response ?? null
+const CURRENT_USER_QUERY_KEY = ['auth', 'me']
 
 export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient()
@@ -37,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const profileQuery = useQuery({
-    queryKey: ['auth', 'me'],
+    queryKey: CURRENT_USER_QUERY_KEY,
     queryFn: getMyProfile,
     enabled: isAuthenticated,
     retry: false,
@@ -58,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      user: getUserFromResponse(profileQuery.data),
+      user: profileQuery.data ?? null,
       isAuthenticated,
       isLoadingUser: isAuthenticated && profileQuery.isPending,
       userError: profileQuery.error,

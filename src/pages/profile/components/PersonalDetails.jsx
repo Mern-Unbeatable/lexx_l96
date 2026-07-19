@@ -18,7 +18,7 @@ const PersonalDetails = ({ profile }) => (
         About
       </p>
       <p className="mt-2 text-[15px] leading-relaxed text-ink/85">
-        {profile.about}
+        {profile.about || '—'}
       </p>
     </div>
   </section>

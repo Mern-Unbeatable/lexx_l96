@@ -3,7 +3,7 @@ import { Pencil, Check } from "lucide-react";
 const ProfileHeader = ({ profile, fullName, onEdit }) => (
   <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
     <div className="flex items-start gap-4">
-      <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-lg font-semibold text-ink sm:size-[4.5rem] sm:text-xl">
+      <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-lg font-semibold text-ink sm:size-18 sm:text-xl">
         {profile.initials}
       </div>
       <div>
@@ -13,9 +13,11 @@ const ProfileHeader = ({ profile, fullName, onEdit }) => (
         <div className="mt-2 flex flex-wrap items-center gap-2.5">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#e8f0ea] px-2.5 py-1 text-xs font-medium text-forest">
             <Check size={12} strokeWidth={2.5} />
-            Premium Member
+            {profile.membership}
           </span>
-          <span className="text-sm text-muted">{profile.location}</span>
+          {profile.location && (
+            <span className="text-sm text-muted">{profile.location}</span>
+          )}
         </div>
       </div>
     </div>

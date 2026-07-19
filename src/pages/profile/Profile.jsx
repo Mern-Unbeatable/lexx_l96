@@ -1,27 +1,57 @@
-import { useState } from 'react'
-import { profile as initialProfile } from './data/profileData'
+import { useMemo, useState } from 'react'
 import ProfileHeader from './components/ProfileHeader'
 import ProfileStats from './components/ProfileStats'
 import PersonalDetails from './components/PersonalDetails'
-import GolfDetails from './components/GolfDetails'
 import MembershipCard from './components/MembershipCard'
 import ProfileFooter from './components/ProfileFooter'
 import EditPersonalDetailsModal from './components/EditPersonalDetailsModal'
-
-const getInitials = (firstName, lastName) =>
-  `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
+import { useAuth } from '../../context/AuthContext'
+import {
+  ProfileLoading,
+  ProfileLoadError,
+  ProfileSignInRequired,
+} from './components/ProfilePageStates'
+import {
+  getInitials,
+  getProfileFullName,
+  mapUserToProfile,
+} from './utils/profileMapper'
 
 const Profile = () => {
-  const [profile, setProfile] = useState(initialProfile)
+  const {
+    user,
+    isAuthenticated,
+    isLoadingUser,
+    userError,
+    refetchUser,
+  } = useAuth()
+  const [profileEdits, setProfileEdits] = useState({})
   const [editOpen, setEditOpen] = useState(false)
-  const fullName = `${profile.firstName} ${profile.lastName}`
+  const profile = useMemo(
+    () => ({ ...mapUserToProfile(user), ...profileEdits }),
+    [profileEdits, user],
+  )
+  const fullName = getProfileFullName(profile)
 
   const handleSave = (data) => {
-    setProfile((prev) => ({
+    setProfileEdits((prev) => ({
       ...prev,
       ...data,
       initials: getInitials(data.firstName, data.lastName),
     }))
+  }
+
+  if (isLoadingUser) return <ProfileLoading />
+
+  if (!isAuthenticated) return <ProfileSignInRequired />
+
+  if (userError || !user) {
+    return (
+      <ProfileLoadError
+        error={userError}
+        onRetry={() => refetchUser()}
+      />
+    )
   }
 
   return (
@@ -37,7 +67,6 @@ const Profile = () => {
         <div className="mt-6 grid items-stretch gap-5 lg:grid-cols-2">
           <PersonalDetails profile={profile} />
           <div className="flex flex-col gap-5">
-            {/* <GolfDetails profile={profile} /> */}
             <MembershipCard profile={profile} fullName={fullName} />
           </div>
         </div>

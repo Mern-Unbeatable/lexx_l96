@@ -4,7 +4,7 @@ const Detail = ({ label, value, valueClassName = 'text-[#122424]' }) => (
       {label}
     </p>
     <p className={`mt-1  font-medium text-base ${valueClassName}`}>
-      {value}
+      {value === null || value === undefined || value === '' ? '—' : value}
     </p>
   </div>
 )
