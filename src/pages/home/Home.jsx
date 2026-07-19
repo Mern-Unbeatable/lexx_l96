@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react'
 import { MapPin } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
+import RequestToJoinModal from './components/RequestToJoinModal'
 import GameCard from './components/GameCard'
 import GamesPagination from './components/GamesPagination'
 import { useGames } from '../../hooks/useGames'
 import { useAuth } from '../../context/AuthContext'
 import { mapApiGame } from './utils/gameMapper'
+import { showInfoAlert } from '../../utils/toast'
 
 const GAMES_PER_PAGE = 5
 
@@ -14,6 +16,7 @@ const Home = () => {
   const { user } = useAuth()
   const [page, setPage] = useState(1)
   const [locationOpen, setLocationOpen] = useState(false)
+  const [selectedGame, setSelectedGame] = useState(null)
   const [locationPrefs, setLocationPrefs] = useState({
     location: '',
     radius: '',
@@ -29,6 +32,9 @@ const Home = () => {
     setPage(nextPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  const handleJoinRequest = () =>
+    showInfoAlert('Join request API is not connected yet.')
 
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
@@ -100,7 +106,11 @@ const Home = () => {
         {!gamesQuery.isError && games.length > 0 && (
           <div className="space-y-5">
             {games.map((game) => (
-              <GameCard key={game.id} game={game} />
+              <GameCard
+                key={game.id}
+                game={game}
+                onRequestJoin={setSelectedGame}
+              />
             ))}
           </div>
         )}
@@ -125,6 +135,12 @@ const Home = () => {
         onApply={setLocationPrefs}
       />
 
+      <RequestToJoinModal
+        open={Boolean(selectedGame)}
+        game={selectedGame}
+        onClose={() => setSelectedGame(null)}
+        onSubmit={handleJoinRequest}
+      />
     </div>
   )
 }

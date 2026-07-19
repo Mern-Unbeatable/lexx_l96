@@ -39,3 +39,12 @@ export const showSuccessAlert = (message) =>
     confirmButtonText: 'Done',
     confirmButtonColor: '#2D6A4F',
   })
+
+export const showInfoAlert = (message) =>
+  Swal.fire({
+    icon: 'info',
+    title: 'Coming soon',
+    text: message,
+    confirmButtonText: 'Got it',
+    confirmButtonColor: '#2D6A4F',
+  })
