@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft } from 'lucide-react'
 import { inputErrorClass } from '../../../components/form/formStyles'
 import { otpSchema } from '../../../schemas/formSchemas'
+import { showErrorToast } from '../../../utils/toast'
 
 const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
@@ -91,9 +92,7 @@ const OtpVerifyStep = ({
         await onVerify(otp)
         onVerified?.()
       } catch (error) {
-        setError('otp', {
-          message: error?.message || 'Email verification failed',
-        })
+        showErrorToast(error?.message || 'Email verification failed')
       }
       return
     }
@@ -121,9 +120,7 @@ const OtpVerifyStep = ({
       clearErrors('otp')
       inputsRef.current[0]?.focus()
     } catch (error) {
-      setError('otp', {
-        message: error?.message || 'Unable to resend OTP',
-      })
+      showErrorToast(error?.message || 'Unable to resend OTP')
     }
   }
 

@@ -17,6 +17,7 @@ import {
   useSetNewPasswordMutation,
   useVerifyResetOtpMutation,
 } from '../../hooks/useAuthMutations'
+import { showErrorToast } from '../../utils/toast'
 
 const getResetToken = (response) =>
   response?.data?.resetToken ?? response?.resetToken ?? null
@@ -45,7 +46,6 @@ const EmailStep = ({ onSubmitEmail }) => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(forgotPasswordEmailSchema),
@@ -56,9 +56,9 @@ const EmailStep = ({ onSubmitEmail }) => {
     try {
       await onSubmitEmail(data.email)
     } catch (error) {
-      setError('root', {
-        message: error?.message || 'Unable to send OTP. Please try again.',
-      })
+      showErrorToast(
+        error?.message || 'Unable to send OTP. Please try again.',
+      )
     }
   }
 
@@ -106,12 +106,6 @@ const EmailStep = ({ onSubmitEmail }) => {
         >
           {isSubmitting ? 'Sending OTP…' : 'Send OTP'}
         </button>
-
-        {errors.root?.message && (
-          <p role="alert" className="text-center text-sm text-red-500">
-            {errors.root.message}
-          </p>
-        )}
       </form>
     </div>
   )
@@ -124,7 +118,6 @@ const PasswordStep = ({ onBack, onSubmitPassword }) => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
@@ -135,9 +128,9 @@ const PasswordStep = ({ onBack, onSubmitPassword }) => {
     try {
       await onSubmitPassword(data.password)
     } catch (error) {
-      setError('root', {
-        message: error?.message || 'Unable to reset password. Please try again.',
-      })
+      showErrorToast(
+        error?.message || 'Unable to reset password. Please try again.',
+      )
     }
   }
 
@@ -221,12 +214,6 @@ const PasswordStep = ({ onBack, onSubmitPassword }) => {
         >
           {isSubmitting ? 'Updating…' : 'Reset password'}
         </button>
-
-        {errors.root?.message && (
-          <p role="alert" className="text-center text-sm text-red-500">
-            {errors.root.message}
-          </p>
-        )}
       </form>
     </div>
   )

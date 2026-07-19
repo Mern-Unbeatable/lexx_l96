@@ -10,6 +10,7 @@ import { loginSchema } from '../../schemas/formSchemas'
 import { useLoginMutation } from '../../hooks/useAuthMutations'
 import { extractAccessToken } from '../../utils/authStorage'
 import { useAuth } from '../../context/AuthContext'
+import { showErrorToast } from '../../utils/toast'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -20,7 +21,6 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -39,18 +39,14 @@ const Login = () => {
       const accessToken = extractAccessToken(response)
 
       if (!accessToken) {
-        setError('root', {
-          message: 'Login succeeded but no access token was returned.',
-        })
+        showErrorToast('Login succeeded but no access token was returned.')
         return
       }
 
       login(accessToken)
       navigate('/')
     } catch (error) {
-      setError('root', {
-        message: error?.message || 'Login failed. Please try again.',
-      })
+      showErrorToast(error?.message || 'Login failed. Please try again.')
     }
   }
 
@@ -133,12 +129,6 @@ const Login = () => {
             >
               {isSubmitting ? 'Signing in…' : 'Sign In'}
             </button>
-
-            {errors.root?.message && (
-              <p role="alert" className="text-center text-sm text-red-500">
-                {errors.root.message}
-              </p>
-            )}
           </form>
           <p className="mt-8 text-center text-sm text-muted">
             Don&apos;t have an account?{' '}

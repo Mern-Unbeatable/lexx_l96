@@ -13,6 +13,7 @@ import {
   useResendOtpMutation,
   useVerifyEmailMutation,
 } from '../../hooks/useAuthMutations'
+import { showErrorToast } from '../../utils/toast'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -26,7 +27,6 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -55,9 +55,9 @@ const Register = () => {
       setEmail(data.email)
       setStep('otp')
     } catch (error) {
-      setError('root', {
-        message: error?.message || 'Registration failed. Please try again.',
-      })
+      showErrorToast(
+        error?.message || 'Registration failed. Please try again.',
+      )
     }
   }
 
@@ -209,12 +209,6 @@ const Register = () => {
                 >
                   {isSubmitting ? 'Creating…' : 'Create Account'}
                 </button>
-
-                {errors.root?.message && (
-                  <p role="alert" className="text-center text-sm text-red-500">
-                    {errors.root.message}
-                  </p>
-                )}
               </form>
 
               <p className="mt-7 text-center text-sm text-muted">
