@@ -24,7 +24,7 @@ const MembershipCard = ({ profile, fullName }) => (
           className="h-8 w-auto object-contain drop-shadow-sm"
         />
         <span className="font-serif text-base font-semibold tracking-wide">
-          Golf Links
+          Golf Linking
         </span>
       </div>
 

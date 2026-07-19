@@ -13,7 +13,7 @@ const PaymentInfoBox = () => (
     />
     <p className="text-sm leading-relaxed text-ink/85 sm:text-[15px]">
       Golfers are responsible for organising their own payments for green fees,
-      buggies, and any other costs. Golf Links is not responsible for any
+      buggies, and any other costs. Golf Linking is not responsible for any
       transactions between players.
     </p>
   </aside>

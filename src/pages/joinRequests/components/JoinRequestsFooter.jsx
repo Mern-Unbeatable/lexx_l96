@@ -1,6 +1,6 @@
 const JoinRequestsFooter = () => (
   <footer className="py-8 text-center text-xs text-muted">
-    © 2026 Golf Links · Premium Pairings
+    © 2026 Golf Linking · Premium Pairings
   </footer>
 )
 

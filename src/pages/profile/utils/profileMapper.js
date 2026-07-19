@@ -41,4 +41,4 @@ export const mapUserToProfile = (user) => {
 }
 
 export const getProfileFullName = (profile) =>
-  `${profile.firstName} ${profile.lastName}`.trim() || 'Golf Links Member'
+  `${profile.firstName} ${profile.lastName}`.trim() || 'Golf Linking Member'

@@ -106,6 +106,18 @@ PATCH /api/profile/me
 After a successful update, the `['auth', 'me']` query is invalidated so the UI
 is refreshed from the backend response.
 
+## Games listing
+
+The Find Games page loads five games per request:
+
+```text
+GET /api/games?page=1&limit=5
+```
+
+TanStack Query keeps the previous page visible while the next page loads. The
+pagination controls use `currentPage`, `totalPages`, `hasPrevious` and
+`hasNext` from the backend response.
+
 API errors are rejected in this shape:
 
 ```js

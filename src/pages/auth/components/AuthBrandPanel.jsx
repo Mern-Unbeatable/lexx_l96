@@ -15,7 +15,7 @@ const AuthBrandPanel = () => (
         className="h-14 w-auto object-contain drop-shadow-sm xl:h-16"
       />
       <span className="font-inter text-2xl font-semibold tracking-tight xl:text-3xl">
-        Golf Links
+        Golf Linking
       </span>
     </Link>
 
@@ -42,7 +42,7 @@ const AuthBrandPanel = () => (
       </div>
     </div>
 
-    <p className="text-xs text-white/45">© 2026 Golf Links</p>
+    <p className="text-xs text-white/45">© 2026 Golf Linking</p>
   </aside>
 )
 

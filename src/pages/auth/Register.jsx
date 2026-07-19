@@ -69,7 +69,7 @@ const Register = () => {
         <div className="mx-auto w-full max-w-md">
           <Link to="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
             <img src="/logo.png" alt="" className="h-8 w-auto" />
-            <span className="text-base font-semibold text-ink">Golf Links</span>
+            <span className="text-base font-semibold text-ink">Golf Linking</span>
           </Link>
 
           {step === 'form' && (
@@ -252,7 +252,7 @@ const Register = () => {
                 Account ready
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Your email has been verified. Welcome to Golf Links — find your
+                Your email has been verified. Welcome to Golf Linking — find your
                 next round.
               </p>
               <button

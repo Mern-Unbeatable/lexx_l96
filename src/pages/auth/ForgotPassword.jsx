@@ -141,7 +141,7 @@ const PasswordStep = ({ onBack, onSubmitPassword }) => {
         Set new password
       </h2>
       <p className="mt-2 text-sm text-muted">
-        Choose a strong password for your Golf Links account.
+        Choose a strong password for your Golf Linking account.
       </p>
 
       <form
@@ -262,7 +262,7 @@ const ForgotPassword = () => {
         <div className="mx-auto w-full max-w-md">
           <Link to="/" className="mb-10 flex items-center gap-2.5 lg:hidden">
             <img src="/logo.png" alt="" className="h-8 w-auto" />
-            <span className="text-base font-semibold text-ink">Golf Links</span>
+            <span className="text-base font-semibold text-ink">Golf Linking</span>
           </Link>
 
           {step === 'email' && (

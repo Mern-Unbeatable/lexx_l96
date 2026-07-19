@@ -62,11 +62,11 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-1" onClick={closeMenu}>
           <img
             src="/logo.png"
-            alt="Golf Links"
+            alt="Golf Linking"
             className="h-8 w-auto object-contain"
           />
           <span className="font-serif text-base tracking-tight text-ink">
-            <span className="font-semibold">Golf Links</span>
+            <span className="font-semibold">Golf Linking</span>
             <span className="mx-1 text-muted">·</span>
             <span className="italic text-muted">Premium</span>
           </span>
@@ -194,11 +194,11 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-2.5 px-2 xl:gap-3">
           <img
             src="/logo.png"
-            alt="Golf Links"
+            alt="Golf Linking"
             className="h-14 w-auto object-contain 2xl:h-16"
           />
           <span className="font-serif text-lg tracking-tight text-ink whitespace-nowrap 2xl:text-xl">
-            <span className="font-semibold">Golf Links</span>
+            <span className="font-semibold">Golf Linking</span>
             <span className="mx-1.5 text-muted">·</span>
             <span className="italic text-muted">Premium Pairings</span>
           </span>
