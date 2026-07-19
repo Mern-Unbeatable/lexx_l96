@@ -187,6 +187,30 @@ POST /api/auth/verify-email
 }
 ```
 
+Resend OTP:
+
+```text
+POST /api/auth/resend-otp
+```
+
+Use `REGISTRATION` while verifying a new account:
+
+```json
+{
+  "email": "james@example.com",
+  "type": "REGISTRATION"
+}
+```
+
+Use `PASSWORD_RESET` during the forgot-password flow:
+
+```json
+{
+  "email": "james@example.com",
+  "type": "PASSWORD_RESET"
+}
+```
+
 Request password reset:
 
 ```text

@@ -3,6 +3,7 @@ import {
   loginUser,
   registerUser,
   requestPasswordReset,
+  resendOtp,
   setNewPassword,
   verifyEmail,
   verifyResetOtp,
@@ -21,6 +22,11 @@ export const useRegisterMutation = () =>
 export const useVerifyEmailMutation = () =>
   useMutation({
     mutationFn: verifyEmail,
+  })
+
+export const useResendOtpMutation = () =>
+  useMutation({
+    mutationFn: resendOtp,
   })
 
 export const useForgotPasswordMutation = () =>

@@ -13,6 +13,7 @@ import {
 } from '../../schemas/formSchemas'
 import {
   useForgotPasswordMutation,
+  useResendOtpMutation,
   useSetNewPasswordMutation,
   useVerifyResetOtpMutation,
 } from '../../hooks/useAuthMutations'
@@ -262,6 +263,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('')
   const [resetToken, setResetToken] = useState('')
   const forgotPasswordMutation = useForgotPasswordMutation()
+  const resendOtpMutation = useResendOtpMutation()
   const verifyResetOtpMutation = useVerifyResetOtpMutation()
   const setNewPasswordMutation = useSetNewPasswordMutation()
 
@@ -305,7 +307,10 @@ const ForgotPassword = () => {
                 setResetToken(token)
               }}
               onResend={() =>
-                forgotPasswordMutation.mutateAsync({ email })
+                resendOtpMutation.mutateAsync({
+                  email,
+                  type: 'PASSWORD_RESET',
+                })
               }
               onVerified={() => setStep('password')}
             />

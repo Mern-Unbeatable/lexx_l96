@@ -19,6 +19,14 @@ export const verifyEmail = async (payload) => {
   return response.data
 }
 
+export const resendOtp = async (payload) => {
+  const response = await axiosInstance.post(
+    API_ENDPOINTS.auth.resendOtp,
+    payload,
+  )
+  return response.data
+}
+
 export const requestPasswordReset = async (payload) => {
   const response = await axiosInstance.post(
     API_ENDPOINTS.auth.forgotPassword,

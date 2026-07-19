@@ -10,6 +10,7 @@ import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { registerSchema } from '../../schemas/formSchemas'
 import {
   useRegisterMutation,
+  useResendOtpMutation,
   useVerifyEmailMutation,
 } from '../../hooks/useAuthMutations'
 
@@ -20,6 +21,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
   const registerMutation = useRegisterMutation()
   const verifyEmailMutation = useVerifyEmailMutation()
+  const resendOtpMutation = useResendOtpMutation()
 
   const {
     register,
@@ -236,6 +238,12 @@ const Register = () => {
               onBack={() => setStep('form')}
               onVerify={(code) =>
                 verifyEmailMutation.mutateAsync({ email, code })
+              }
+              onResend={() =>
+                resendOtpMutation.mutateAsync({
+                  email,
+                  type: 'REGISTRATION',
+                })
               }
               onVerified={() => setStep('success')}
             />
