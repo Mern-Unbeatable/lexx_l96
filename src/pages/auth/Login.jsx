@@ -7,14 +7,17 @@ import AuthBrandPanel from './components/AuthBrandPanel'
 import FormField from '../../components/form/FormField'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { loginSchema } from '../../schemas/formSchemas'
+import { useLoginMutation } from '../../hooks/useAuthMutations'
 
 const Login = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
+  const loginMutation = useLoginMutation()
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -24,9 +27,25 @@ const Login = () => {
     },
   })
 
-  const onSubmit = (data) => {
-    console.log('Login form:', data)
-    navigate('/')
+  const onSubmit = async (data) => {
+    try {
+      const response = await loginMutation.mutateAsync({
+        email: data.email,
+        password: data.password,
+      })
+      const accessToken =
+        response?.accessToken ?? response?.data?.accessToken ?? response?.token
+
+      if (accessToken) {
+        localStorage.setItem('accessToken', accessToken)
+      }
+
+      navigate('/')
+    } catch (error) {
+      setError('root', {
+        message: error?.message || 'Login failed. Please try again.',
+      })
+    }
   }
 
   return (
@@ -106,8 +125,14 @@ const Login = () => {
               disabled={isSubmitting}
               className="w-full rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99] disabled:opacity-60"
             >
-              Sign In
+              {isSubmitting ? 'Signing in…' : 'Sign In'}
             </button>
+
+            {errors.root?.message && (
+              <p role="alert" className="text-center text-sm text-red-500">
+                {errors.root.message}
+              </p>
+            )}
           </form>
           <p className="mt-8 text-center text-sm text-muted">
             Don&apos;t have an account?{' '}

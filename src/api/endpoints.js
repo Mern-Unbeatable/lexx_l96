@@ -2,13 +2,13 @@ const id = (value) => encodeURIComponent(value)
 
 export const API_ENDPOINTS = {
   auth: {
-    login: '/auth/login',
+    login: '/api/auth/login',
     register: '/api/auth/register',
     verifyEmail: '/api/auth/verify-email',
     resendOtp: '/auth/resend-otp',
-    forgotPassword: '/auth/forgot-password',
-    verifyResetOtp: '/auth/verify-reset-otp',
-    resetPassword: '/auth/reset-password',
+    forgotPassword: '/api/auth/forgot-password',
+    verifyResetOtp: '/api/auth/verify-reset-otp',
+    setNewPassword: '/api/auth/set-new-password',
     refreshToken: '/auth/refresh-token',
     logout: '/auth/logout',
     me: '/auth/me',

@@ -11,8 +11,14 @@ import {
   forgotPasswordEmailSchema,
   resetPasswordSchema,
 } from '../../schemas/formSchemas'
+import {
+  useForgotPasswordMutation,
+  useSetNewPasswordMutation,
+  useVerifyResetOtpMutation,
+} from '../../hooks/useAuthMutations'
 
-const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms))
+const getResetToken = (response) =>
+  response?.data?.resetToken ?? response?.resetToken ?? null
 
 const BackLink = ({ onClick, to }) =>
   to ? (
@@ -34,10 +40,11 @@ const BackLink = ({ onClick, to }) =>
     </button>
   )
 
-const EmailStep = ({ onContinue }) => {
+const EmailStep = ({ onSubmitEmail }) => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(forgotPasswordEmailSchema),
@@ -45,9 +52,13 @@ const EmailStep = ({ onContinue }) => {
   })
 
   const onSubmit = async (data) => {
-    console.log('Send OTP to email:', data.email)
-    await wait(700)
-    onContinue(data.email)
+    try {
+      await onSubmitEmail(data.email)
+    } catch (error) {
+      setError('root', {
+        message: error?.message || 'Unable to send OTP. Please try again.',
+      })
+    }
   }
 
   return (
@@ -94,18 +105,25 @@ const EmailStep = ({ onContinue }) => {
         >
           {isSubmitting ? 'Sending OTP…' : 'Send OTP'}
         </button>
+
+        {errors.root?.message && (
+          <p role="alert" className="text-center text-sm text-red-500">
+            {errors.root.message}
+          </p>
+        )}
       </form>
     </div>
   )
 }
 
-const PasswordStep = ({ onBack, onDone }) => {
+const PasswordStep = ({ onBack, onSubmitPassword }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
@@ -113,9 +131,13 @@ const PasswordStep = ({ onBack, onDone }) => {
   })
 
   const onSubmit = async (data) => {
-    console.log('Password reset:', data)
-    await wait(700)
-    onDone()
+    try {
+      await onSubmitPassword(data.password)
+    } catch (error) {
+      setError('root', {
+        message: error?.message || 'Unable to reset password. Please try again.',
+      })
+    }
   }
 
   return (
@@ -198,6 +220,12 @@ const PasswordStep = ({ onBack, onDone }) => {
         >
           {isSubmitting ? 'Updating…' : 'Reset password'}
         </button>
+
+        {errors.root?.message && (
+          <p role="alert" className="text-center text-sm text-red-500">
+            {errors.root.message}
+          </p>
+        )}
       </form>
     </div>
   )
@@ -232,6 +260,10 @@ const SuccessStep = () => {
 const ForgotPassword = () => {
   const [step, setStep] = useState('email')
   const [email, setEmail] = useState('')
+  const [resetToken, setResetToken] = useState('')
+  const forgotPasswordMutation = useForgotPasswordMutation()
+  const verifyResetOtpMutation = useVerifyResetOtpMutation()
+  const setNewPasswordMutation = useSetNewPasswordMutation()
 
   return (
     <div className="flex min-h-screen bg-forest font-sans antialiased">
@@ -246,8 +278,10 @@ const ForgotPassword = () => {
 
           {step === 'email' && (
             <EmailStep
-              onContinue={(value) => {
+              onSubmitEmail={async (value) => {
+                await forgotPasswordMutation.mutateAsync({ email: value })
                 setEmail(value)
+                setResetToken('')
                 setStep('otp')
               }}
             />
@@ -257,6 +291,22 @@ const ForgotPassword = () => {
             <OtpVerifyStep
               email={email}
               onBack={() => setStep('email')}
+              onVerify={async (code) => {
+                const response = await verifyResetOtpMutation.mutateAsync({
+                  email,
+                  code,
+                })
+                const token = getResetToken(response)
+
+                if (!token) {
+                  throw new Error('Reset token was not returned by the server')
+                }
+
+                setResetToken(token)
+              }}
+              onResend={() =>
+                forgotPasswordMutation.mutateAsync({ email })
+              }
               onVerified={() => setStep('password')}
             />
           )}
@@ -264,7 +314,17 @@ const ForgotPassword = () => {
           {step === 'password' && (
             <PasswordStep
               onBack={() => setStep('otp')}
-              onDone={() => setStep('success')}
+              onSubmitPassword={async (newPassword) => {
+                if (!resetToken) {
+                  throw new Error('Reset session expired. Verify the OTP again.')
+                }
+
+                await setNewPasswordMutation.mutateAsync({
+                  resetToken,
+                  newPassword,
+                })
+                setStep('success')
+              }}
             />
           )}
 

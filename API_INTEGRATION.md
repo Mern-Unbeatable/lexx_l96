@@ -144,6 +144,19 @@ before connecting each screen.
 
 ## Connected authentication endpoints
 
+Login:
+
+```text
+POST /api/auth/login
+```
+
+```json
+{
+  "email": "james@example.com",
+  "password": "password123"
+}
+```
+
 Registration:
 
 ```text
@@ -171,5 +184,46 @@ POST /api/auth/verify-email
 {
   "email": "james@example.com",
   "code": "123456"
+}
+```
+
+Request password reset:
+
+```text
+POST /api/auth/forgot-password
+```
+
+```json
+{
+  "email": "james@example.com"
+}
+```
+
+Verify password-reset OTP:
+
+```text
+POST /api/auth/verify-reset-otp
+```
+
+```json
+{
+  "email": "james@example.com",
+  "code": "109146"
+}
+```
+
+Read `data.resetToken` from the successful response. This is a reset token, not
+an authentication refresh token.
+
+Set the new password:
+
+```text
+POST /api/auth/set-new-password
+```
+
+```json
+{
+  "resetToken": "<reset token returned by OTP verification>",
+  "newPassword": "newpassword123"
 }
 ```

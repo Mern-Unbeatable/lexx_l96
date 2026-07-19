@@ -17,6 +17,7 @@ const OtpVerifyStep = ({
   submitLabel = 'Verify OTP',
   onBack,
   onVerify,
+  onResend,
   onVerified,
 }) => {
   const [digits, setDigits] = useState(['', '', '', '', '', ''])
@@ -108,13 +109,22 @@ const OtpVerifyStep = ({
 
   const resendOtp = async () => {
     if (resendIn > 0) return
-    console.log('Resend OTP to email:', email)
-    await wait(500)
-    setResendIn(30)
-    setDigits(['', '', '', '', '', ''])
-    setValue('otp', '')
-    clearErrors('otp')
-    inputsRef.current[0]?.focus()
+    try {
+      if (onResend) {
+        await onResend()
+      } else {
+        await wait(500)
+      }
+      setResendIn(30)
+      setDigits(['', '', '', '', '', ''])
+      setValue('otp', '')
+      clearErrors('otp')
+      inputsRef.current[0]?.focus()
+    } catch (error) {
+      setError('otp', {
+        message: error?.message || 'Unable to resend OTP',
+      })
+    }
   }
 
   return (
