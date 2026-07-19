@@ -3,8 +3,8 @@ const id = (value) => encodeURIComponent(value)
 export const API_ENDPOINTS = {
   auth: {
     login: '/auth/login',
-    register: '/auth/register',
-    verifyEmail: '/auth/verify-email',
+    register: '/api/auth/register',
+    verifyEmail: '/api/auth/verify-email',
     resendOtp: '/auth/resend-otp',
     forgotPassword: '/auth/forgot-password',
     verifyResetOtp: '/auth/verify-reset-otp',

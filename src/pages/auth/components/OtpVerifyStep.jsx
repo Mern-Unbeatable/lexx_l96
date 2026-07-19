@@ -16,6 +16,7 @@ const OtpVerifyStep = ({
   backLabel = 'Back',
   submitLabel = 'Verify OTP',
   onBack,
+  onVerify,
   onVerified,
 }) => {
   const [digits, setDigits] = useState(['', '', '', '', '', ''])
@@ -84,14 +85,25 @@ const OtpVerifyStep = ({
       return
     }
 
+    if (onVerify) {
+      try {
+        await onVerify(otp)
+        onVerified?.()
+      } catch (error) {
+        setError('otp', {
+          message: error?.message || 'Email verification failed',
+        })
+      }
+      return
+    }
+
     if (otp !== DEMO_OTP) {
       setError('otp', { message: 'Invalid OTP. Try 123456 for demo.' })
       return
     }
 
-    console.log('OTP verified for:', email)
     await wait(700)
-    onVerified()
+    onVerified?.()
   }
 
   const resendOtp = async () => {

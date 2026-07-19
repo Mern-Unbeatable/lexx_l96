@@ -141,3 +141,35 @@ src/
 The current endpoints are initial frontend conventions. Confirm their exact
 paths, HTTP methods, request bodies and response shapes against the backend API
 before connecting each screen.
+
+## Connected authentication endpoints
+
+Registration:
+
+```text
+POST /api/auth/register
+```
+
+```json
+{
+  "fullName": "James Whitfield",
+  "email": "james@example.com",
+  "password": "password123",
+  "gender": "MALE",
+  "age": 38,
+  "handicap": 14
+}
+```
+
+Email verification:
+
+```text
+POST /api/auth/verify-email
+```
+
+```json
+{
+  "email": "james@example.com",
+  "code": "123456"
+}
+```

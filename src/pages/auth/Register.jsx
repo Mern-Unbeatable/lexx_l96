@@ -8,18 +8,23 @@ import OtpVerifyStep from './components/OtpVerifyStep'
 import FormField from '../../components/form/FormField'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { registerSchema } from '../../schemas/formSchemas'
-
-const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms))
+import {
+  useRegisterMutation,
+  useVerifyEmailMutation,
+} from '../../hooks/useAuthMutations'
 
 const Register = () => {
   const navigate = useNavigate()
   const [step, setStep] = useState('form')
   const [email, setEmail] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const registerMutation = useRegisterMutation()
+  const verifyEmailMutation = useVerifyEmailMutation()
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -34,10 +39,24 @@ const Register = () => {
   })
 
   const onSubmit = async (data) => {
-    console.log('Register form:', data)
-    await wait(600)
-    setEmail(data.email)
-    setStep('otp')
+    const payload = {
+      fullName: data.fullName,
+      email: data.email,
+      password: data.password,
+      gender: data.gender.toUpperCase().replace('-', '_'),
+      age: data.age,
+      handicap: data.handicap,
+    }
+
+    try {
+      await registerMutation.mutateAsync(payload)
+      setEmail(data.email)
+      setStep('otp')
+    } catch (error) {
+      setError('root', {
+        message: error?.message || 'Registration failed. Please try again.',
+      })
+    }
   }
 
   return (
@@ -188,6 +207,12 @@ const Register = () => {
                 >
                   {isSubmitting ? 'Creating…' : 'Create Account'}
                 </button>
+
+                {errors.root?.message && (
+                  <p role="alert" className="text-center text-sm text-red-500">
+                    {errors.root.message}
+                  </p>
+                )}
               </form>
 
               <p className="mt-7 text-center text-sm text-muted">
@@ -209,6 +234,9 @@ const Register = () => {
               backLabel="Back to details"
               submitLabel="Verify & continue"
               onBack={() => setStep('form')}
+              onVerify={(code) =>
+                verifyEmailMutation.mutateAsync({ email, code })
+              }
               onVerified={() => setStep('success')}
             />
           )}
