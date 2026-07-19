@@ -57,7 +57,7 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-[#ffffff]">
-      {/* Mobile bar — stays white when menu opens */}
+      {/* Mobile bar — stays white when menu  */}
       <div className="relative z-[70] flex items-center justify-between bg-[#ffffff] px-4 py-3 xl:hidden">
         <Link to="/" className="flex items-center gap-1" onClick={closeMenu}>
           <img
