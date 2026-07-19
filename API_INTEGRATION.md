@@ -7,6 +7,7 @@ The project is configured with Axios and TanStack Query.
 - `src/api/axiosInstance.js` — shared Axios client, base URL, auth header and normalized errors.
 - `src/api/endpoints.js` — all API endpoint paths.
 - `src/api/queryClient.js` — global TanStack Query configuration.
+- `src/context/AuthContext.jsx` — application auth state and current user.
 - `src/main.jsx` — provides the Query Client to the React application.
 - `.env.example` — required API base URL example.
 
@@ -54,11 +55,36 @@ export const createGame = async (payload) => {
 }
 ```
 
-The Axios request interceptor reads the token from:
+After login, the access token is stored in a browser cookie named
+`auth_token`. The Axios request interceptor reads that cookie and sends:
 
-```js
-localStorage.setItem('accessToken', token)
+```text
+Authorization: Bearer <auth_token>
 ```
+
+Legacy `accessToken` or `auth_token` values in localStorage are migrated to the
+cookie automatically.
+
+## Current authenticated user
+
+`AuthContext` loads the signed-in user with TanStack Query:
+
+```text
+GET /api/profile/me
+```
+
+Use it from a component:
+
+```jsx
+import { useAuth } from '../context/AuthContext'
+
+const Example = () => {
+  const { user, isAuthenticated, isLoadingUser, logout } = useAuth()
+}
+```
+
+The query only runs when an auth token exists. A `401` response clears the
+invalid session automatically.
 
 API errors are rejected in this shape:
 

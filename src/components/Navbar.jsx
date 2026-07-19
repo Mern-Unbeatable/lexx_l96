@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
-import { Search, Plus, Calendar, User, LogIn, Menu, X } from "lucide-react";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import {
+  Search,
+  Plus,
+  Calendar,
+  User,
+  LogIn,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const linkBase =
   "inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors";
@@ -26,9 +36,17 @@ const navItems = [
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated: loggedIn, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+    navigate("/login");
+  };
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -130,18 +148,37 @@ const Navbar = () => {
               </span>
             </NavLink>
           ))}
-          <Link
-            to="/login"
-            onClick={closeMenu}
-            tabIndex={menuOpen ? 0 : -1}
-            className={`mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-forest px-3.5 py-3 text-sm font-medium text-white transition-all duration-300 ease-out hover:bg-[#244a37] ${
-              menuOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-            }`}
-            style={{ transitionDelay: menuOpen ? "240ms" : "0ms" }}
-          >
-            <LogIn size={16} strokeWidth={1.75} />
-            Sign In
-          </Link>
+          {loggedIn ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              tabIndex={menuOpen ? 0 : -1}
+              className={`mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-forest px-3.5 py-3 text-sm font-medium text-white transition-all duration-300 ease-out hover:bg-[#244a37] ${
+                menuOpen
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-2 opacity-0"
+              }`}
+              style={{ transitionDelay: menuOpen ? "240ms" : "0ms" }}
+            >
+              <LogOut size={16} strokeWidth={1.75} />
+              Log Out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={closeMenu}
+              tabIndex={menuOpen ? 0 : -1}
+              className={`mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-forest px-3.5 py-3 text-sm font-medium text-white transition-all duration-300 ease-out hover:bg-[#244a37] ${
+                menuOpen
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-2 opacity-0"
+              }`}
+              style={{ transitionDelay: menuOpen ? "240ms" : "0ms" }}
+            >
+              <LogIn size={16} strokeWidth={1.75} />
+              Sign In
+            </Link>
+          )}
         </nav>
       </div>
 
@@ -181,13 +218,24 @@ const Navbar = () => {
             Profile
           </NavLink>
           <div className="flex items-center">
-            <Link
-              to="/login"
-              className="ml-1 inline-flex items-center gap-2 rounded-lg bg-forest px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] sm:ml-2"
-            >
-              <LogIn size={16} strokeWidth={1.75} />
-              Sign In
-            </Link>
+            {loggedIn ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="ml-1 inline-flex items-center gap-2 rounded-lg bg-forest px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] sm:ml-2"
+              >
+                <LogOut size={16} strokeWidth={1.75} />
+                Log Out
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="ml-1 inline-flex items-center gap-2 rounded-lg bg-forest px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[#244a37] sm:ml-2"
+              >
+                <LogIn size={16} strokeWidth={1.75} />
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </nav>

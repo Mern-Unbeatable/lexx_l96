@@ -2,17 +2,20 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Eye, EyeOff } from 'lucide-react'
 import AuthBrandPanel from './components/AuthBrandPanel'
 import FormField from '../../components/form/FormField'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { loginSchema } from '../../schemas/formSchemas'
 import { useLoginMutation } from '../../hooks/useAuthMutations'
+import { extractAccessToken } from '../../utils/authStorage'
+import { useAuth } from '../../context/AuthContext'
 
 const Login = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const loginMutation = useLoginMutation()
+  const { login } = useAuth()
 
   const {
     register,
@@ -33,13 +36,16 @@ const Login = () => {
         email: data.email,
         password: data.password,
       })
-      const accessToken =
-        response?.accessToken ?? response?.data?.accessToken ?? response?.token
+      const accessToken = extractAccessToken(response)
 
-      if (accessToken) {
-        localStorage.setItem('accessToken', accessToken)
+      if (!accessToken) {
+        setError('root', {
+          message: 'Login succeeded but no access token was returned.',
+        })
+        return
       }
 
+      login(accessToken)
       navigate('/')
     } catch (error) {
       setError('root', {
