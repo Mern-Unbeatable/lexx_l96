@@ -6,14 +6,12 @@ import RequestToJoinModal from './components/RequestToJoinModal'
 import GameCard from './components/GameCard'
 import GamesPagination from './components/GamesPagination'
 import { useGames } from '../../hooks/useGames'
-import { useAuth } from '../../context/AuthContext'
 import { mapApiGame } from './utils/gameMapper'
 import { showInfoAlert } from '../../utils/toast'
 
 const GAMES_PER_PAGE = 5
 
 const Home = () => {
-  const { user } = useAuth()
   const [page, setPage] = useState(1)
   const [locationOpen, setLocationOpen] = useState(false)
   const [selectedGame, setSelectedGame] = useState(null)
@@ -44,11 +42,7 @@ const Home = () => {
             Find a Game
           </h1>
           <p className="mt-2 text-base text-muted">
-            {user
-              ? `Your profile: Age ${user.age ?? user.personalInfo?.age ?? '—'} · Handicap ${
-                  user.currentHandicap ?? '—'
-                }`
-              : 'Browse available games'}
+            Browse available games
             {locationPrefs.location
               ? ` · Near ${locationPrefs.location}${
                   locationPrefs.radius

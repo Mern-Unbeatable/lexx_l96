@@ -7,4 +7,5 @@ export const useGames = ({ page, limit = 5 }) =>
     queryKey: queryKeys.games.list({ page, limit }),
     queryFn: () => getGames({ page, limit }),
     placeholderData: keepPreviousData,
+    retry: 1,
   })

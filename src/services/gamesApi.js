@@ -4,8 +4,17 @@ import { API_ENDPOINTS } from '../api/endpoints'
 export const getGames = async ({ page = 1, limit = 5 }) => {
   const response = await axiosInstance.get(API_ENDPOINTS.games.list, {
     params: { page, limit },
+    skipAuth: true,
   })
   const payload = response.data
+
+  if (payload?.success === false) {
+    throw {
+      status: response.status,
+      message: payload?.message || 'Unable to load games.',
+      data: payload,
+    }
+  }
 
   return {
     games: Array.isArray(payload?.data) ? payload.data : [],

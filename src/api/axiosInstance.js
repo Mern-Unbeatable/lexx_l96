@@ -12,6 +12,14 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    if (config.skipAuth) {
+      if (config.headers) {
+        delete config.headers.Authorization
+        delete config.headers.authorization
+      }
+      return config
+    }
+
     const accessToken = getAccessToken()
 
     if (accessToken) {
