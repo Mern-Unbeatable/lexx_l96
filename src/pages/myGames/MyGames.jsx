@@ -1,8 +1,5 @@
 import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { simulateAcceptDelay } from '../../utils/acceptFeedback'
 import Swal from 'sweetalert2'
-import { queryKeys } from '../../api/queryKeys'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
 import HostingTab from './components/HostingTab'
@@ -12,14 +9,15 @@ import MyGamesFooter from './components/MyGamesFooter'
 import MatchChat from './components/MatchChat'
 import LeaveReviewModal from './components/LeaveReviewModal'
 import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
+import { useLeaveReviewMutation } from '../../hooks/useLeaveReviewMutation'
 
 const MyGames = () => {
-  const queryClient = useQueryClient()
   const [tab, setTab] = useState('hosting')
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
   const countsQuery = useMyGamesCounts()
+  const leaveReviewMutation = useLeaveReviewMutation()
 
   const hostingCount = countsQuery.data?.hosting ?? 0
   const joinedCount = countsQuery.data?.joined ?? 0
@@ -41,11 +39,15 @@ const MyGames = () => {
     })
   }
 
-  const handleReviewSubmit = async (payload) => {
-    console.log('Review submitted:', payload)
-    await simulateAcceptDelay(600)
-    setReviewedIds((prev) => new Set(prev).add(payload.gameId))
-    queryClient.invalidateQueries({ queryKey: queryKeys.myGames.all })
+  const handleReviewSubmit = async ({ gameId, revieweeId, rating }) => {
+    await leaveReviewMutation.mutateAsync({
+      gameId,
+      revieweeId,
+      rating,
+    })
+
+    setReviewedIds((prev) => new Set(prev).add(gameId))
+
     await Swal.fire({
       icon: 'success',
       title: 'Review submitted!',

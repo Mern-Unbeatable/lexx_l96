@@ -58,6 +58,7 @@ export const API_ENDPOINTS = {
   reviews: {
     list: '/reviews',
     create: '/reviews',
+    createForGame: (gameId) => `/api/reviews/${id(gameId)}`,
     forUser: (userId) => `/users/${id(userId)}/reviews`,
   },
 

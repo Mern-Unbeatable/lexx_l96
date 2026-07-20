@@ -14,9 +14,7 @@ const GameGroup = ({
   onLeaveReview,
 }) => {
   const [open, setOpen] = useState(defaultOpen)
-  const visibleRequests = (game.requests || []).filter(
-    (request) => !declinedIds?.has(request.id),
-  )
+  const visibleRequests = game.requests || []
 
   return (
     <div className="space-y-2.5">
@@ -83,7 +81,9 @@ const GameGroup = ({
               key={request.id}
               request={request}
               accepted={isAccepted}
-              declined={declinedIds?.has(request.id)}
+              declined={
+                declinedIds?.has(request.id) || request.status === 'declined'
+              }
               onAccept={(player) => onAccept?.(player, game)}
               onDecline={(player) => onDecline?.(player, game)}
               onOpenChat={(player) => onOpenChat?.(player, game)}

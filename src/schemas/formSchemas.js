@@ -84,9 +84,13 @@ export const hostSchema = z
     location: z.string().min(2, 'Location is required'),
     date: z.string().min(1, 'Date is required'),
     time: z.string().min(1, 'Time is required'),
-    spots: z.enum(['1', '2', '3'], {
-      message: 'Select available spots',
-    }),
+    spots: requiredNumber(
+      z
+        .number({ message: 'Spots available is required' })
+        .int('Enter a whole number')
+        .min(1, 'At least 1 spot is required')
+        .max(10, 'Maximum 10 spots'),
+    ),
     ageMin: requiredNumber(
       z.number({ message: 'Min age is required' }).int().min(1).max(120),
     ),

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Star, X } from 'lucide-react'
-import FormField from '../../../components/form/FormField'
-import { inputClass, inputErrorClass } from '../../../components/form/formStyles'
 
 const ENTER_MS = 20
 const EXIT_MS = 280
@@ -33,14 +31,12 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
   const [rating, setRating] = useState(0)
-  const [comment, setComment] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     if (open) {
       setRating(0)
-      setComment('')
       setError('')
       setSubmitting(false)
       setMounted(true)
@@ -70,18 +66,13 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
       setError('Please select a star rating')
       return
     }
-    if (!comment.trim()) {
-      setError('Please write a short review')
-      return
-    }
 
     setSubmitting(true)
     try {
       await onSubmit?.({
         gameId: game.id,
-        participantId: game.participant?.id,
+        revieweeId: game.participant?.id,
         rating,
-        comment: comment.trim(),
       })
       onClose()
     } finally {
@@ -91,7 +82,7 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center p-0 sm:items-center sm:p-6"
+      className="fixed inset-0 z-80 flex items-end justify-center p-0 sm:items-center sm:p-6"
       role="presentation"
     >
       <button
@@ -149,19 +140,8 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
               />
             </div>
 
-            <FormField label="Your review" htmlFor="review-comment" error={error}>
-              <textarea
-                id="review-comment"
-                rows={4}
-                value={comment}
-                onChange={(event) => {
-                  setComment(event.target.value)
-                  if (event.target.value.trim()) setError('')
-                }}
-                placeholder="How was the round and your playing partners?"
-                className={`${inputClass} resize-y ${error ? inputErrorClass : ''}`}
-              />
-            </FormField>
+            {/* Backend expects rating only (no comment/message). */}
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
 
           <div className="flex items-center justify-end gap-2.5 border-t border-line/70 px-5 py-4 sm:px-6">

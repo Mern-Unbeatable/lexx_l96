@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Swal from 'sweetalert2'
-import { Calendar, Clock, ChevronDown, CircleAlert } from 'lucide-react'
+import { Calendar, Clock, CircleAlert } from 'lucide-react'
 import FormField from '../../components/form/FormField'
 import CourseLocationField from '../../components/form/CourseLocationField'
 import CourseSelect from '../../components/form/CourseSelect'
@@ -231,25 +231,15 @@ const Host = () => {
         </div>
 
         <FormField label="Spots Available" htmlFor="spots" error={errors.spots?.message}>
-          <div className="relative">
-            <select
-              id="spots"
-              className={`${inputClass} appearance-none pr-10 ${errors.spots ? inputErrorClass : ''}`}
-              {...register('spots')}
-            >
-              <option value="" disabled>
-                Select spots
-              </option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-            <ChevronDown
-              size={18}
-              strokeWidth={1.75}
-              className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted"
-            />
-          </div>
+          <input
+            id="spots"
+            type="number"
+            min={1}
+            max={10}
+            placeholder="e.g. 2"
+            className={`${inputClass} ${errors.spots ? inputErrorClass : ''}`}
+            {...register('spots')}
+          />
           <p className="mt-1.5 text-xs text-muted">(excluding yourself)</p>
         </FormField>
 
