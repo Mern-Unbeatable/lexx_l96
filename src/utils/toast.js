@@ -43,11 +43,22 @@ export const showSuccessAlert = (
     confirmButtonColor: '#2D6A4F',
   })
 
-export const showInfoAlert = (message) =>
+export const showInfoAlert = (message, title = 'Coming soon') =>
   Swal.fire({
     icon: 'info',
-    title: 'Coming soon',
+    title,
     text: message,
     confirmButtonText: 'Got it',
+    confirmButtonColor: '#2D6A4F',
+  })
+
+export const showLoginRequiredAlert = () =>
+  Swal.fire({
+    icon: 'info',
+    title: 'Sign in required',
+    text: 'Please sign in to request joining a game.',
+    confirmButtonText: 'Sign In',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
     confirmButtonColor: '#2D6A4F',
   })

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
@@ -6,12 +7,21 @@ import RequestToJoinModal from './components/RequestToJoinModal'
 import GameCard from './components/GameCard'
 import GamesPagination from './components/GamesPagination'
 import { useGames } from '../../hooks/useGames'
+import { useRequestToJoinMutation } from '../../hooks/useRequestToJoinMutation'
+import { useAuth } from '../../context/AuthContext'
 import { mapApiGame } from './utils/gameMapper'
-import { showInfoAlert } from '../../utils/toast'
+import {
+  showErrorAlert,
+  showLoginRequiredAlert,
+  showSuccessToast,
+} from '../../utils/toast'
 
 const GAMES_PER_PAGE = 5
 
 const Home = () => {
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  const joinMutation = useRequestToJoinMutation()
   const [page, setPage] = useState(1)
   const [locationOpen, setLocationOpen] = useState(false)
   const [selectedGame, setSelectedGame] = useState(null)
@@ -31,8 +41,28 @@ const Home = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleJoinRequest = () =>
-    showInfoAlert('Join request API is not connected yet.')
+  const handleRequestJoinClick = async (game) => {
+    if (!isAuthenticated) {
+      const result = await showLoginRequiredAlert()
+      if (result.isConfirmed) navigate('/login')
+      return
+    }
+
+    setSelectedGame(game)
+  }
+
+  const handleJoinRequest = async ({ message, game }) => {
+    try {
+      await joinMutation.mutateAsync({
+        gameId: game.id,
+        message,
+      })
+      showSuccessToast('Join request sent successfully.')
+    } catch (error) {
+      await showErrorAlert(error?.message || 'Unable to send join request.')
+      throw error
+    }
+  }
 
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
@@ -103,7 +133,7 @@ const Home = () => {
               <GameCard
                 key={game.id}
                 game={game}
-                onRequestJoin={setSelectedGame}
+                onRequestJoin={handleRequestJoinClick}
               />
             ))}
           </div>

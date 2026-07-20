@@ -106,10 +106,12 @@ const RequestToJoinModal = ({ open, onClose, game, onSubmit }) => {
           <div className="space-y-4 px-5 py-5 sm:px-6">
             <div className="flex items-center gap-3 rounded-xl bg-cream/80 px-3.5 py-3">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-sm font-semibold text-ink">
-                {game.host.initials}
+                {game.host?.initials || 'GL'}
               </div>
               <div>
-                <p className="text-sm font-semibold text-ink">{game.host.name}</p>
+                <p className="text-sm font-semibold text-ink">
+                  {game.host?.name || 'Host'}
+                </p>
                 <p className="text-xs text-muted">Host</p>
               </div>
             </div>

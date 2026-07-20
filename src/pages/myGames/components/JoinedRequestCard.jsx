@@ -7,7 +7,7 @@ const statusStyles = {
 }
 
 const JoinedRequestCard = ({ item, onOpenChat }) => {
-  const accepted = item.status === 'accepted'
+  const showChat = item.canChat ?? item.status === 'accepted'
 
   return (
     <article className="rounded-xl border border-line/80 bg-white p-4 shadow-[0_1px_2px_rgba(26,46,38,0.04)] sm:p-5">
@@ -78,7 +78,7 @@ const JoinedRequestCard = ({ item, onOpenChat }) => {
           </div>
 
           <div className="flex shrink-0 items-center justify-end">
-            {accepted ? (
+            {showChat ? (
               <button
                 type="button"
                 onClick={() => onOpenChat?.(item.host, item)}

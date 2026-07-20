@@ -35,13 +35,14 @@ export const API_ENDPOINTS = {
     hosted: '/games/hosted',
     joined: '/games/joined',
     past: '/games/past',
-    requestToJoin: (gameId) => `/games/${id(gameId)}/join-requests`,
+    requestToJoin: (gameId) => `/api/games/${id(gameId)}/join`,
     requests: (gameId) => `/games/${id(gameId)}/join-requests`,
   },
 
   myGames: {
     counts: '/api/my-games/counts',
     hosting: '/api/my-games/hosting',
+    joined: '/api/my-games/joined',
   },
 
   joinRequests: {

@@ -34,6 +34,24 @@ export const createGame = async (payload) => {
   return response.data?.data ?? response.data
 }
 
+export const requestToJoinGame = async ({ gameId, message }) => {
+  const response = await axiosInstance.post(
+    API_ENDPOINTS.games.requestToJoin(gameId),
+    { message },
+  )
+  const payload = response.data
+
+  if (payload?.success === false) {
+    throw {
+      status: response.status,
+      message: payload?.message || 'Unable to send join request.',
+      data: payload,
+    }
+  }
+
+  return payload?.data ?? payload
+}
+
 export const getMyGamesCounts = async () => {
   const response = await axiosInstance.get(API_ENDPOINTS.myGames.counts)
   const payload = response.data
@@ -77,6 +95,33 @@ export const getMyHostingGames = async ({ page = 1, limit = 10 } = {}) => {
 
   return {
     games: Array.isArray(payload?.data) ? payload.data : [],
+    pagination: payload?.pagination ?? {
+      currentPage: page,
+      totalPages: 1,
+      limit,
+      totalItems: 0,
+      hasPrevious: false,
+      hasNext: false,
+    },
+  }
+}
+
+export const getMyJoinedGames = async ({ page = 1, limit = 10 } = {}) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.myGames.joined, {
+    params: { page, limit },
+  })
+  const payload = response.data
+
+  if (payload?.success === false) {
+    throw {
+      status: response.status,
+      message: payload?.message || 'Unable to load join requests.',
+      data: payload,
+    }
+  }
+
+  return {
+    requests: Array.isArray(payload?.data) ? payload.data : [],
     pagination: payload?.pagination ?? {
       currentPage: page,
       totalPages: 1,
