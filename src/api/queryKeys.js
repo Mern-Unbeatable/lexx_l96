@@ -11,6 +11,7 @@ export const queryKeys = {
     counts: ['my-games', 'counts'],
     hosting: (params) => ['my-games', 'hosting', params],
     joined: (params) => ['my-games', 'joined', params],
+    pastHosted: (params) => ['my-games', 'past-hosted', params],
   },
   courses: {
     all: ['courses'],

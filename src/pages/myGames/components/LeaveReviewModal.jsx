@@ -79,6 +79,7 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
     try {
       await onSubmit?.({
         gameId: game.id,
+        participantId: game.participant?.id,
         rating,
         comment: comment.trim(),
       })
@@ -122,6 +123,7 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
             </h2>
             <p className="mt-1 text-sm text-muted">
               {game.course} · {game.date} · {game.time}
+              {game.participant ? ` · ${game.participant.name}` : ''}
             </p>
           </div>
           <button

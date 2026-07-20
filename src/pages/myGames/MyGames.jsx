@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   showAcceptSuccess,
   simulateAcceptDelay,
 } from '../../utils/acceptFeedback'
 import Swal from 'sweetalert2'
+import { queryKeys } from '../../api/queryKeys'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
 import HostingTab from './components/HostingTab'
@@ -15,6 +17,7 @@ import LeaveReviewModal from './components/LeaveReviewModal'
 import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 
 const MyGames = () => {
+  const queryClient = useQueryClient()
   const [tab, setTab] = useState('hosting')
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
   const [declinedIds, setDeclinedIds] = useState(() => new Set())
@@ -65,6 +68,7 @@ const MyGames = () => {
     console.log('Review submitted:', payload)
     await simulateAcceptDelay(600)
     setReviewedIds((prev) => new Set(prev).add(payload.gameId))
+    queryClient.invalidateQueries({ queryKey: queryKeys.myGames.all })
     await Swal.fire({
       icon: 'success',
       title: 'Review submitted!',
@@ -103,6 +107,9 @@ const MyGames = () => {
 
         {tab === 'past' && (
           <PastGamesTab
+            hostedCount={countsQuery.data?.past?.hosted ?? 0}
+            joinedCount={countsQuery.data?.past?.joined ?? 0}
+            reviewCount={reviewCount}
             reviewedIds={reviewedIds}
             onOpenChat={openChat}
             onLeaveReview={setReviewGame}

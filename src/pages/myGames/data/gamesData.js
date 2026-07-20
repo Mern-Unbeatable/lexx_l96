@@ -106,7 +106,7 @@ export const myJoinRequests = [
   },
 ]
 
-export const pastGames = [
+export const pastHostedGames = [
   {
     id: 3,
     course: "Royal St George's",
@@ -117,3 +117,28 @@ export const pastGames = [
     requests: [],
   },
 ]
+
+export const pastJoinedGames = [
+  {
+    id: 201,
+    course: 'Walton Heath Golf Club',
+    date: 'Saturday 12 Jul',
+    time: '08:00',
+    location: 'Tadworth, Surrey',
+    status: 'accepted',
+    message: 'Great round, thanks for hosting.',
+    canChat: true,
+    host: {
+      id: 'h1',
+      initials: 'JH',
+      name: 'James H.',
+      age: 41,
+      handicap: 9,
+      rating: 4.8,
+      reviews: 12,
+    },
+  },
+]
+
+/** @deprecated Use pastHostedGames */
+export const pastGames = pastHostedGames

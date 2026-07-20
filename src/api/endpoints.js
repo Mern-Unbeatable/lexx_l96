@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
     counts: '/api/my-games/counts',
     hosting: '/api/my-games/hosting',
     joined: '/api/my-games/joined',
+    pastHosted: '/api/my-games/past/hosted',
   },
 
   joinRequests: {

@@ -1,28 +1,36 @@
-import GameGroup from './GameGroup'
-import { pastGames } from '../data/gamesData'
+import { useState } from 'react'
+import PastGamesSubTabs from './PastGamesSubTabs'
+import PastHostedGames from './PastHostedGames'
+import PastJoinedGames from './PastJoinedGames'
 
-const PastGamesTab = ({ reviewedIds, onOpenChat, onLeaveReview }) => {
-  const games = pastGames.map((game) => ({
-    ...game,
-    needsReview: game.needsReview && !reviewedIds.has(game.id),
-  }))
+const PastGamesTab = ({
+  hostedCount = 0,
+  joinedCount = 0,
+  reviewCount = 0,
+  reviewedIds,
+  onOpenChat,
+  onLeaveReview,
+}) => {
+  const [subTab, setSubTab] = useState('hosted')
 
   return (
     <>
-      <p className="mt-6 text-sm font-medium uppercase tracking-wider text-muted">
-        Past Games
-      </p>
+      <PastGamesSubTabs
+        tab={subTab}
+        onTabChange={setSubTab}
+        hostedCount={hostedCount}
+        joinedCount={joinedCount}
+        reviewCount={reviewCount}
+      />
 
-      <div className="mt-4 space-y-5">
-        {games.map((game) => (
-          <GameGroup
-            key={game.id}
-            game={game}
-            onOpenChat={onOpenChat}
-            onLeaveReview={onLeaveReview}
-          />
-        ))}
-      </div>
+      {subTab === 'hosted' ? (
+        <PastHostedGames
+          hostedCount={hostedCount}
+          onLeaveReview={onLeaveReview}
+        />
+      ) : (
+        <PastJoinedGames joinedCount={joinedCount} onOpenChat={onOpenChat} />
+      )}
     </>
   )
 }
