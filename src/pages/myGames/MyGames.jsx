@@ -11,6 +11,7 @@ import GamesList from './components/GamesList'
 import MyGamesFooter from './components/MyGamesFooter'
 import MatchChat from './components/MatchChat'
 import LeaveReviewModal from './components/LeaveReviewModal'
+import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 
 const gamesByTab = {
   hosting: hostedGames,
@@ -25,6 +26,7 @@ const MyGames = () => {
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
+  const countsQuery = useMyGamesCounts()
 
   const games =
     tab === 'past'
@@ -34,11 +36,9 @@ const MyGames = () => {
         }))
       : gamesByTab[tab]
 
-  const hostingCount = hostedGames.length
-  const joinedCount = myJoinRequests.length
-  const reviewCount = pastGames.filter(
-    (game) => game.needsReview && !reviewedIds.has(game.id),
-  ).length
+  const hostingCount = countsQuery.data?.hosting ?? 0
+  const joinedCount = countsQuery.data?.joined ?? 0
+  const reviewCount = countsQuery.data?.past?.hostedToReview ?? 0
 
   const handleAccept = async (player) => {
     await simulateAcceptDelay()

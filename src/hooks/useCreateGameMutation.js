@@ -9,6 +9,7 @@ export const useCreateGameMutation = () => {
     mutationFn: createGame,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.games.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.myGames.all })
     },
   })
 }

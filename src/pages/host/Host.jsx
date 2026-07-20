@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Swal from 'sweetalert2'
@@ -9,13 +9,27 @@ import CourseLocationField from '../../components/form/CourseLocationField'
 import CourseSelect from '../../components/form/CourseSelect'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { hostSchema } from '../../schemas/formSchemas'
+import { useAuth } from '../../context/AuthContext'
 import { useCourseLocations } from '../../hooks/useCourseLocations'
 import { useCreateGameMutation } from '../../hooks/useCreateGameMutation'
 import { buildCreateGamePayload } from './utils/buildCreateGamePayload'
 import { showErrorAlert } from '../../utils/toast'
 
+const HostSignInRequired = () => (
+  <div className="mx-auto flex min-h-[50vh] max-w-4xl flex-col items-center justify-center gap-4 px-4 text-center">
+    <p className="text-muted">Sign in to host a game.</p>
+    <Link
+      to="/login"
+      className="rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#244a37]"
+    >
+      Sign In
+    </Link>
+  </div>
+)
+
 const Host = () => {
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const [selectedCourseId, setSelectedCourseId] = useState(null)
   const createGameMutation = useCreateGameMutation()
 
@@ -96,6 +110,8 @@ const Host = () => {
     setSelectedCourseId(course.id)
     setValue('location', '', { shouldValidate: false })
   }
+
+  if (!isAuthenticated) return <HostSignInRequired />
 
   return (
     <div className="mx-auto w-full max-w-4xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">

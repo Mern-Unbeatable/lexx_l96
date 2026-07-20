@@ -39,6 +39,10 @@ export const API_ENDPOINTS = {
     requests: (gameId) => `/games/${id(gameId)}/join-requests`,
   },
 
+  myGames: {
+    counts: '/api/my-games/counts',
+  },
+
   joinRequests: {
     list: '/join-requests',
     details: (requestId) => `/join-requests/${id(requestId)}`,
