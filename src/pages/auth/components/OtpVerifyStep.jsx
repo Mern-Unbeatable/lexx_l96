@@ -90,7 +90,7 @@ const OtpVerifyStep = ({
     if (onVerify) {
       try {
         await onVerify(otp)
-        onVerified?.()
+        await onVerified?.()
       } catch (error) {
         showErrorToast(error?.message || 'Email verification failed')
       }

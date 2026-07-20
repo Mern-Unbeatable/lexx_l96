@@ -31,11 +31,14 @@ export const showErrorAlert = (message, title = 'Something went wrong') =>
     confirmButtonColor: '#2D6A4F',
   })
 
-export const showSuccessAlert = (message) =>
+export const showSuccessAlert = (
+  message,
+  title = 'Success',
+) =>
   Swal.fire({
     icon: 'success',
-    title: 'Profile updated',
-    text: message || 'Your profile has been updated successfully.',
+    title,
+    text: message || 'Completed successfully.',
     confirmButtonText: 'Done',
     confirmButtonColor: '#2D6A4F',
   })

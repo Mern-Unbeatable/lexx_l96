@@ -40,7 +40,10 @@ const Profile = () => {
       homeCourse: data.homeCourse,
       about: data.about,
     })
-    await showSuccessAlert('Your personal details have been saved.')
+    await showSuccessAlert(
+      'Your personal details have been saved.',
+      'Profile updated',
+    )
   }
 
   if (isLoadingUser) return <ProfileLoading />

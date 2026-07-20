@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, ChevronDown, Eye, EyeOff } from 'lucide-react'
+import { ChevronDown, Eye, EyeOff } from 'lucide-react'
 import AuthBrandPanel from './components/AuthBrandPanel'
 import OtpVerifyStep from './components/OtpVerifyStep'
 import FormField from '../../components/form/FormField'
@@ -13,7 +13,7 @@ import {
   useResendOtpMutation,
   useVerifyEmailMutation,
 } from '../../hooks/useAuthMutations'
-import { showErrorToast } from '../../utils/toast'
+import { showErrorToast, showSuccessAlert } from '../../utils/toast'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -239,30 +239,14 @@ const Register = () => {
                   type: 'REGISTRATION',
                 })
               }
-              onVerified={() => setStep('success')}
+              onVerified={async () => {
+                await showSuccessAlert(
+                  'Your email has been verified. Please sign in to continue.',
+                  'Registration successful',
+                )
+                navigate('/login')
+              }}
             />
-          )}
-
-          {step === 'success' && (
-            <div>
-              <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-[#e8f0ea] text-forest">
-                <CheckCircle2 size={28} strokeWidth={1.75} />
-              </div>
-              <h2 className="font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-                Account ready
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                Your email has been verified. Welcome to Golf Linking — find your
-                next round.
-              </p>
-              <button
-                type="button"
-                onClick={() => navigate('/')}
-                className="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99]"
-              >
-                Go to Find Games
-              </button>
-            </div>
           )}
         </div>
       </main>
