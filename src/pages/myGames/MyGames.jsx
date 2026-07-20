@@ -16,7 +16,6 @@ import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 const MyGames = () => {
   const queryClient = useQueryClient()
   const [tab, setTab] = useState('hosting')
-  const [declinedIds, setDeclinedIds] = useState(() => new Set())
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
@@ -25,18 +24,6 @@ const MyGames = () => {
   const hostingCount = countsQuery.data?.hosting ?? 0
   const joinedCount = countsQuery.data?.joined ?? 0
   const reviewCount = countsQuery.data?.past?.hostedToReview ?? 0
-
-  const handleDecline = async (player) => {
-    await simulateAcceptDelay(500)
-    setDeclinedIds((prev) => new Set(prev).add(player.id))
-    await Swal.fire({
-      icon: 'info',
-      title: 'Request declined',
-      text: `${player.name}'s join request was declined.`,
-      confirmButtonText: 'OK',
-      confirmButtonColor: '#2D6A4F',
-    })
-  }
 
   const openChat = (player, game) => {
     setChat({
@@ -83,8 +70,6 @@ const MyGames = () => {
         {tab === 'hosting' && (
           <HostingTab
             upcomingCount={hostingCount}
-            declinedIds={declinedIds}
-            onDecline={handleDecline}
             onOpenChat={openChat}
           />
         )}

@@ -1,20 +1,22 @@
 import { useMemo, useState } from 'react'
+import Swal from 'sweetalert2'
 import GameGroup from './GameGroup'
 import PaymentInfoBox from '../../../components/PaymentInfoBox'
 import { useMyHostingGames } from '../../../hooks/useMyHostingGames'
 import { useAcceptJoinRequestMutation } from '../../../hooks/useAcceptJoinRequestMutation'
+import { useDeclineJoinRequestMutation } from '../../../hooks/useDeclineJoinRequestMutation'
 import { mapHostingGame } from '../utils/hostingGameMapper'
 import { showAcceptSuccess } from '../../../utils/acceptFeedback'
 import { showErrorAlert } from '../../../utils/toast'
 
 const HostingTab = ({
   upcomingCount,
-  declinedIds,
-  onDecline,
   onOpenChat,
 }) => {
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
+  const [declinedIds, setDeclinedIds] = useState(() => new Set())
   const acceptMutation = useAcceptJoinRequestMutation()
+  const declineMutation = useDeclineJoinRequestMutation()
   const hostingQuery = useMyHostingGames()
   const games = useMemo(
     () => (hostingQuery.data?.games ?? []).map(mapHostingGame),
@@ -30,6 +32,23 @@ const HostingTab = ({
       await showAcceptSuccess(player.name)
     } catch (error) {
       await showErrorAlert(error?.message || 'Unable to accept join request.')
+      throw error
+    }
+  }
+
+  const handleDecline = async (player) => {
+    try {
+      await declineMutation.mutateAsync(player.id)
+      setDeclinedIds((prev) => new Set(prev).add(player.id))
+      await Swal.fire({
+        icon: 'success',
+        title: 'Request declined',
+        text: `${player.name}'s join request was declined.`,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#2D6A4F',
+      })
+    } catch (error) {
+      await showErrorAlert(error?.message || 'Unable to decline join request.')
       throw error
     }
   }
@@ -82,7 +101,7 @@ const HostingTab = ({
               acceptedIds={acceptedIds}
               declinedIds={declinedIds}
               onAccept={handleAccept}
-              onDecline={onDecline}
+              onDecline={handleDecline}
               onOpenChat={onOpenChat}
             />
           ))}
