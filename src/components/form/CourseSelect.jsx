@@ -1,6 +1,6 @@
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
-import { Check, ChevronDown, LandPlot, Search } from 'lucide-react'
-import { courseOptions, searchCourseOptions } from '../../data/courseOptions'
+import { useEffect, useId, useRef, useState } from 'react'
+import { Check, ChevronDown, LandPlot, Loader2, Search } from 'lucide-react'
+import { useCourses } from '../../hooks/useCourses'
 import { inputClass, inputErrorClass } from './formStyles'
 
 const CourseSelect = ({
@@ -17,16 +17,8 @@ const CourseSelect = ({
   const searchRef = useRef(null)
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-
-  const selected = useMemo(
-    () => courseOptions.find((course) => course === value) ?? null,
-    [value],
-  )
-
-  const options = useMemo(
-    () => searchCourseOptions(query),
-    [query],
-  )
+  const coursesQuery = useCourses(query, { enabled: open })
+  const courses = coursesQuery.data ?? []
 
   useEffect(() => {
     const handleOutside = (event) => {
@@ -44,7 +36,7 @@ const CourseSelect = ({
   }, [open])
 
   const pick = (course) => {
-    onChange?.(course)
+    onChange?.(course.name)
     setOpen(false)
   }
 
@@ -63,8 +55,8 @@ const CourseSelect = ({
           error ? inputErrorClass : ''
         }`}
       >
-        <span className={`min-w-0 truncate ${selected ? 'text-ink' : 'text-muted/70'}`}>
-          {selected || placeholder}
+        <span className={`min-w-0 truncate ${value ? 'text-ink' : 'text-muted/70'}`}>
+          {value || placeholder}
         </span>
         <ChevronDown
           size={18}
@@ -82,49 +74,62 @@ const CourseSelect = ({
               type="text"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search England courses…"
+              placeholder="Search courses… e.g. Sunningdale"
               className="min-w-0 flex-1 border-0 bg-transparent py-1.5 text-sm text-ink outline-none placeholder:text-muted/70"
             />
+            {coursesQuery.isFetching && (
+              <Loader2 size={15} className="shrink-0 animate-spin text-muted" />
+            )}
           </div>
 
-          <ul
-            id={listId}
-            role="listbox"
-            className="max-h-64 overflow-auto py-1"
-          >
-            {options.length === 0 ? (
-              <li className="px-3.5 py-3 text-sm text-muted">No courses found</li>
-            ) : (
-              options.map((course) => {
-                const isActive = course === value
-                return (
-                  <li key={course} role="option" aria-selected={isActive}>
-                    <button
-                      type="button"
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => pick(course)}
-                      className={`flex w-full items-start gap-2.5 px-3.5 py-2.5 text-left transition hover:bg-[#e8f0ea] ${
-                        isActive ? 'bg-[#e8f0ea]' : ''
-                      }`}
-                    >
-                      <LandPlot
-                        size={16}
-                        strokeWidth={1.75}
+          <ul id={listId} role="listbox" className="max-h-64 overflow-auto py-1">
+            {coursesQuery.isPending && courses.length === 0 && (
+              <li className="px-3.5 py-3 text-sm text-muted">Loading courses…</li>
+            )}
+
+            {coursesQuery.isError && (
+              <li className="px-3.5 py-3 text-sm text-red-500">
+                {coursesQuery.error?.message || 'Unable to load courses'}
+              </li>
+            )}
+
+            {!coursesQuery.isPending &&
+              !coursesQuery.isError &&
+              courses.length === 0 && (
+                <li className="px-3.5 py-3 text-sm text-muted">No courses found</li>
+              )}
+
+            {courses.map((course) => {
+              const isActive = course.name === value
+              return (
+                <li key={course.id} role="option" aria-selected={isActive}>
+                  <button
+                    type="button"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => pick(course)}
+                    className={`flex w-full items-start gap-2.5 px-3.5 py-2.5 text-left transition hover:bg-[#e8f0ea] ${
+                      isActive ? 'bg-[#e8f0ea]' : ''
+                    }`}
+                  >
+                    <LandPlot
+                      size={16}
+                      strokeWidth={1.75}
+                      className="mt-0.5 shrink-0 text-forest"
+                    />
+                    <span className="min-w-0 flex-1 text-sm font-medium text-ink">
+                      {course.name}
+                    </span>
+                    {isActive && (
+                      <Check
+                        size={15}
+                        strokeWidth={2}
                         className="mt-0.5 shrink-0 text-forest"
                       />
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-ink">
-                          {course}
-                        </span>
-                      </span>
-                      {isActive && (
-                        <Check size={15} strokeWidth={2} className="mt-0.5 shrink-0 text-forest" />
-                      )}
-                    </button>
-                  </li>
-                )
-              })
-            )}
+                    )}
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         </div>
       )}

@@ -118,6 +118,19 @@ TanStack Query keeps the previous page visible while the next page loads. The
 pagination controls use `currentPage`, `totalPages`, `hasPrevious` and
 `hasNext` from the backend response.
 
+## Courses search
+
+Host Course Name uses:
+
+```text
+GET /api/courses
+GET /api/courses?search=Sunningdale
+```
+
+Opening the dropdown loads all courses. Typing filters with the `search`
+query. Results return `{ id, name }` objects and the selected course name is
+stored in the host form.
+
 API errors are rejected in this shape:
 
 ```js

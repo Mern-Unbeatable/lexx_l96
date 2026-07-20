@@ -21,8 +21,8 @@ export const API_ENDPOINTS = {
   },
 
   courses: {
-    list: '/courses',
-    details: (courseId) => `/courses/${id(courseId)}`,
+    list: '/api/courses',
+    details: (courseId) => `/api/courses/${id(courseId)}`,
   },
 
   games: {

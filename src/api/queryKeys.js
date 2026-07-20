@@ -6,4 +6,8 @@ export const queryKeys = {
     all: ['games'],
     list: (params) => ['games', 'list', params],
   },
+  courses: {
+    all: ['courses'],
+    list: (search) => ['courses', 'list', search],
+  },
 }
