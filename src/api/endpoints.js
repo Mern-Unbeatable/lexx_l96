@@ -44,6 +44,7 @@ export const API_ENDPOINTS = {
     hosting: '/api/my-games/hosting',
     joined: '/api/my-games/joined',
     pastHosted: '/api/my-games/past/hosted',
+    pastJoined: '/api/my-games/past/joined',
   },
 
   joinRequests: {

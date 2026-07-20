@@ -57,3 +57,8 @@ export const mapJoinedRequest = (request) => {
     host: mapHost(request.host),
   }
 }
+
+export const mapPastJoinedRequest = (request) => ({
+  ...mapJoinedRequest(request),
+  isPast: true,
+})

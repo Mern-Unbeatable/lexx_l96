@@ -159,3 +159,30 @@ export const getMyPastHostedGames = async ({ page = 1, limit = 10 } = {}) => {
     },
   }
 }
+
+export const getMyPastJoinedGames = async ({ page = 1, limit = 10 } = {}) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.myGames.pastJoined, {
+    params: { page, limit },
+  })
+  const payload = response.data
+
+  if (payload?.success === false) {
+    throw {
+      status: response.status,
+      message: payload?.message || 'Unable to load past joined games.',
+      data: payload,
+    }
+  }
+
+  return {
+    requests: Array.isArray(payload?.data) ? payload.data : [],
+    pagination: payload?.pagination ?? {
+      currentPage: page,
+      totalPages: 1,
+      limit,
+      totalItems: 0,
+      hasPrevious: false,
+      hasNext: false,
+    },
+  }
+}

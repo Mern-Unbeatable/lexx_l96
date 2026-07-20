@@ -3,11 +3,14 @@ import Stars from './Stars'
 
 const statusStyles = {
   accepted: 'bg-[#e8f0ea] text-forest',
+  completed: 'bg-[#e8f0ea] text-forest',
   pending: 'bg-[#f0eeea] text-muted',
 }
 
 const JoinedRequestCard = ({ item, onOpenChat }) => {
   const showChat = item.canChat ?? item.status === 'accepted'
+  const isPastGame =
+    item.isPast || item.status === 'completed' || item.status === 'accepted'
 
   return (
     <article className="rounded-xl border border-line/80 bg-white p-4 shadow-[0_1px_2px_rgba(26,46,38,0.04)] sm:p-5">
@@ -87,6 +90,8 @@ const JoinedRequestCard = ({ item, onOpenChat }) => {
                 <MessageCircle size={16} strokeWidth={1.75} />
                 Chat
               </button>
+            ) : isPastGame ? (
+              <p className="text-sm text-muted">Game completed</p>
             ) : (
               <p className="text-sm text-muted">Awaiting hosts approval</p>
             )}

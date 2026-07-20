@@ -12,6 +12,7 @@ export const queryKeys = {
     hosting: (params) => ['my-games', 'hosting', params],
     joined: (params) => ['my-games', 'joined', params],
     pastHosted: (params) => ['my-games', 'past-hosted', params],
+    pastJoined: (params) => ['my-games', 'past-joined', params],
   },
   courses: {
     all: ['courses'],
