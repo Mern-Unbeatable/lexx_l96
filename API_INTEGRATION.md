@@ -140,6 +140,33 @@ GET /api/courses/{courseId}/locations
 The location field is filled with each result's `displayName`. If multiple
 locations are returned, the host can choose from a dropdown.
 
+## Create a hosted game
+
+```text
+POST /api/games
+```
+
+```json
+{
+  "courseName": "Sunningdale Golf Club",
+  "locationName": "Sunningdale, Berkshire, UK",
+  "latitude": 51.4012,
+  "longitude": -0.6356,
+  "date": "2026-07-19",
+  "time": "08:30",
+  "spotsAvailable": 3,
+  "ageMin": 25,
+  "ageMax": 60,
+  "handicapMin": 0,
+  "handicapMax": 18,
+  "costPerRound": 35,
+  "notes": "Happy to share a buggy. Meeting at the pro shop 15 mins before."
+}
+```
+
+Latitude and longitude come from the selected course location. After a
+successful create, the games list query is invalidated.
+
 API errors are rejected in this shape:
 
 ```js

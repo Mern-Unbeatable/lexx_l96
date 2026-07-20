@@ -22,10 +22,10 @@ export const showSuccessToast = (message) =>
     title: message,
   })
 
-export const showErrorAlert = (message) =>
+export const showErrorAlert = (message, title = 'Something went wrong') =>
   Swal.fire({
     icon: 'error',
-    title: 'Update failed',
+    title,
     text: message || 'Something went wrong. Please try again.',
     confirmButtonText: 'Try again',
     confirmButtonColor: '#2D6A4F',

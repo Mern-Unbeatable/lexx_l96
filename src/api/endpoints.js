@@ -28,7 +28,7 @@ export const API_ENDPOINTS = {
 
   games: {
     list: '/api/games',
-    create: '/games',
+    create: '/api/games',
     details: (gameId) => `/games/${id(gameId)}`,
     update: (gameId) => `/games/${id(gameId)}`,
     remove: (gameId) => `/games/${id(gameId)}`,

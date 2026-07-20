@@ -19,3 +19,8 @@ export const getGames = async ({ page = 1, limit = 5 }) => {
     },
   }
 }
+
+export const createGame = async (payload) => {
+  const response = await axiosInstance.post(API_ENDPOINTS.games.create, payload)
+  return response.data?.data ?? response.data
+}

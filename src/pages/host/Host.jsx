@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import Swal from 'sweetalert2'
 import { Calendar, Clock, ChevronDown, CircleAlert } from 'lucide-react'
 import FormField from '../../components/form/FormField'
 import CourseLocationField from '../../components/form/CourseLocationField'
@@ -9,16 +10,21 @@ import CourseSelect from '../../components/form/CourseSelect'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { hostSchema } from '../../schemas/formSchemas'
 import { useCourseLocations } from '../../hooks/useCourseLocations'
+import { useCreateGameMutation } from '../../hooks/useCreateGameMutation'
+import { buildCreateGamePayload } from './utils/buildCreateGamePayload'
+import { showErrorAlert } from '../../utils/toast'
 
 const Host = () => {
   const navigate = useNavigate()
   const [selectedCourseId, setSelectedCourseId] = useState(null)
+  const createGameMutation = useCreateGameMutation()
 
   const {
     register,
     control,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(hostSchema),
@@ -37,8 +43,16 @@ const Host = () => {
     },
   })
 
+  const selectedLocationName = watch('location')
   const locationsQuery = useCourseLocations(selectedCourseId)
   const courseLocations = locationsQuery.data ?? []
+  const selectedLocation = useMemo(
+    () =>
+      courseLocations.find(
+        (location) => location.displayName === selectedLocationName,
+      ) ?? null,
+    [courseLocations, selectedLocationName],
+  )
 
   useEffect(() => {
     if (!selectedCourseId) return
@@ -61,9 +75,21 @@ const Host = () => {
     setValue,
   ])
 
-  const onSubmit = (data) => {
-    console.log('Host form:', data)
-    navigate('/my-games')
+  const onSubmit = async (data) => {
+    try {
+      const payload = buildCreateGamePayload(data, selectedLocation)
+      await createGameMutation.mutateAsync(payload)
+      await Swal.fire({
+        icon: 'success',
+        title: 'Game posted!',
+        text: 'Your game is now available for others to join.',
+        confirmButtonText: 'View My Games',
+        confirmButtonColor: '#2D6A4F',
+      })
+      navigate('/my-games')
+    } catch (error) {
+      await showErrorAlert(error?.message || 'Unable to post game')
+    }
   }
 
   const handleCourseSelect = (course) => {
@@ -269,7 +295,7 @@ const Host = () => {
           />
           <p className="mt-2 text-sm leading-relaxed text-muted">
             Golfers arrange their own payments for green fees and extras. Golf
-            Links does not process or take responsibility for any transactions.
+            Linking does not process or take responsibility for any transactions.
           </p>
         </FormField>
 
@@ -285,10 +311,12 @@ const Host = () => {
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || createGameMutation.isPending}
           className="w-full rounded-lg bg-forest px-4 py-3.5 text-sm font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99] disabled:opacity-60"
         >
-          Post Game
+          {isSubmitting || createGameMutation.isPending
+            ? 'Posting…'
+            : 'Post Game'}
         </button>
       </form>
     </div>
