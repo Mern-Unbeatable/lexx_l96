@@ -60,3 +60,30 @@ export const getMyGamesCounts = async () => {
     },
   }
 }
+
+export const getMyHostingGames = async ({ page = 1, limit = 10 } = {}) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.myGames.hosting, {
+    params: { page, limit },
+  })
+  const payload = response.data
+
+  if (payload?.success === false) {
+    throw {
+      status: response.status,
+      message: payload?.message || 'Unable to load hosted games.',
+      data: payload,
+    }
+  }
+
+  return {
+    games: Array.isArray(payload?.data) ? payload.data : [],
+    pagination: payload?.pagination ?? {
+      currentPage: page,
+      totalPages: 1,
+      limit,
+      totalItems: 0,
+      hasPrevious: false,
+      hasNext: false,
+    },
+  }
+}

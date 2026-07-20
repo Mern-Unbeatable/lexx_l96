@@ -9,6 +9,7 @@ export const queryKeys = {
   myGames: {
     all: ['my-games'],
     counts: ['my-games', 'counts'],
+    hosting: (params) => ['my-games', 'hosting', params],
   },
   courses: {
     all: ['courses'],

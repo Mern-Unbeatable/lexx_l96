@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
 
   myGames: {
     counts: '/api/my-games/counts',
+    hosting: '/api/my-games/hosting',
   },
 
   joinRequests: {
