@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { hostedGames, myJoinRequests, pastGames } from './data/gamesData'
 import {
   showAcceptSuccess,
   simulateAcceptDelay,
@@ -7,17 +6,13 @@ import {
 import Swal from 'sweetalert2'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
-import GamesList from './components/GamesList'
+import HostingTab from './components/HostingTab'
+import JoinedTab from './components/JoinedTab'
+import PastGamesTab from './components/PastGamesTab'
 import MyGamesFooter from './components/MyGamesFooter'
 import MatchChat from './components/MatchChat'
 import LeaveReviewModal from './components/LeaveReviewModal'
 import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
-
-const gamesByTab = {
-  hosting: hostedGames,
-  joined: myJoinRequests,
-  past: pastGames,
-}
 
 const MyGames = () => {
   const [tab, setTab] = useState('hosting')
@@ -27,14 +22,6 @@ const MyGames = () => {
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
   const countsQuery = useMyGamesCounts()
-
-  const games =
-    tab === 'past'
-      ? pastGames.map((game) => ({
-          ...game,
-          needsReview: game.needsReview && !reviewedIds.has(game.id),
-        }))
-      : gamesByTab[tab]
 
   const hostingCount = countsQuery.data?.hosting ?? 0
   const joinedCount = countsQuery.data?.joined ?? 0
@@ -98,18 +85,29 @@ const MyGames = () => {
           joinedCount={joinedCount}
           reviewCount={reviewCount}
         />
-        <GamesList
-          tab={tab}
-          games={games}
-          upcomingCount={hostingCount}
-          joinedCount={joinedCount}
-          acceptedIds={acceptedIds}
-          declinedIds={declinedIds}
-          onAccept={handleAccept}
-          onDecline={handleDecline}
-          onOpenChat={openChat}
-          onLeaveReview={setReviewGame}
-        />
+
+        {tab === 'hosting' && (
+          <HostingTab
+            upcomingCount={hostingCount}
+            acceptedIds={acceptedIds}
+            declinedIds={declinedIds}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+            onOpenChat={openChat}
+          />
+        )}
+
+        {tab === 'joined' && (
+          <JoinedTab joinedCount={joinedCount} onOpenChat={openChat} />
+        )}
+
+        {tab === 'past' && (
+          <PastGamesTab
+            reviewedIds={reviewedIds}
+            onOpenChat={openChat}
+            onLeaveReview={setReviewGame}
+          />
+        )}
       </div>
       <MyGamesFooter />
 
