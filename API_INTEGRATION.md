@@ -131,6 +131,15 @@ Opening the dropdown loads all courses. Typing filters with the `search`
 query. Results return `{ id, name }` objects and the selected course name is
 stored in the host form.
 
+Selecting a course loads its locations:
+
+```text
+GET /api/courses/{courseId}/locations
+```
+
+The location field is filled with each result's `displayName`. If multiple
+locations are returned, the host can choose from a dropdown.
+
 API errors are rejected in this shape:
 
 ```js

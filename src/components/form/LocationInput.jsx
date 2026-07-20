@@ -14,6 +14,7 @@ const LocationInput = ({
   error,
   placeholder = 'e.g. London, SW1A 1AA',
   name,
+  showLocateButton = true,
 }) => {
   const listId = useId()
   const rootRef = useRef(null)
@@ -126,20 +127,22 @@ const LocationInput = ({
           className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm text-ink outline-none placeholder:text-muted/70"
         />
 
-        <button
-          type="button"
-          onClick={handleLocate}
-          disabled={locating}
-          title="Use current location"
-          aria-label="Use current location"
-          className="inline-flex w-12 shrink-0 items-center justify-center border-l border-line bg-[#f3f4f6] text-muted transition hover:bg-[#e8eaed] hover:text-ink disabled:opacity-60"
-        >
-          {locating ? (
-            <Loader2 size={18} strokeWidth={1.75} className="animate-spin" />
-          ) : (
-            <LocateFixed size={18} strokeWidth={1.75} />
-          )}
-        </button>
+        {showLocateButton && (
+          <button
+            type="button"
+            onClick={handleLocate}
+            disabled={locating}
+            title="Use current location"
+            aria-label="Use current location"
+            className="inline-flex w-12 shrink-0 items-center justify-center border-l border-line bg-[#f3f4f6] text-muted transition hover:bg-[#e8eaed] hover:text-ink disabled:opacity-60"
+          >
+            {locating ? (
+              <Loader2 size={18} strokeWidth={1.75} className="animate-spin" />
+            ) : (
+              <LocateFixed size={18} strokeWidth={1.75} />
+            )}
+          </button>
+        )}
       </div>
 
       {open && (suggestions.length > 0 || loadingSuggest) && (

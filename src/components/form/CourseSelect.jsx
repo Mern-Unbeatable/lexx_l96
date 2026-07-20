@@ -7,6 +7,7 @@ const CourseSelect = ({
   id,
   value = '',
   onChange,
+  onSelectCourse,
   onBlur,
   error,
   name,
@@ -37,6 +38,7 @@ const CourseSelect = ({
 
   const pick = (course) => {
     onChange?.(course.name)
+    onSelectCourse?.(course)
     setOpen(false)
   }
 

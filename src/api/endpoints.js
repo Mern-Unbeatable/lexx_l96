@@ -23,6 +23,7 @@ export const API_ENDPOINTS = {
   courses: {
     list: '/api/courses',
     details: (courseId) => `/api/courses/${id(courseId)}`,
+    locations: (courseId) => `/api/courses/${id(courseId)}/locations`,
   },
 
   games: {

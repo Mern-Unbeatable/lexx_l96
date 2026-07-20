@@ -9,5 +9,6 @@ export const queryKeys = {
   courses: {
     all: ['courses'],
     list: (search) => ['courses', 'list', search],
+    locations: (courseId) => ['courses', courseId, 'locations'],
   },
 }

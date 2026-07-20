@@ -1,20 +1,24 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Calendar, Clock, ChevronDown, CircleAlert } from 'lucide-react'
+import { Calendar, Clock, ChevronDown, CircleAlert, Loader2 } from 'lucide-react'
 import FormField from '../../components/form/FormField'
 import LocationInput from '../../components/form/LocationInput'
 import CourseSelect from '../../components/form/CourseSelect'
 import { inputClass, inputErrorClass } from '../../components/form/formStyles'
 import { hostSchema } from '../../schemas/formSchemas'
+import { useCourseLocations } from '../../hooks/useCourseLocations'
 
 const Host = () => {
   const navigate = useNavigate()
+  const [selectedCourseId, setSelectedCourseId] = useState(null)
 
   const {
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(hostSchema),
@@ -33,9 +37,38 @@ const Host = () => {
     },
   })
 
+  const locationsQuery = useCourseLocations(selectedCourseId)
+  const courseLocations = locationsQuery.data ?? []
+
+  useEffect(() => {
+    if (!selectedCourseId) return
+
+    if (locationsQuery.isSuccess && courseLocations.length > 0) {
+      setValue('location', courseLocations[0].displayName, {
+        shouldValidate: true,
+        shouldDirty: true,
+      })
+      return
+    }
+
+    if (locationsQuery.isSuccess && courseLocations.length === 0) {
+      setValue('location', '', { shouldValidate: true })
+    }
+  }, [
+    courseLocations,
+    locationsQuery.isSuccess,
+    selectedCourseId,
+    setValue,
+  ])
+
   const onSubmit = (data) => {
     console.log('Host form:', data)
     navigate('/my-games')
+  }
+
+  const handleCourseSelect = (course) => {
+    setSelectedCourseId(course.id)
+    setValue('location', '', { shouldValidate: false })
   }
 
   return (
@@ -85,6 +118,7 @@ const Host = () => {
                   name={field.name}
                   value={field.value}
                   onChange={field.onChange}
+                  onSelectCourse={handleCourseSelect}
                   onBlur={field.onBlur}
                   error={errors.course?.message}
                 />
@@ -92,22 +126,70 @@ const Host = () => {
             />
           </FormField>
 
-          <FormField label="Location" htmlFor="location">
-            <Controller
-              name="location"
-              control={control}
-              render={({ field }) => (
-                <LocationInput
-                  id="location"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  error={errors.location?.message}
-                  placeholder="e.g. London, SW1A 1AA"
+          <FormField
+            label="Location"
+            htmlFor="location"
+            error={errors.location?.message}
+          >
+            {locationsQuery.isFetching ? (
+              <div
+                className={`${inputClass} flex items-center gap-2 text-muted`}
+              >
+                <Loader2 size={16} className="animate-spin" />
+                Loading course locations…
+              </div>
+            ) : courseLocations.length > 1 ? (
+              <div className="relative">
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field }) => (
+                    <select
+                      id="location"
+                      className={`${inputClass} appearance-none pr-10 ${
+                        errors.location ? inputErrorClass : ''
+                      }`}
+                      {...field}
+                    >
+                      {courseLocations.map((location) => (
+                        <option
+                          key={location.placeId}
+                          value={location.displayName}
+                        >
+                          {location.displayName}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 />
-              )}
-            />
+                <ChevronDown
+                  size={18}
+                  strokeWidth={1.75}
+                  className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted"
+                />
+              </div>
+            ) : (
+              <Controller
+                name="location"
+                control={control}
+                render={({ field }) => (
+                  <LocationInput
+                    id="location"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    error={errors.location?.message}
+                    showLocateButton={false}
+                    placeholder={
+                      selectedCourseId
+                        ? 'Location will appear after course selection'
+                        : 'Select a course first'
+                    }
+                  />
+                )}
+              />
+            )}
           </FormField>
         </div>
 
