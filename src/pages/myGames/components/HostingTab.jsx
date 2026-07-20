@@ -1,17 +1,20 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import GameGroup from './GameGroup'
 import PaymentInfoBox from '../../../components/PaymentInfoBox'
 import { useMyHostingGames } from '../../../hooks/useMyHostingGames'
+import { useAcceptJoinRequestMutation } from '../../../hooks/useAcceptJoinRequestMutation'
 import { mapHostingGame } from '../utils/hostingGameMapper'
+import { showAcceptSuccess } from '../../../utils/acceptFeedback'
+import { showErrorAlert } from '../../../utils/toast'
 
 const HostingTab = ({
   upcomingCount,
-  acceptedIds,
   declinedIds,
-  onAccept,
   onDecline,
   onOpenChat,
 }) => {
+  const [acceptedIds, setAcceptedIds] = useState(() => new Set())
+  const acceptMutation = useAcceptJoinRequestMutation()
   const hostingQuery = useMyHostingGames()
   const games = useMemo(
     () => (hostingQuery.data?.games ?? []).map(mapHostingGame),
@@ -19,6 +22,17 @@ const HostingTab = ({
   )
   const totalItems =
     hostingQuery.data?.pagination?.totalItems ?? upcomingCount ?? games.length
+
+  const handleAccept = async (player) => {
+    try {
+      await acceptMutation.mutateAsync(player.id)
+      setAcceptedIds((prev) => new Set(prev).add(player.id))
+      await showAcceptSuccess(player.name)
+    } catch (error) {
+      await showErrorAlert(error?.message || 'Unable to accept join request.')
+      throw error
+    }
+  }
 
   return (
     <>
@@ -67,7 +81,7 @@ const HostingTab = ({
               game={game}
               acceptedIds={acceptedIds}
               declinedIds={declinedIds}
-              onAccept={onAccept}
+              onAccept={handleAccept}
               onDecline={onDecline}
               onOpenChat={onOpenChat}
             />

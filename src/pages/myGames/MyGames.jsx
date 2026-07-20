@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import {
-  showAcceptSuccess,
-  simulateAcceptDelay,
-} from '../../utils/acceptFeedback'
+import { simulateAcceptDelay } from '../../utils/acceptFeedback'
 import Swal from 'sweetalert2'
 import { queryKeys } from '../../api/queryKeys'
 import MyGamesHeader from './components/MyGamesHeader'
@@ -19,7 +16,6 @@ import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 const MyGames = () => {
   const queryClient = useQueryClient()
   const [tab, setTab] = useState('hosting')
-  const [acceptedIds, setAcceptedIds] = useState(() => new Set())
   const [declinedIds, setDeclinedIds] = useState(() => new Set())
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
@@ -29,12 +25,6 @@ const MyGames = () => {
   const hostingCount = countsQuery.data?.hosting ?? 0
   const joinedCount = countsQuery.data?.joined ?? 0
   const reviewCount = countsQuery.data?.past?.hostedToReview ?? 0
-
-  const handleAccept = async (player) => {
-    await simulateAcceptDelay()
-    setAcceptedIds((prev) => new Set(prev).add(player.id))
-    await showAcceptSuccess(player.name)
-  }
 
   const handleDecline = async (player) => {
     await simulateAcceptDelay(500)
@@ -93,9 +83,7 @@ const MyGames = () => {
         {tab === 'hosting' && (
           <HostingTab
             upcomingCount={hostingCount}
-            acceptedIds={acceptedIds}
             declinedIds={declinedIds}
-            onAccept={handleAccept}
             onDecline={handleDecline}
             onOpenChat={openChat}
           />

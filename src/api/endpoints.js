@@ -50,8 +50,8 @@ export const API_ENDPOINTS = {
   joinRequests: {
     list: '/join-requests',
     details: (requestId) => `/join-requests/${id(requestId)}`,
-    accept: (requestId) => `/join-requests/${id(requestId)}/accept`,
-    decline: (requestId) => `/join-requests/${id(requestId)}/decline`,
+    accept: (requestId) => `/api/join-requests/${id(requestId)}/accept`,
+    decline: (requestId) => `/api/join-requests/${id(requestId)}/decline`,
     cancel: (requestId) => `/join-requests/${id(requestId)}/cancel`,
   },
 

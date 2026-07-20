@@ -32,6 +32,7 @@ const mapJoinRequest = (request) => {
 
   return {
     id: request.id,
+    status: String(request.status || 'pending').toLowerCase(),
     initials: getInitials(name),
     name,
     age: user.age ?? '—',

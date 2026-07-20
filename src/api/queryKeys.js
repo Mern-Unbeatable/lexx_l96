@@ -14,6 +14,9 @@ export const queryKeys = {
     pastHosted: (params) => ['my-games', 'past-hosted', params],
     pastJoined: (params) => ['my-games', 'past-joined', params],
   },
+  joinRequests: {
+    all: ['join-requests'],
+  },
   courses: {
     all: ['courses'],
     list: (search) => ['courses', 'list', search],
