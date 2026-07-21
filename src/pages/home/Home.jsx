@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Calendar, MapPin, X } from 'lucide-react'
+import { MapPin, X } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
+import DateFilterPicker from './components/DateFilterPicker'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
 import RequestToJoinModal from './components/RequestToJoinModal'
 import GameCard from './components/GameCard'
@@ -80,8 +81,7 @@ const Home = () => {
     setGameFilters(EMPTY_GAME_FILTERS)
   }
 
-  const handleDateChange = (event) => {
-    const date = event.target.value
+  const handleDateChange = (date) => {
     setGameFilters((prev) => ({ ...prev, date }))
   }
 
@@ -129,42 +129,41 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           {hasActiveFilters && (
             <button
               type="button"
               onClick={handleClearFilters}
-              className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-xs text-ink transition hover:bg-cream sm:h-[38px] sm:gap-2 sm:px-3.5 sm:text-sm"
             >
-              <X size={16} strokeWidth={1.75} className="text-muted" />
+              <X
+                size={16}
+                strokeWidth={1.75}
+                className="size-3.5 shrink-0 text-muted sm:size-4"
+              />
               Clear filter
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => setLocationOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
-          >
-            <MapPin size={16} strokeWidth={1.75} className="text-muted" />
-            {hasLocationFilter ? 'Change location' : 'Find my Location'}
-          </button>
-          <label
-            className={`relative inline-flex size-[38px] cursor-pointer items-center justify-center rounded-lg border bg-white transition hover:bg-cream ${
-              hasDateFilter
-                ? 'border-forest text-forest'
-                : 'border-line text-muted'
-            }`}
-          >
-            <Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
-            <input
-              type="date"
-              min={todayIso()}
+          <div className="flex items-center gap-2 max-sm:ml-auto">
+            <button
+              type="button"
+              onClick={() => setLocationOpen(true)}
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-xs text-ink transition hover:bg-cream sm:h-[38px] sm:gap-2 sm:px-3.5 sm:text-sm"
+            >
+              <MapPin
+                size={16}
+                strokeWidth={1.75}
+                className="size-3.5 shrink-0 text-muted sm:size-4"
+              />
+              {hasLocationFilter ? 'Change location' : 'Find my Location'}
+            </button>
+            <DateFilterPicker
               value={gameFilters.date}
               onChange={handleDateChange}
-              aria-label="Filter by date"
-              className="absolute inset-0 cursor-pointer opacity-0"
+              minDate={todayIso()}
+              hasActiveFilter={hasDateFilter}
             />
-          </label>
+          </div>
         </div>
       </header>
 

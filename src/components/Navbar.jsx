@@ -156,7 +156,7 @@ const Navbar = () => {
                 className={mobileNavClass}
                 onClick={(event) => {
                   if (requiresAuth) handleProtectedNavClick(event, to);
-                  else closeMenu();
+                  if (!event.defaultPrevented) closeMenu();
                 }}
                 tabIndex={menuOpen ? 0 : -1}
               >
