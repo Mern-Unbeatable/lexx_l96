@@ -1,15 +1,16 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { Crosshair, Loader2, LocateFixed, MapPin } from 'lucide-react'
+import { Loader2, LocateFixed, MapPin } from 'lucide-react'
 import {
   fetchLocationSuggestions,
   getCurrentPosition,
-  reverseGeocode,
+  reverseGeocodeLocation,
 } from '../../services/locationApi'
 
 const LocationInput = ({
   id,
   value = '',
   onChange,
+  onLocationSelect,
   onBlur,
   error,
   placeholder = 'e.g. London, SW1A 1AA',
@@ -67,14 +68,15 @@ const LocationInput = ({
     }
   }, [query])
 
-  const emitChange = (next) => {
+  const emitChange = (next, location = null) => {
     setQuery(next)
     onChange?.(next)
+    onLocationSelect?.(location)
     setGeoError('')
   }
 
-  const pickSuggestion = (item) => {
-    emitChange(item)
+  const pickSuggestion = (location) => {
+    emitChange(location.displayName, location)
     setSuggestions([])
     setOpen(false)
   }
@@ -87,8 +89,11 @@ const LocationInput = ({
 
     try {
       const coords = await getCurrentPosition()
-      const label = await reverseGeocode(coords.lat, coords.lng)
-      emitChange(label)
+      const location = await reverseGeocodeLocation(coords.lat, coords.lng)
+      if (!location?.displayName) {
+        throw new Error('Unable to resolve your location')
+      }
+      emitChange(location.displayName, location)
       setSuggestions([])
     } catch (err) {
       setGeoError(err?.message || 'Unable to retrieve your location')
@@ -114,14 +119,14 @@ const LocationInput = ({
           type="text"
           autoComplete="off"
           role="combobox"
-          aria-expanded={open && suggestions.length > 0}
+          aria-expanded={open && (suggestions.length > 0 || loadingSuggest)}
           aria-controls={listId}
           aria-autocomplete="list"
           placeholder={placeholder}
           value={query}
-          onChange={(event) => emitChange(event.target.value)}
+          onChange={(event) => emitChange(event.target.value, null)}
           onFocus={() => {
-            if (suggestions.length > 0) setOpen(true)
+            if (query.trim().length >= 2) setOpen(true)
           }}
           onBlur={onBlur}
           className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm text-ink outline-none placeholder:text-muted/70"
@@ -153,9 +158,11 @@ const LocationInput = ({
         >
           {loadingSuggest && suggestions.length === 0 ? (
             <li className="px-3.5 py-2.5 text-sm text-muted">Searching…</li>
+          ) : suggestions.length === 0 ? (
+            <li className="px-3.5 py-2.5 text-sm text-muted">No locations found</li>
           ) : (
             suggestions.map((item) => (
-              <li key={item} role="option">
+              <li key={item.placeId ?? item.displayName} role="option">
                 <button
                   type="button"
                   onMouseDown={(event) => event.preventDefault()}
@@ -167,7 +174,7 @@ const LocationInput = ({
                     strokeWidth={1.75}
                     className="shrink-0 text-muted"
                   />
-                  <span>{item}</span>
+                  <span>{item.displayName}</span>
                 </button>
               </li>
             ))

@@ -26,6 +26,11 @@ export const API_ENDPOINTS = {
     locations: (courseId) => `/api/courses/${id(courseId)}/locations`,
   },
 
+  location: {
+    search: '/api/location/search',
+    reverse: '/api/location/reverse',
+  },
+
   games: {
     list: '/api/games',
     create: '/api/games',

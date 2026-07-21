@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { MapPin } from 'lucide-react'
+import { MapPin, X } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
 import RequestToJoinModal from './components/RequestToJoinModal'
@@ -12,16 +12,26 @@ import { showErrorAlert, showSuccessToast } from '../../utils/toast'
 
 const GAMES_PER_PAGE = 5
 
+const EMPTY_LOCATION_PREFS = {
+  location: '',
+  radius: '',
+  latitude: null,
+  longitude: null,
+}
+
 const Home = () => {
   const joinMutation = useRequestToJoinMutation()
   const [page, setPage] = useState(1)
   const [locationOpen, setLocationOpen] = useState(false)
   const [selectedGame, setSelectedGame] = useState(null)
-  const [locationPrefs, setLocationPrefs] = useState({
-    location: '',
-    radius: '',
+  const [locationPrefs, setLocationPrefs] = useState(EMPTY_LOCATION_PREFS)
+  const gamesQuery = useGames({
+    page,
+    limit: GAMES_PER_PAGE,
+    latitude: locationPrefs.latitude,
+    longitude: locationPrefs.longitude,
+    radiusKm: locationPrefs.radius || undefined,
   })
-  const gamesQuery = useGames({ page, limit: GAMES_PER_PAGE })
   const games = useMemo(
     () => (gamesQuery.data?.games ?? []).map(mapApiGame),
     [gamesQuery.data?.games],
@@ -31,6 +41,18 @@ const Home = () => {
   const handlePageChange = (nextPage) => {
     setPage(nextPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const hasLocationFilter = locationPrefs.latitude != null
+
+  const handleApplyLocationPrefs = (prefs) => {
+    setLocationPrefs(prefs)
+    setPage(1)
+  }
+
+  const handleClearLocationFilter = () => {
+    setLocationPrefs(EMPTY_LOCATION_PREFS)
+    setPage(1)
   }
 
   const handleRequestJoinClick = (game) => {
@@ -70,13 +92,23 @@ const Home = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          {hasLocationFilter && (
+            <button
+              type="button"
+              onClick={handleClearLocationFilter}
+              className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
+            >
+              <X size={16} strokeWidth={1.75} className="text-muted" />
+              Clear filter
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setLocationOpen(true)}
             className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
           >
             <MapPin size={16} strokeWidth={1.75} className="text-muted" />
-            Find my Location
+            {hasLocationFilter ? 'Change location' : 'Find my Location'}
           </button>
         </div>
       </header>
@@ -109,7 +141,20 @@ const Home = () => {
 
         {!gamesQuery.isPending && !gamesQuery.isError && games.length === 0 && (
           <div className="rounded-xl border border-line/60 bg-white px-6 py-12 text-center text-sm text-muted">
-            No open games found.
+            <p>
+              {hasLocationFilter
+                ? 'No games found within your selected area.'
+                : 'No open games found.'}
+            </p>
+            {hasLocationFilter && (
+              <button
+                type="button"
+                onClick={handleClearLocationFilter}
+                className="mt-4 rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-cream"
+              >
+                Show all games
+              </button>
+            )}
           </div>
         )}
 
@@ -142,7 +187,9 @@ const Home = () => {
         onClose={() => setLocationOpen(false)}
         initialLocation={locationPrefs.location}
         initialRadius={locationPrefs.radius}
-        onApply={setLocationPrefs}
+        initialLatitude={locationPrefs.latitude}
+        initialLongitude={locationPrefs.longitude}
+        onApply={handleApplyLocationPrefs}
       />
 
       <RequestToJoinModal

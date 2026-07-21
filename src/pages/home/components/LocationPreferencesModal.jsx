@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
 import LocationInput from '../../../components/form/LocationInput'
 import FormField from '../../../components/form/FormField'
+import { searchLocations } from '../../../services/locationApi'
 
 const ENTER_MS = 20
 const EXIT_MS = 280
@@ -13,6 +14,44 @@ const radiusOptions = [
   { value: '60', label: 'Within 60 km' },
   { value: '100', label: 'Within 100 km' },
 ]
+
+const getLocationCoords = (location) => {
+  if (!location) return null
+
+  const latitude = location.latitude ?? location.lat
+  const longitude = location.longitude ?? location.lon
+
+  if (latitude == null || longitude == null) return null
+
+  return { latitude, longitude }
+}
+
+const resolveLocationForSearch = async (query, selectedLocation) => {
+  const trimmedQuery = query.trim()
+  const selectionMatchesInput =
+    selectedLocation?.displayName?.trim() === trimmedQuery
+
+  if (selectionMatchesInput) {
+    const coords = getLocationCoords(selectedLocation)
+    if (coords) {
+      return {
+        ...coords,
+        displayName: selectedLocation.displayName,
+      }
+    }
+  }
+
+  const results = await searchLocations(trimmedQuery, { limit: 1 })
+  const match = results[0]
+  const coords = getLocationCoords(match)
+
+  if (!coords) return null
+
+  return {
+    ...coords,
+    displayName: match.displayName || trimmedQuery,
+  }
+}
 
 const formatRadiusLabel = (value) => {
   const match = radiusOptions.find((option) => option.value === String(value))
@@ -180,18 +219,41 @@ const LocationPreferencesModal = ({
   onApply,
   initialLocation = '',
   initialRadius = '',
+  initialLatitude = null,
+  initialLongitude = null,
 }) => {
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
   const [location, setLocation] = useState(initialLocation)
   const [radius, setRadius] = useState(initialRadius)
+  const [selectedLocation, setSelectedLocation] = useState(
+    initialLatitude != null && initialLongitude != null
+      ? {
+          displayName: initialLocation,
+          latitude: initialLatitude,
+          longitude: initialLongitude,
+        }
+      : null,
+  )
   const [locationError, setLocationError] = useState('')
+  const [radiusError, setRadiusError] = useState('')
+  const [applying, setApplying] = useState(false)
 
   useEffect(() => {
     if (open) {
       setLocation(initialLocation)
       setRadius(initialRadius)
+      setSelectedLocation(
+        initialLatitude != null && initialLongitude != null
+          ? {
+              displayName: initialLocation,
+              latitude: initialLatitude,
+              longitude: initialLongitude,
+            }
+          : null,
+      )
       setLocationError('')
+      setRadiusError('')
       setMounted(true)
       const showTimer = window.setTimeout(() => setVisible(true), ENTER_MS)
       return () => window.clearTimeout(showTimer)
@@ -200,7 +262,13 @@ const LocationPreferencesModal = ({
     setVisible(false)
     const hideTimer = window.setTimeout(() => setMounted(false), EXIT_MS)
     return () => window.clearTimeout(hideTimer)
-  }, [open, initialLocation, initialRadius])
+  }, [
+    open,
+    initialLocation,
+    initialRadius,
+    initialLatitude,
+    initialLongitude,
+  ])
 
   useEffect(() => {
     if (!open) return undefined
@@ -213,13 +281,42 @@ const LocationPreferencesModal = ({
 
   if (!mounted) return null
 
-  const handleApply = () => {
+  const handleApply = async () => {
+    setLocationError('')
+    setRadiusError('')
+
     if (!location.trim()) {
       setLocationError('Please enter a location or postcode')
       return
     }
-    onApply?.({ location: location.trim(), radius })
-    onClose()
+
+    if (!radius) {
+      setRadiusError('Please choose a search radius')
+      return
+    }
+
+    setApplying(true)
+
+    try {
+      const resolved = await resolveLocationForSearch(location, selectedLocation)
+
+      if (!resolved) {
+        setLocationError('No location found. Try a different search term.')
+        return
+      }
+
+      onApply?.({
+        location: resolved.displayName,
+        radius,
+        latitude: resolved.latitude,
+        longitude: resolved.longitude,
+      })
+      onClose()
+    } catch (error) {
+      setLocationError(error?.message || 'Unable to find that location.')
+    } finally {
+      setApplying(false)
+    }
   }
 
   return (
@@ -275,16 +372,20 @@ const LocationPreferencesModal = ({
                 setLocation(value)
                 if (value.trim()) setLocationError('')
               }}
+              onLocationSelect={setSelectedLocation}
               error={locationError}
               placeholder="e.g. London, SW1A 1AA"
             />
           </FormField>
 
-          <FormField label="Search Radius" htmlFor="prefs-radius">
+          <FormField label="Search Radius" htmlFor="prefs-radius" error={radiusError}>
             <RadiusDropdown
               id="prefs-radius"
               value={radius}
-              onChange={setRadius}
+              onChange={(value) => {
+                setRadius(value)
+                if (value) setRadiusError('')
+              }}
             />
           </FormField>
         </div>
@@ -293,16 +394,18 @@ const LocationPreferencesModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-[#f5f5f5]"
+            disabled={applying}
+            className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-[#f5f5f5] disabled:opacity-60"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleApply}
-            className="rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#244a37]"
+            disabled={applying}
+            className="rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#244a37] disabled:opacity-60"
           >
-            Apply Filter
+            {applying ? 'Applying…' : 'Apply Filter'}
           </button>
         </div>
       </div>
