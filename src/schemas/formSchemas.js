@@ -88,8 +88,7 @@ export const hostSchema = z
       z
         .number({ message: 'Spots available is required' })
         .int('Enter a whole number')
-        .min(1, 'At least 1 spot is required')
-        .max(10, 'Maximum 10 spots'),
+        .min(1, 'At least 1 spot is required'),
     ),
     ageMin: requiredNumber(
       z.number({ message: 'Min age is required' }).int().min(1).max(120),

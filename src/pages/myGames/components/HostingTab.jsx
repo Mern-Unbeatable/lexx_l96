@@ -27,8 +27,8 @@ const HostingTab = ({
 
   const handleAccept = async (player) => {
     try {
-      await acceptMutation.mutateAsync(player.id)
-      setAcceptedIds((prev) => new Set(prev).add(player.id))
+      await acceptMutation.mutateAsync(player.joinRequestId)
+      setAcceptedIds((prev) => new Set(prev).add(player.joinRequestId))
       await showAcceptSuccess(player.name)
     } catch (error) {
       await showErrorAlert(error?.message || 'Unable to accept join request.')
@@ -38,8 +38,8 @@ const HostingTab = ({
 
   const handleDecline = async (player) => {
     try {
-      await declineMutation.mutateAsync(player.id)
-      setDeclinedIds((prev) => new Set(prev).add(player.id))
+      await declineMutation.mutateAsync(player.joinRequestId)
+      setDeclinedIds((prev) => new Set(prev).add(player.joinRequestId))
       await Swal.fire({
         icon: 'success',
         title: 'Request declined',

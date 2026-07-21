@@ -26,6 +26,11 @@ export const API_ENDPOINTS = {
     locations: (courseId) => `/api/courses/${id(courseId)}/locations`,
   },
 
+  location: {
+    search: '/api/location/search',
+    reverse: '/api/location/reverse',
+  },
+
   games: {
     list: '/api/games',
     create: '/api/games',
@@ -66,6 +71,13 @@ export const API_ENDPOINTS = {
     list: '/chats',
     details: (chatId) => `/chats/${id(chatId)}`,
     messages: (chatId) => `/chats/${id(chatId)}/messages`,
+  },
+
+  chat: {
+    conversations: '/api/chat/conversations',
+    lookup: '/api/chat/conversations/lookup',
+    messages: (conversationId) =>
+      `/api/chat/conversations/${id(conversationId)}/messages`,
   },
 }
 

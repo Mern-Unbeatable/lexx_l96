@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { useRequireAuth } from '../../hooks/useRequireAuth'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
 import HostingTab from './components/HostingTab'
@@ -11,8 +13,13 @@ import LeaveReviewModal from './components/LeaveReviewModal'
 import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 import { useLeaveReviewMutation } from '../../hooks/useLeaveReviewMutation'
 
+const MAIN_TABS = new Set(['hosting', 'joined', 'past'])
+
 const MyGames = () => {
-  const [tab, setTab] = useState('hosting')
+  const isAuthenticated = useRequireAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const tab = MAIN_TABS.has(tabParam) ? tabParam : 'hosting'
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
@@ -21,21 +28,51 @@ const MyGames = () => {
 
   const hostingCount = countsQuery.data?.hosting ?? 0
   const joinedCount = countsQuery.data?.joined ?? 0
-  const reviewCount = countsQuery.data?.past?.hostedToReview ?? 0
+  const reviewCount =
+    (countsQuery.data?.past?.hostedToReview ?? 0) +
+    (countsQuery.data?.past?.joinedToReview ?? 0)
+
+  const handleTabChange = (nextTab) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('tab', nextTab)
+        if (nextTab !== 'past') {
+          next.delete('past')
+        }
+        return next
+      },
+      { replace: true },
+    )
+  }
 
   const openChat = (player, game) => {
+    const gameId = game.id || game.gameId
+    if (!player?.id || !gameId) return
+
     setChat({
       player: {
         ...player,
-        id: player.id || player.name,
+        id: player.id,
+        initials:
+          player.initials ||
+          player.name
+            ?.replace(/\./g, '')
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join('')
+            .toUpperCase(),
       },
       game: {
         ...game,
-        id: game.id,
-        course: game.course,
+        id: gameId,
+        course: game.course || game.courseName,
         date: game.date,
         time: game.time,
       },
+      conversationId: game.conversationId ?? player.conversationId ?? null,
     })
   }
 
@@ -57,13 +94,15 @@ const MyGames = () => {
     })
   }
 
+  if (!isAuthenticated) return null
+
   return (
     <div className="flex min-h-[calc(100vh-4.5rem)] flex-col">
       <div className="mx-auto w-full container flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <MyGamesHeader />
         <MyGamesTabs
           tab={tab}
-          onTabChange={setTab}
+          onTabChange={handleTabChange}
           hostingCount={hostingCount}
           joinedCount={joinedCount}
           reviewCount={reviewCount}
@@ -85,6 +124,8 @@ const MyGames = () => {
             hostedCount={countsQuery.data?.past?.hosted ?? 0}
             joinedCount={countsQuery.data?.past?.joined ?? 0}
             reviewCount={reviewCount}
+            hostedReviewCount={countsQuery.data?.past?.hostedToReview ?? 0}
+            joinedReviewCount={countsQuery.data?.past?.joinedToReview ?? 0}
             reviewedIds={reviewedIds}
             onOpenChat={openChat}
             onLeaveReview={setReviewGame}
@@ -97,6 +138,7 @@ const MyGames = () => {
         open={Boolean(chat)}
         player={chat?.player}
         game={chat?.game}
+        conversationId={chat?.conversationId}
         onClose={() => setChat(null)}
       />
 

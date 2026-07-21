@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { useRequireAuth } from '../../hooks/useRequireAuth'
 import { hostedGames } from '../myGames/data/gamesData'
 import {
   showAcceptSuccess,
@@ -13,6 +14,7 @@ import PendingRequestsList from './components/PendingRequestsList'
 import JoinRequestsFooter from './components/JoinRequestsFooter'
 
 const JoinRequests = () => {
+  const isAuthenticated = useRequireAuth()
   const { gameId } = useParams()
   const game =
     hostedGames.find((item) => String(item.id) === String(gameId)) ||
@@ -38,6 +40,8 @@ const JoinRequests = () => {
       confirmButtonColor: '#2D6A4F',
     })
   }
+
+  if (!isAuthenticated) return null
 
   return (
     <div className="flex min-h-[calc(100vh-4.5rem)] flex-col">

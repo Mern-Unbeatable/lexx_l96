@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, Eye, EyeOff } from 'lucide-react'
@@ -14,6 +14,8 @@ import { showErrorToast } from '../../utils/toast'
 
 const Login = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const redirectTo = location.state?.from?.pathname || '/'
   const [showPassword, setShowPassword] = useState(false)
   const loginMutation = useLoginMutation()
   const { login } = useAuth()
@@ -44,7 +46,7 @@ const Login = () => {
       }
 
       login(accessToken)
-      navigate('/')
+      navigate(redirectTo, { replace: true })
     } catch (error) {
       showErrorToast(error?.message || 'Login failed. Please try again.')
     }

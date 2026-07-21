@@ -6,7 +6,8 @@ const PastGamesSubTabs = ({
   onTabChange,
   hostedCount,
   joinedCount,
-  reviewCount,
+  hostedReviewCount = 0,
+  joinedReviewCount = 0,
 }) => (
   <div className="mt-6 flex flex-wrap gap-2">
     <button
@@ -26,9 +27,9 @@ const PastGamesSubTabs = ({
       >
         {hostedCount}
       </span>
-      {reviewCount > 0 && tab !== 'hosted' && (
+      {hostedReviewCount > 0 && tab !== 'hosted' && (
         <span className="rounded-full bg-[#F0A500] px-2 py-0.5 text-xs text-white">
-          {reviewCount} to review
+          {hostedReviewCount} to review
         </span>
       )}
     </button>
@@ -50,6 +51,11 @@ const PastGamesSubTabs = ({
       >
         {joinedCount}
       </span>
+      {joinedReviewCount > 0 && tab !== 'joined' && (
+        <span className="rounded-full bg-[#F0A500] px-2 py-0.5 text-xs text-white">
+          {joinedReviewCount} to review
+        </span>
+      )}
     </button>
   </div>
 )

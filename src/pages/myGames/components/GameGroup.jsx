@@ -73,16 +73,17 @@ const GameGroup = ({
       {open && visibleRequests.length > 0 && (
         <div className="space-y-2.5">
           {visibleRequests.map((request) => {
+            const requestKey = request.joinRequestId || request.id
             const isAccepted =
-              acceptedIds?.has(request.id) || request.status === 'accepted'
+              acceptedIds?.has(requestKey) || request.status === 'accepted'
 
             return (
             <RequestCard
-              key={request.id}
+              key={requestKey}
               request={request}
               accepted={isAccepted}
               declined={
-                declinedIds?.has(request.id) || request.status === 'declined'
+                declinedIds?.has(requestKey) || request.status === 'declined'
               }
               onAccept={(player) => onAccept?.(player, game)}
               onDecline={(player) => onDecline?.(player, game)}

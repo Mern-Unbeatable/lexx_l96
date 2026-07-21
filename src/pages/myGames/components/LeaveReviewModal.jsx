@@ -60,6 +60,13 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
 
   if (!mounted || !game) return null
 
+  const reviewee = game.participant ?? game.host
+  const revieweeLabel = game.participant
+    ? game.participant.name
+    : game.host
+      ? `Host · ${game.host.name}`
+      : ''
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (rating < 1) {
@@ -67,11 +74,16 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
       return
     }
 
+    if (!reviewee?.id) {
+      setError('Unable to identify who to review')
+      return
+    }
+
     setSubmitting(true)
     try {
       await onSubmit?.({
         gameId: game.id,
-        revieweeId: game.participant?.id,
+        revieweeId: reviewee.id,
         rating,
       })
       onClose()
@@ -114,7 +126,7 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
             </h2>
             <p className="mt-1 text-sm text-muted">
               {game.course} · {game.date} · {game.time}
-              {game.participant ? ` · ${game.participant.name}` : ''}
+              {revieweeLabel ? ` · ${revieweeLabel}` : ''}
             </p>
           </div>
           <button

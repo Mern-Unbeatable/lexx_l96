@@ -49,16 +49,23 @@ export const mapJoinedRequest = (request) => {
     status,
     message: request.message || '',
     canChat: Boolean(request.canChat),
+    conversationId: request.conversationId ?? null,
     course: game.courseName || 'Course unavailable',
     date: formatGameDate(game.date),
     time: game.time || 'Time unavailable',
     location: game.locationName || '',
     gameId: game.id,
-    host: mapHost(request.host),
+    host: mapHost(request.host ?? game.host),
   }
 }
 
 export const mapPastJoinedRequest = (request) => ({
   ...mapJoinedRequest(request),
   isPast: true,
+  needsReview: Boolean(request.needsReview),
+  hostReviewed: Boolean(request.hostReviewed),
+  givenRating:
+    request.givenRating === null || request.givenRating === undefined
+      ? null
+      : Number(request.givenRating),
 })

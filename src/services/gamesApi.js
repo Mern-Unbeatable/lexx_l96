@@ -1,10 +1,30 @@
 import axiosInstance from '../api/axiosInstance'
 import { API_ENDPOINTS } from '../api/endpoints'
 
-export const getGames = async ({ page = 1, limit = 5 }) => {
+export const getGames = async ({
+  page = 1,
+  limit = 5,
+  latitude,
+  longitude,
+  radiusKm,
+  date,
+} = {}) => {
+  const params = { page, limit }
+
+  if (latitude != null && longitude != null) {
+    params.latitude = latitude
+    params.longitude = longitude
+    if (radiusKm != null && radiusKm !== '') {
+      params.radiusKm = radiusKm
+    }
+  }
+
+  if (date) {
+    params.date = date
+  }
+
   const response = await axiosInstance.get(API_ENDPOINTS.games.list, {
-    params: { page, limit },
-    skipAuth: true,
+    params,
   })
   const payload = response.data
 

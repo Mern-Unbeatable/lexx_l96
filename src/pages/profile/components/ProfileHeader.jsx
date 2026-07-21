@@ -1,4 +1,5 @@
 import { Pencil, Check } from "lucide-react";
+import Stars from "../../myGames/components/Stars";
 
 const ProfileHeader = ({ profile, fullName, onEdit }) => (
   <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -19,6 +20,17 @@ const ProfileHeader = ({ profile, fullName, onEdit }) => (
             <span className="text-sm text-muted">{profile.location}</span>
           )}
         </div>
+        {profile.totalReviews > 0 ? (
+          <p className="mt-2 flex flex-wrap items-center gap-1.5 text-sm text-muted">
+            <Stars rating={profile.averageRating} />
+            <span>
+              {profile.averageRating.toFixed(1)} out of 5 · {profile.totalReviews}{" "}
+              {profile.totalReviews === 1 ? "review" : "reviews"}
+            </span>
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-muted">No reviews yet</p>
+        )}
       </div>
     </div>
 

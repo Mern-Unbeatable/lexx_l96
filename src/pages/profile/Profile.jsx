@@ -6,10 +6,10 @@ import MembershipCard from './components/MembershipCard'
 import ProfileFooter from './components/ProfileFooter'
 import EditPersonalDetailsModal from './components/EditPersonalDetailsModal'
 import { useAuth } from '../../context/AuthContext'
+import { useRequireAuth } from '../../hooks/useRequireAuth'
 import {
   ProfileLoading,
   ProfileLoadError,
-  ProfileSignInRequired,
 } from './components/ProfilePageStates'
 import {
   getProfileFullName,
@@ -19,9 +19,9 @@ import { useUpdateProfileMutation } from '../../hooks/useProfileMutations'
 import { showSuccessAlert } from '../../utils/toast'
 
 const Profile = () => {
+  const isAuthenticated = useRequireAuth()
   const {
     user,
-    isAuthenticated,
     isLoadingUser,
     userError,
     refetchUser,
@@ -46,9 +46,9 @@ const Profile = () => {
     )
   }
 
-  if (isLoadingUser) return <ProfileLoading />
+  if (!isAuthenticated) return null
 
-  if (!isAuthenticated) return <ProfileSignInRequired />
+  if (isLoadingUser) return <ProfileLoading />
 
   if (userError || !user) {
     return (
