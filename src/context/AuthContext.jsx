@@ -43,10 +43,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback((token) => {
     setAccessToken(token)
+    setIsAuthenticated(true)
   }, [])
 
   const logout = useCallback(() => {
     clearAccessToken()
+    setIsAuthenticated(false)
     queryClient.clear()
   }, [queryClient])
 

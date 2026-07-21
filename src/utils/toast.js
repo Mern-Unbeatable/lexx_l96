@@ -52,6 +52,15 @@ export const showInfoAlert = (message, title = 'Coming soon') =>
     confirmButtonColor: '#2D6A4F',
   })
 
+export const showLoginRequiredToast = (
+  message = 'Please sign in to continue.',
+) =>
+  Swal.fire({
+    ...toastDefaults,
+    icon: 'info',
+    title: message,
+  })
+
 export const showLoginRequiredAlert = () =>
   Swal.fire({
     icon: 'info',

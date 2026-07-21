@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Swal from 'sweetalert2'
+import { useRequireAuth } from '../../hooks/useRequireAuth'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
 import HostingTab from './components/HostingTab'
@@ -12,6 +13,7 @@ import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 import { useLeaveReviewMutation } from '../../hooks/useLeaveReviewMutation'
 
 const MyGames = () => {
+  const isAuthenticated = useRequireAuth()
   const [tab, setTab] = useState('hosting')
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
@@ -56,6 +58,8 @@ const MyGames = () => {
       confirmButtonColor: '#2D6A4F',
     })
   }
+
+  if (!isAuthenticated) return null
 
   return (
     <div className="flex min-h-[calc(100vh-4.5rem)] flex-col">

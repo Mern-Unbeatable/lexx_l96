@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { showLoginRequiredToast } from "../utils/toast";
 
 const linkBase =
   "inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors";
@@ -28,11 +29,16 @@ const mobileNavClass = ({ isActive }) =>
     ? `${mobileLinkBase} bg-[#e8f0ea] text-forest`
     : `${mobileLinkBase} text-ink hover:bg-[#f5f5f5]`;
 
-const navItems = [
+const mobileNavItems = [
   { to: "/", label: "Find Games", icon: Search, end: true },
-  { to: "/host", label: "Host Game", icon: Plus },
-  { to: "/my-games", label: "My Games", icon: Calendar },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/host", label: "Host Game", icon: Plus, requiresAuth: true },
+  { to: "/my-games", label: "My Games", icon: Calendar, requiresAuth: true },
+];
+
+const desktopRightNavItems = [
+  { to: "/host", label: "Host Game", icon: Plus, requiresAuth: true },
+  { to: "/my-games", label: "My Games", icon: Calendar, requiresAuth: true },
+  { to: "/profile", label: "Profile", icon: User, loggedInOnly: true },
 ];
 
 const Navbar = () => {
@@ -41,6 +47,15 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
+
+  const handleProtectedNavClick = (event, path) => {
+    if (loggedIn) return;
+
+    event.preventDefault();
+    closeMenu();
+    showLoginRequiredToast();
+    navigate("/login", { state: { from: { pathname: path } } });
+  };
 
   const handleLogout = () => {
     logout();
@@ -55,9 +70,19 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
+  const visibleMobileItems = [
+    ...mobileNavItems,
+    ...(loggedIn
+      ? [{ to: "/profile", label: "Profile", icon: User, requiresAuth: false }]
+      : []),
+  ];
+
+  const visibleDesktopRightItems = desktopRightNavItems.filter(
+    (item) => !item.loggedInOnly || loggedIn,
+  );
+
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-[#ffffff]">
-      {/* Mobile bar — stays white when  */}
       <div className="relative z-[70] flex items-center justify-between bg-[#ffffff] px-4 py-3 xl:hidden">
         <Link to="/" className="flex items-center gap-1" onClick={closeMenu}>
           <img
@@ -102,7 +127,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Backdrop below header so header color never changes */}
       <button
         type="button"
         className={`fixed inset-x-0 bottom-0 top-[57px] z-[60] bg-ink/25 transition-opacity duration-300 ease-out xl:hidden ${
@@ -115,7 +139,6 @@ const Navbar = () => {
         onClick={closeMenu}
       />
 
-      {/* Dropdown opens from top under the header */}
       <div
         className={`absolute inset-x-0 top-full z-[65] overflow-hidden border-b border-line bg-[#ffffff] shadow-[0_12px_30px_rgba(26,46,38,0.12)] transition-all duration-300 ease-out xl:hidden ${
           menuOpen
@@ -124,30 +147,35 @@ const Navbar = () => {
         }`}
       >
         <nav className="flex flex-col gap-1 bg-[#ffffff] px-4 py-3">
-          {navItems.map(({ to, label, icon: Icon, end }, index) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={mobileNavClass}
-              onClick={closeMenu}
-              tabIndex={menuOpen ? 0 : -1}
-            >
-              <span
-                className={`inline-flex items-center gap-3 transition-all duration-300 ease-out ${
-                  menuOpen
-                    ? "translate-x-0 opacity-100"
-                    : "-translate-x-2 opacity-0"
-                }`}
-                style={{
-                  transitionDelay: menuOpen ? `${80 + index * 40}ms` : "0ms",
+          {visibleMobileItems.map(
+            ({ to, label, icon: Icon, end, requiresAuth }, index) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                className={mobileNavClass}
+                onClick={(event) => {
+                  if (requiresAuth) handleProtectedNavClick(event, to);
+                  else closeMenu();
                 }}
+                tabIndex={menuOpen ? 0 : -1}
               >
-                <Icon size={18} strokeWidth={1.75} />
-                {label}
-              </span>
-            </NavLink>
-          ))}
+                <span
+                  className={`inline-flex items-center gap-3 transition-all duration-300 ease-out ${
+                    menuOpen
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-2 opacity-0"
+                  }`}
+                  style={{
+                    transitionDelay: menuOpen ? `${80 + index * 40}ms` : "0ms",
+                  }}
+                >
+                  <Icon size={18} strokeWidth={1.75} />
+                  {label}
+                </span>
+              </NavLink>
+            ),
+          )}
           {loggedIn ? (
             <button
               type="button"
@@ -182,7 +210,6 @@ const Navbar = () => {
         </nav>
       </div>
 
-      {/* Desktop bar */}
       <nav className="container mx-auto hidden h-[4.5rem] grid-cols-[1fr_auto_1fr] items-stretch bg-[#ffffff] px-4 sm:px-6 xl:grid 2xl:h-[5rem]">
         <div className="flex items-stretch justify-start">
           <NavLink to="/" className={navClass} end>
@@ -205,18 +232,21 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-stretch justify-end gap-4 sm:gap-6 2xl:gap-8">
-          <NavLink to="/host" className={navClass}>
-            <Plus size={18} strokeWidth={1.75} />
-            Host Game
-          </NavLink>
-          <NavLink to="/my-games" className={navClass}>
-            <Calendar size={18} strokeWidth={1.75} />
-            My Games
-          </NavLink>
-          <NavLink to="/profile" className={navClass}>
-            <User size={18} strokeWidth={1.75} />
-            Profile
-          </NavLink>
+          {visibleDesktopRightItems.map(
+            ({ to, label, icon: Icon, requiresAuth }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={navClass}
+                onClick={(event) => {
+                  if (requiresAuth) handleProtectedNavClick(event, to);
+                }}
+              >
+                <Icon size={18} strokeWidth={1.75} />
+                {label}
+              </NavLink>
+            ),
+          )}
           <div className="flex items-center">
             {loggedIn ? (
               <button
