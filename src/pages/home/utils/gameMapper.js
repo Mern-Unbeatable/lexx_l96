@@ -11,7 +11,10 @@ const getInitials = (name = '') =>
 const formatGameDate = (value) => {
   if (!value) return 'Date unavailable'
 
-  const date = new Date(value)
+  const isoDate =
+    value instanceof Date ? value.toISOString().slice(0, 10) : String(value).slice(0, 10)
+  const [year, month, day] = isoDate.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
   if (Number.isNaN(date.getTime())) return 'Date unavailable'
 
   return new Intl.DateTimeFormat('en-GB', {
@@ -34,8 +37,15 @@ const formatRange = (minimum, maximum) => {
   return `${minimum}-${maximum}`
 }
 
+export const toDateIso = (value) => {
+  if (!value) return ''
+  if (value instanceof Date) return value.toISOString().slice(0, 10)
+  return String(value).slice(0, 10)
+}
+
 export const mapApiGame = (game) => ({
   ...game,
+  dateIso: toDateIso(game.date),
   course: game.courseName || 'Course unavailable',
   date: formatGameDate(game.date),
   time: game.time || 'Time unavailable',

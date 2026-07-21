@@ -7,6 +7,7 @@ export const getGames = async ({
   latitude,
   longitude,
   radiusKm,
+  date,
 } = {}) => {
   const params = { page, limit }
 
@@ -16,6 +17,10 @@ export const getGames = async ({
     if (radiusKm != null && radiusKm !== '') {
       params.radiusKm = radiusKm
     }
+  }
+
+  if (date) {
+    params.date = date
   }
 
   const response = await axiosInstance.get(API_ENDPOINTS.games.list, {

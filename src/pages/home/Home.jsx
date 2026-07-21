@@ -1,58 +1,88 @@
 import { useMemo, useState } from 'react'
-import { MapPin, X } from 'lucide-react'
+import { Calendar, MapPin, X } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
 import RequestToJoinModal from './components/RequestToJoinModal'
 import GameCard from './components/GameCard'
-import GamesPagination from './components/GamesPagination'
 import { useGames } from '../../hooks/useGames'
 import { useRequestToJoinMutation } from '../../hooks/useRequestToJoinMutation'
 import { mapApiGame } from './utils/gameMapper'
 import { showErrorAlert, showSuccessToast } from '../../utils/toast'
 
-const GAMES_PER_PAGE = 5
+const GAMES_PER_PAGE = 6
 
-const EMPTY_LOCATION_PREFS = {
+const EMPTY_GAME_FILTERS = {
   location: '',
   radius: '',
   latitude: null,
   longitude: null,
+  date: '',
+}
+
+const todayIso = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const formatFilterDate = (isoDate) => {
+  const [year, month, day] = isoDate.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+  if (Number.isNaN(date.getTime())) return isoDate
+
+  return new Intl.DateTimeFormat('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+  }).format(date)
 }
 
 const Home = () => {
   const joinMutation = useRequestToJoinMutation()
-  const [page, setPage] = useState(1)
   const [locationOpen, setLocationOpen] = useState(false)
   const [selectedGame, setSelectedGame] = useState(null)
-  const [locationPrefs, setLocationPrefs] = useState(EMPTY_LOCATION_PREFS)
+  const [gameFilters, setGameFilters] = useState(EMPTY_GAME_FILTERS)
   const gamesQuery = useGames({
-    page,
     limit: GAMES_PER_PAGE,
-    latitude: locationPrefs.latitude,
-    longitude: locationPrefs.longitude,
-    radiusKm: locationPrefs.radius || undefined,
+    latitude: gameFilters.latitude,
+    longitude: gameFilters.longitude,
+    radiusKm: gameFilters.radius || undefined,
+    date: gameFilters.date || undefined,
   })
-  const games = useMemo(
-    () => (gamesQuery.data?.games ?? []).map(mapApiGame),
-    [gamesQuery.data?.games],
-  )
-  const pagination = gamesQuery.data?.pagination
+  const games = useMemo(() => {
+    const mapped = (gamesQuery.data?.pages ?? [])
+      .flatMap((page) => page.games)
+      .map(mapApiGame)
 
-  const handlePageChange = (nextPage) => {
-    setPage(nextPage)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (!gameFilters.date) return mapped
+
+    return mapped.filter((game) => game.dateIso === gameFilters.date)
+  }, [gamesQuery.data?.pages, gameFilters.date])
+  const hasMoreGames = gamesQuery.hasNextPage
+  const isInitialLoading = gamesQuery.isPending
+  const isLoadingMore = gamesQuery.isFetchingNextPage
+
+  const hasLocationFilter = gameFilters.latitude != null
+  const hasDateFilter = Boolean(gameFilters.date)
+  const hasActiveFilters = hasLocationFilter || hasDateFilter
+
+  const handleApplyLocationPrefs = (locationPrefs) => {
+    setGameFilters((prev) => ({
+      ...prev,
+      ...locationPrefs,
+    }))
   }
 
-  const hasLocationFilter = locationPrefs.latitude != null
-
-  const handleApplyLocationPrefs = (prefs) => {
-    setLocationPrefs(prefs)
-    setPage(1)
+  const handleClearFilters = () => {
+    setGameFilters(EMPTY_GAME_FILTERS)
   }
 
-  const handleClearLocationFilter = () => {
-    setLocationPrefs(EMPTY_LOCATION_PREFS)
-    setPage(1)
+  const handleDateChange = (event) => {
+    const date = event.target.value
+    setGameFilters((prev) => ({ ...prev, date }))
   }
 
   const handleRequestJoinClick = (game) => {
@@ -72,6 +102,18 @@ const Home = () => {
     }
   }
 
+  const filterSubtitleParts = []
+  if (gameFilters.location) {
+    filterSubtitleParts.push(
+      `Near ${gameFilters.location}${
+        gameFilters.radius ? ` (${gameFilters.radius} km)` : ''
+      }`,
+    )
+  }
+  if (hasDateFilter) {
+    filterSubtitleParts.push(`On ${formatFilterDate(gameFilters.date)}`)
+  }
+
   return (
     <div className="mx-auto container px-4 py-8 sm:px-6 sm:py-10">
       <header className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -81,21 +123,17 @@ const Home = () => {
           </h1>
           <p className="mt-2 text-base text-muted">
             Browse available games
-            {locationPrefs.location
-              ? ` · Near ${locationPrefs.location}${
-                  locationPrefs.radius
-                    ? ` (${locationPrefs.radius} km)`
-                    : ''
-                }`
+            {filterSubtitleParts.length > 0
+              ? ` · ${filterSubtitleParts.join(' · ')}`
               : ''}
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {hasLocationFilter && (
+        <div className="flex flex-wrap items-center gap-2">
+          {hasActiveFilters && (
             <button
               type="button"
-              onClick={handleClearLocationFilter}
+              onClick={handleClearFilters}
               className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink transition hover:bg-cream"
             >
               <X size={16} strokeWidth={1.75} className="text-muted" />
@@ -110,6 +148,23 @@ const Home = () => {
             <MapPin size={16} strokeWidth={1.75} className="text-muted" />
             {hasLocationFilter ? 'Change location' : 'Find my Location'}
           </button>
+          <label
+            className={`relative inline-flex size-[38px] cursor-pointer items-center justify-center rounded-lg border bg-white transition hover:bg-cream ${
+              hasDateFilter
+                ? 'border-forest text-forest'
+                : 'border-line text-muted'
+            }`}
+          >
+            <Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
+            <input
+              type="date"
+              min={todayIso()}
+              value={gameFilters.date}
+              onChange={handleDateChange}
+              aria-label="Filter by date"
+              className="absolute inset-0 cursor-pointer opacity-0"
+            />
+          </label>
         </div>
       </header>
 
@@ -118,13 +173,13 @@ const Home = () => {
       </div>
 
       <section className="mt-8" aria-live="polite">
-        {gamesQuery.isPending && (
+        {isInitialLoading && (
           <div className="rounded-xl border border-line/60 bg-white px-6 py-12 text-center text-sm text-muted">
             Loading games…
           </div>
         )}
 
-        {gamesQuery.isError && (
+        {gamesQuery.isError && !isInitialLoading && (
           <div className="rounded-xl border border-red-200 bg-white px-6 py-12 text-center">
             <p className="text-sm text-red-500">
               {gamesQuery.error?.message || 'Unable to load games.'}
@@ -139,17 +194,17 @@ const Home = () => {
           </div>
         )}
 
-        {!gamesQuery.isPending && !gamesQuery.isError && games.length === 0 && (
+        {!isInitialLoading && !gamesQuery.isError && games.length === 0 && (
           <div className="rounded-xl border border-line/60 bg-white px-6 py-12 text-center text-sm text-muted">
             <p>
-              {hasLocationFilter
-                ? 'No games found within your selected area.'
+              {hasActiveFilters
+                ? 'No games found matching your filters.'
                 : 'No open games found.'}
             </p>
-            {hasLocationFilter && (
+            {hasActiveFilters && (
               <button
                 type="button"
-                onClick={handleClearLocationFilter}
+                onClick={handleClearFilters}
                 className="mt-4 rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-cream"
               >
                 Show all games
@@ -170,25 +225,27 @@ const Home = () => {
           </div>
         )}
 
-        {pagination && (
-          <GamesPagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            hasPrevious={pagination.hasPrevious}
-            hasNext={pagination.hasNext}
-            disabled={gamesQuery.isFetching}
-            onPageChange={handlePageChange}
-          />
+        {hasMoreGames && games.length > 0 && (
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={() => gamesQuery.fetchNextPage()}
+              disabled={isLoadingMore}
+              className="rounded-lg border border-line bg-white px-6 py-3 text-sm font-medium text-ink transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isLoadingMore ? 'Loading more games…' : 'Load more games'}
+            </button>
+          </div>
         )}
       </section>
 
       <LocationPreferencesModal
         open={locationOpen}
         onClose={() => setLocationOpen(false)}
-        initialLocation={locationPrefs.location}
-        initialRadius={locationPrefs.radius}
-        initialLatitude={locationPrefs.latitude}
-        initialLongitude={locationPrefs.longitude}
+        initialLocation={gameFilters.location}
+        initialRadius={gameFilters.radius}
+        initialLatitude={gameFilters.latitude}
+        initialLongitude={gameFilters.longitude}
         onApply={handleApplyLocationPrefs}
       />
 
