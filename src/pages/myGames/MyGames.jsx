@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { useRequireAuth } from '../../hooks/useRequireAuth'
 import MyGamesHeader from './components/MyGamesHeader'
@@ -12,9 +13,13 @@ import LeaveReviewModal from './components/LeaveReviewModal'
 import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 import { useLeaveReviewMutation } from '../../hooks/useLeaveReviewMutation'
 
+const MAIN_TABS = new Set(['hosting', 'joined', 'past'])
+
 const MyGames = () => {
   const isAuthenticated = useRequireAuth()
-  const [tab, setTab] = useState('hosting')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const tab = MAIN_TABS.has(tabParam) ? tabParam : 'hosting'
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
@@ -26,6 +31,20 @@ const MyGames = () => {
   const reviewCount =
     (countsQuery.data?.past?.hostedToReview ?? 0) +
     (countsQuery.data?.past?.joinedToReview ?? 0)
+
+  const handleTabChange = (nextTab) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('tab', nextTab)
+        if (nextTab !== 'past') {
+          next.delete('past')
+        }
+        return next
+      },
+      { replace: true },
+    )
+  }
 
   const openChat = (player, game) => {
     setChat({
@@ -69,7 +88,7 @@ const MyGames = () => {
         <MyGamesHeader />
         <MyGamesTabs
           tab={tab}
-          onTabChange={setTab}
+          onTabChange={handleTabChange}
           hostingCount={hostingCount}
           joinedCount={joinedCount}
           reviewCount={reviewCount}

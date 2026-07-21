@@ -223,7 +223,6 @@ const Host = () => {
             id="spots"
             type="number"
             min={1}
-            max={10}
             placeholder="e.g. 2"
             className={`${inputClass} ${errors.spots ? inputErrorClass : ''}`}
             {...register('spots')}

@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import PastGamesSubTabs from './PastGamesSubTabs'
 import PastHostedGames from './PastHostedGames'
 import PastJoinedGames from './PastJoinedGames'
+
+const PAST_TABS = new Set(['hosted', 'joined'])
 
 const PastGamesTab = ({
   hostedCount = 0,
@@ -13,13 +15,27 @@ const PastGamesTab = ({
   onOpenChat,
   onLeaveReview,
 }) => {
-  const [subTab, setSubTab] = useState('hosted')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const pastParam = searchParams.get('past')
+  const subTab = PAST_TABS.has(pastParam) ? pastParam : 'hosted'
+
+  const handleSubTabChange = (nextSubTab) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('tab', 'past')
+        next.set('past', nextSubTab)
+        return next
+      },
+      { replace: true },
+    )
+  }
 
   return (
     <>
       <PastGamesSubTabs
         tab={subTab}
-        onTabChange={setSubTab}
+        onTabChange={handleSubTabChange}
         hostedCount={hostedCount}
         joinedCount={joinedCount}
         hostedReviewCount={hostedReviewCount}
