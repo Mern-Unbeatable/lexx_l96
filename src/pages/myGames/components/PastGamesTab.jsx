@@ -7,6 +7,8 @@ const PastGamesTab = ({
   hostedCount = 0,
   joinedCount = 0,
   reviewCount = 0,
+  hostedReviewCount = 0,
+  joinedReviewCount = 0,
   reviewedIds,
   onOpenChat,
   onLeaveReview,
@@ -20,7 +22,8 @@ const PastGamesTab = ({
         onTabChange={setSubTab}
         hostedCount={hostedCount}
         joinedCount={joinedCount}
-        reviewCount={reviewCount}
+        hostedReviewCount={hostedReviewCount}
+        joinedReviewCount={joinedReviewCount}
       />
 
       {subTab === 'hosted' ? (
@@ -29,7 +32,11 @@ const PastGamesTab = ({
           onLeaveReview={onLeaveReview}
         />
       ) : (
-        <PastJoinedGames joinedCount={joinedCount} onOpenChat={onOpenChat} />
+        <PastJoinedGames
+          joinedCount={joinedCount}
+          onOpenChat={onOpenChat}
+          onLeaveReview={onLeaveReview}
+        />
       )}
     </>
   )

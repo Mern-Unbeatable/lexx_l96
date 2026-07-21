@@ -23,7 +23,9 @@ const MyGames = () => {
 
   const hostingCount = countsQuery.data?.hosting ?? 0
   const joinedCount = countsQuery.data?.joined ?? 0
-  const reviewCount = countsQuery.data?.past?.hostedToReview ?? 0
+  const reviewCount =
+    (countsQuery.data?.past?.hostedToReview ?? 0) +
+    (countsQuery.data?.past?.joinedToReview ?? 0)
 
   const openChat = (player, game) => {
     setChat({
@@ -89,6 +91,8 @@ const MyGames = () => {
             hostedCount={countsQuery.data?.past?.hosted ?? 0}
             joinedCount={countsQuery.data?.past?.joined ?? 0}
             reviewCount={reviewCount}
+            hostedReviewCount={countsQuery.data?.past?.hostedToReview ?? 0}
+            joinedReviewCount={countsQuery.data?.past?.joinedToReview ?? 0}
             reviewedIds={reviewedIds}
             onOpenChat={openChat}
             onLeaveReview={setReviewGame}

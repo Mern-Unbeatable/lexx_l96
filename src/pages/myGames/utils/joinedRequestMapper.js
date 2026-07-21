@@ -61,4 +61,10 @@ export const mapJoinedRequest = (request) => {
 export const mapPastJoinedRequest = (request) => ({
   ...mapJoinedRequest(request),
   isPast: true,
+  needsReview: Boolean(request.needsReview),
+  hostReviewed: Boolean(request.hostReviewed),
+  givenRating:
+    request.givenRating === null || request.givenRating === undefined
+      ? null
+      : Number(request.givenRating),
 })

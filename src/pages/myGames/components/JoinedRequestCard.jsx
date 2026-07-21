@@ -7,7 +7,7 @@ const statusStyles = {
   pending: 'bg-[#f0eeea] text-muted',
 }
 
-const JoinedRequestCard = ({ item, onOpenChat }) => {
+const JoinedRequestCard = ({ item, onOpenChat, onLeaveReview }) => {
   const showChat = item.canChat ?? item.status === 'accepted'
   const isPastGame =
     item.isPast || item.status === 'completed' || item.status === 'accepted'
@@ -81,7 +81,35 @@ const JoinedRequestCard = ({ item, onOpenChat }) => {
           </div>
 
           <div className="flex shrink-0 items-center justify-end">
-            {showChat ? (
+            {item.isPast && item.needsReview ? (
+              <button
+                type="button"
+                onClick={() =>
+                  onLeaveReview?.({
+                    id: item.gameId,
+                    course: item.course,
+                    date: item.date,
+                    time: item.time,
+                    host: item.host,
+                  })
+                }
+                className="rounded-full bg-[#d4a017] px-3 py-1 text-xs font-medium text-white transition hover:bg-[#b88912]"
+              >
+                Leave review
+              </button>
+            ) : item.isPast && item.hostReviewed ? (
+              <div className="text-right">
+                <span className="rounded-full bg-[#e8f0ea] px-2.5 py-1 text-xs font-medium text-forest">
+                  Reviewed
+                </span>
+                {item.givenRating !== null && (
+                  <p className="mt-1.5 flex items-center justify-end gap-1.5 text-sm text-muted">
+                    <Stars rating={item.givenRating} />
+                    <span>{item.givenRating.toFixed(1)}</span>
+                  </p>
+                )}
+              </div>
+            ) : showChat ? (
               <button
                 type="button"
                 onClick={() => onOpenChat?.(item.host, item)}

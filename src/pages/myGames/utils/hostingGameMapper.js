@@ -28,7 +28,7 @@ const mapJoinRequest = (request) => {
   const rating =
     user.rating ?? user.averageRating ?? request.rating ?? null
   const reviews =
-    user.reviewsCount ?? user.reviews ?? request.reviews ?? 0
+    user.reviewCount ?? user.reviewsCount ?? user.reviews ?? request.reviews ?? 0
 
   return {
     id: request.id,
