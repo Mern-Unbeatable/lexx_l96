@@ -25,7 +25,6 @@ export const getGames = async ({
 
   const response = await axiosInstance.get(API_ENDPOINTS.games.list, {
     params,
-    skipAuth: true,
   })
   const payload = response.data
 

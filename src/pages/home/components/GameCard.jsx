@@ -12,6 +12,37 @@ const Detail = ({ label, value }) => (
 const getGameAvailability = (game) => {
   const spotsLeft = Number(game.spotsLeft) || 0
   const status = String(game.status || '').toUpperCase()
+  const joinStatus = String(game.viewerJoinStatus || '').toUpperCase()
+
+  if (joinStatus === 'ACCEPTED') {
+    return {
+      canJoin: false,
+      badge: 'Joined',
+      badgeClass: 'bg-[#e8f0ea] text-forest',
+      spotsDisplay: 'You are in this game',
+      buttonLabel: 'Already joined',
+    }
+  }
+
+  if (joinStatus === 'PENDING') {
+    return {
+      canJoin: false,
+      badge: 'Pending',
+      badgeClass: 'bg-[#f0eeea] text-muted',
+      spotsDisplay: 'Awaiting host approval',
+      buttonLabel: 'Request pending',
+    }
+  }
+
+  if (joinStatus === 'DECLINED') {
+    return {
+      canJoin: false,
+      badge: 'Declined',
+      badgeClass: 'bg-red-50 text-red-700',
+      spotsDisplay: 'Your request was declined',
+      buttonLabel: 'Request declined',
+    }
+  }
 
   if (status === 'CANCELLED') {
     return {
