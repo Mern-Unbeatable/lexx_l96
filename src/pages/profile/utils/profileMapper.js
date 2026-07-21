@@ -22,6 +22,7 @@ export const mapUserToProfile = (user) => {
   const lastName = personalInfo.lastName ?? ''
 
   return {
+    id: user?.id ?? '',
     firstName,
     lastName,
     initials: getInitials(firstName, lastName) || 'GL',

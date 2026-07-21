@@ -31,7 +31,9 @@ const mapJoinRequest = (request) => {
     user.reviewCount ?? user.reviewsCount ?? user.reviews ?? request.reviews ?? 0
 
   return {
-    id: request.id,
+    id: user.id ?? request.user?.id,
+    joinRequestId: request.id,
+    conversationId: request.conversationId ?? null,
     status: String(request.status || 'pending').toLowerCase(),
     initials: getInitials(name),
     name,

@@ -72,6 +72,13 @@ export const API_ENDPOINTS = {
     details: (chatId) => `/chats/${id(chatId)}`,
     messages: (chatId) => `/chats/${id(chatId)}/messages`,
   },
+
+  chat: {
+    conversations: '/api/chat/conversations',
+    lookup: '/api/chat/conversations/lookup',
+    messages: (conversationId) =>
+      `/api/chat/conversations/${id(conversationId)}/messages`,
+  },
 }
 
 export default API_ENDPOINTS

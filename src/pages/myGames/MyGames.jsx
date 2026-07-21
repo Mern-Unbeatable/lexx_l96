@@ -47,18 +47,32 @@ const MyGames = () => {
   }
 
   const openChat = (player, game) => {
+    const gameId = game.id || game.gameId
+    if (!player?.id || !gameId) return
+
     setChat({
       player: {
         ...player,
-        id: player.id || player.name,
+        id: player.id,
+        initials:
+          player.initials ||
+          player.name
+            ?.replace(/\./g, '')
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join('')
+            .toUpperCase(),
       },
       game: {
         ...game,
-        id: game.id,
-        course: game.course,
+        id: gameId,
+        course: game.course || game.courseName,
         date: game.date,
         time: game.time,
       },
+      conversationId: game.conversationId ?? player.conversationId ?? null,
     })
   }
 
@@ -124,6 +138,7 @@ const MyGames = () => {
         open={Boolean(chat)}
         player={chat?.player}
         game={chat?.game}
+        conversationId={chat?.conversationId}
         onClose={() => setChat(null)}
       />
 

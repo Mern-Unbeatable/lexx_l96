@@ -5,12 +5,15 @@ import './index.css'
 import App from './App.jsx'
 import { queryClient } from './api/queryClient'
 import { AuthProvider } from './context/AuthContext'
+import { SocketProvider } from './context/SocketContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <App />
+        <SocketProvider>
+          <App />
+        </SocketProvider>
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>,
