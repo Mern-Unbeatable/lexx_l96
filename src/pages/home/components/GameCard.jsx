@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
+import { useAuth } from '../../../context/AuthContext'
 
 const Detail = ({ label, value }) => (
   <div>
@@ -7,8 +9,59 @@ const Detail = ({ label, value }) => (
   </div>
 )
 
+const getGameAvailability = (game) => {
+  const spotsLeft = Number(game.spotsLeft) || 0
+  const status = String(game.status || '').toUpperCase()
+
+  if (status === 'CANCELLED') {
+    return {
+      canJoin: false,
+      badge: 'Cancelled',
+      badgeClass: 'bg-red-50 text-red-700',
+      spotsDisplay: 'This game was cancelled',
+      buttonLabel: 'Game cancelled',
+    }
+  }
+
+  if (status === 'FULL' || spotsLeft <= 0) {
+    return {
+      canJoin: false,
+      badge: 'Full',
+      badgeClass: 'bg-amber-50 text-amber-800',
+      spotsDisplay: 'All spots taken',
+      buttonLabel: 'All spots filled',
+    }
+  }
+
+  const spotLabel = spotsLeft === 1 ? 'spot' : 'spots'
+
+  return {
+    canJoin: status === 'OPEN',
+    badge: `${spotsLeft} ${spotLabel} left`,
+    badgeClass: 'bg-[#f0eeea] text-muted',
+    spotsDisplay: `${spotsLeft} ${spotLabel} left`,
+    buttonLabel: 'Request to Join',
+  }
+}
+
 const GameCard = ({ game, onRequestJoin }) => {
-  const canJoin = game.status === 'OPEN' && game.spotsLeft > 0
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  const { canJoin, badge, badgeClass, spotsDisplay, buttonLabel } =
+    getGameAvailability(game)
+  const needsLogin = canJoin && !isAuthenticated
+  const actionLabel = needsLogin ? 'Log in to join this game' : buttonLabel
+
+  const handleActionClick = () => {
+    if (!canJoin) return
+
+    if (needsLogin) {
+      navigate('/login')
+      return
+    }
+
+    onRequestJoin?.(game)
+  }
 
   return (
     <article className="rounded-xl border border-line/60 bg-white p-6 shadow-[0_1px_3px_rgba(26,46,38,0.06)] sm:p-8">
@@ -24,8 +77,10 @@ const GameCard = ({ game, onRequestJoin }) => {
             </p>
           </div>
         </div>
-        <span className="shrink-0 rounded-full bg-[#f0eeea] px-3 py-1 text-xs font-medium text-muted">
-          {game.spotsLeft} {game.spotsLeft === 1 ? 'spot' : 'spots'} left
+        <span
+          className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${badgeClass}`}
+        >
+          {badge}
         </span>
       </div>
 
@@ -48,10 +103,7 @@ const GameCard = ({ game, onRequestJoin }) => {
         <Detail label="Age Range" value={game.ageRange} />
         <Detail label="Handicap Range" value={game.handicapRange} />
         <Detail label="Cost" value={game.cost} />
-        <Detail
-          label="Spots Available"
-          value={`${game.spotsLeft} ${game.spotsLeft === 1 ? 'spot' : 'spots'} left`}
-        />
+        <Detail label="Spots Available" value={spotsDisplay} />
       </div>
 
       {game.notes && (
@@ -67,10 +119,10 @@ const GameCard = ({ game, onRequestJoin }) => {
         <button
           type="button"
           disabled={!canJoin}
-          onClick={() => onRequestJoin(game)}
+          onClick={handleActionClick}
           className="mt-8 w-full rounded-lg bg-forest px-4 py-3.5 text-center text-[15px] font-medium text-white transition hover:bg-[#244a37] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {canJoin ? 'Request to Join' : 'Game unavailable'}
+          {actionLabel}
         </button>
       )}
     </article>

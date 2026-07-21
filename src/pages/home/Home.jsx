@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import PaymentInfoBox from '../../components/PaymentInfoBox'
 import LocationPreferencesModal from './components/LocationPreferencesModal'
@@ -8,19 +7,12 @@ import GameCard from './components/GameCard'
 import GamesPagination from './components/GamesPagination'
 import { useGames } from '../../hooks/useGames'
 import { useRequestToJoinMutation } from '../../hooks/useRequestToJoinMutation'
-import { useAuth } from '../../context/AuthContext'
 import { mapApiGame } from './utils/gameMapper'
-import {
-  showErrorAlert,
-  showLoginRequiredAlert,
-  showSuccessToast,
-} from '../../utils/toast'
+import { showErrorAlert, showSuccessToast } from '../../utils/toast'
 
 const GAMES_PER_PAGE = 5
 
 const Home = () => {
-  const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
   const joinMutation = useRequestToJoinMutation()
   const [page, setPage] = useState(1)
   const [locationOpen, setLocationOpen] = useState(false)
@@ -41,13 +33,7 @@ const Home = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleRequestJoinClick = async (game) => {
-    if (!isAuthenticated) {
-      const result = await showLoginRequiredAlert()
-      if (result.isConfirmed) navigate('/login')
-      return
-    }
-
+  const handleRequestJoinClick = (game) => {
     setSelectedGame(game)
   }
 
