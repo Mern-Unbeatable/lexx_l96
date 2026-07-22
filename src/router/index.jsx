@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { NotificationsProvider } from '../context/NotificationsContext'
 import Home from '../pages/home/Home'
 import Host from '../pages/host/Host'
 import MyGames from '../pages/myGames/MyGames'
@@ -13,7 +14,8 @@ import FirstVisitAuthRedirect from './FirstVisitAuthRedirect'
 
 const AppRouter = () => (
   <Router>
-    <Routes>
+    <NotificationsProvider>
+      <Routes>
       <Route element={<FirstVisitAuthRedirect />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
@@ -29,6 +31,7 @@ const AppRouter = () => (
         </Route>
       </Route>
     </Routes>
+    </NotificationsProvider>
   </Router>
 )
 

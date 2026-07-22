@@ -79,6 +79,14 @@ export const API_ENDPOINTS = {
     messages: (conversationId) =>
       `/api/chat/conversations/${id(conversationId)}/messages`,
   },
+
+  notifications: {
+    list: '/api/notifications',
+    unreadCount: '/api/notifications/unread-count',
+    markRead: (notificationId) =>
+      `/api/notifications/${id(notificationId)}/read`,
+    markAllRead: '/api/notifications/read-all',
+  },
 }
 
 export default API_ENDPOINTS

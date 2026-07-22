@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { useRequireAuth } from '../../hooks/useRequireAuth'
+import { getConversations } from '../../services/chatApi'
 import MyGamesHeader from './components/MyGamesHeader'
 import MyGamesTabs from './components/MyGamesTabs'
 import HostingTab from './components/HostingTab'
@@ -75,6 +76,59 @@ const MyGames = () => {
       conversationId: game.conversationId ?? player.conversationId ?? null,
     })
   }
+
+  useEffect(() => {
+    const conversationId = searchParams.get('conversation')
+    if (!conversationId) return undefined
+
+    let cancelled = false
+
+    const openConversationFromNotification = async () => {
+      try {
+        const conversations = await getConversations()
+        const conversation = conversations.find((item) => item.id === conversationId)
+
+        if (!conversation || cancelled) return
+
+        const nextTab =
+          searchParams.get('tab') === 'hosting' || conversation.viewerTab === 'hosting'
+            ? 'hosting'
+            : 'joined'
+
+        openChat(
+          {
+            id: conversation.otherUser.id,
+            name: conversation.otherUser.name,
+          },
+          {
+            id: conversation.game.id,
+            courseName: conversation.game.courseName,
+            date: conversation.game.date,
+            time: conversation.game.time,
+            conversationId: conversation.id,
+          },
+        )
+
+        setSearchParams(
+          (prev) => {
+            const next = new URLSearchParams(prev)
+            next.set('tab', nextTab)
+            next.delete('conversation')
+            return next
+          },
+          { replace: true },
+        )
+      } catch {
+        // Ignore lookup errors and keep the page usable.
+      }
+    }
+
+    openConversationFromNotification()
+
+    return () => {
+      cancelled = true
+    }
+  }, [searchParams, setSearchParams])
 
   const handleReviewSubmit = async ({ gameId, revieweeId, rating }) => {
     await leaveReviewMutation.mutateAsync({
