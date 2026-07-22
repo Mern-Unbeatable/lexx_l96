@@ -9,13 +9,15 @@ import {
   LogOut,
   Menu,
   X,
+  Mail,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { showLoginRequiredToast } from "../utils/toast";
 import NotificationBell from "./NotificationBell";
+import ContactModal from "./ContactModal";
 
 const linkBase =
-  "inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors";
+  "inline-flex h-full shrink-0 items-center gap-2 whitespace-nowrap border-b-2 text-sm transition-colors";
 
 const navClass = ({ isActive }) =>
   isActive
@@ -46,6 +48,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { isAuthenticated: loggedIn, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -180,6 +183,29 @@ const Navbar = () => {
               </NavLink>
             ),
           )}
+          <button
+            type="button"
+            onClick={() => {
+              closeMenu();
+              setContactOpen(true);
+            }}
+            tabIndex={menuOpen ? 0 : -1}
+            className={`${mobileLinkBase} text-ink hover:bg-[#f5f5f5] ${
+              menuOpen
+                ? "translate-x-0 opacity-100"
+                : "-translate-x-2 opacity-0"
+            }`}
+            style={{
+              transitionDelay: menuOpen
+                ? `${80 + visibleMobileItems.length * 40}ms`
+                : "0ms",
+            }}
+          >
+            <span className="inline-flex items-center gap-3">
+              <Mail size={18} strokeWidth={1.75} />
+              Contact
+            </span>
+          </button>
           {loggedIn ? (
             <button
               type="button"
@@ -214,28 +240,29 @@ const Navbar = () => {
         </nav>
       </div>
 
-      <nav className="container mx-auto hidden h-[4.5rem] grid-cols-[1fr_auto_1fr] items-stretch bg-[#ffffff] px-4 sm:px-6 xl:grid 2xl:h-[5rem]">
-        <div className="flex items-stretch justify-start">
+      <nav className="container relative mx-auto hidden h-[4.5rem] items-stretch bg-[#ffffff] px-4 sm:px-6 xl:flex 2xl:h-[5rem]">
+        <div className="flex min-w-0 flex-1 items-stretch justify-start pr-[5.5rem] sm:pr-[6.5rem] 2xl:pr-[7.5rem]">
           <NavLink to="/" className={navClass} end>
-            <Search size={18} strokeWidth={1.75} />
+            <Search size={18} strokeWidth={1.75} className="shrink-0" />
             Find Games
           </NavLink>
         </div>
 
-        <Link to="/" className="flex items-center gap-2.5 px-2 xl:gap-3">
+        <Link
+          to="/"
+          className="absolute left-1/2 top-1/2 z-10 flex max-w-[min(100%,14rem)] -translate-x-1/2 -translate-y-1/2 items-center gap-2 px-2 sm:max-w-[min(100%,16rem)] sm:gap-2.5 2xl:max-w-none 2xl:gap-3"
+        >
           <img
             src="/logo.png"
             alt="Golf Linking"
-            className="h-14 w-auto object-contain 2xl:h-16"
+            className="h-12 w-auto shrink-0 object-contain 2xl:h-14"
           />
-          <span className="font-serif text-lg tracking-tight text-ink whitespace-nowrap 2xl:text-xl">
+          <span className="hidden min-w-0 font-serif text-base tracking-tight text-ink 2xl:inline 2xl:text-lg">
             <span className="font-semibold">Golf Linking</span>
-            <span className="mx-1.5 text-muted">·</span>
-            <span className="italic text-muted">Premium Pairings</span>
           </span>
         </Link>
 
-        <div className="flex items-stretch justify-end gap-4 sm:gap-6 2xl:gap-8">
+        <div className="flex min-w-0 flex-1 items-stretch justify-end gap-2 pl-[5.5rem] sm:gap-3 sm:pl-[6.5rem] 2xl:gap-4 2xl:pl-[7.5rem]">
           {visibleDesktopRightItems.map(
             ({ to, label, icon: Icon, requiresAuth }) => (
               <NavLink
@@ -246,17 +273,25 @@ const Navbar = () => {
                   if (requiresAuth) handleProtectedNavClick(event, to);
                 }}
               >
-                <Icon size={18} strokeWidth={1.75} />
+                <Icon size={18} strokeWidth={1.75} className="shrink-0" />
                 {label}
               </NavLink>
             ),
           )}
+          <button
+            type="button"
+            onClick={() => setContactOpen(true)}
+            className="inline-flex h-full shrink-0 items-center gap-2 whitespace-nowrap border-b-2 border-transparent text-sm text-muted transition-colors hover:text-ink"
+          >
+            <Mail size={18} strokeWidth={1.75} className="shrink-0" />
+            Contact
+          </button>
           {loggedIn && (
-            <div className="flex items-center self-stretch">
+            <div className="flex shrink-0 items-center self-stretch">
               <NotificationBell />
             </div>
           )}
-          <div className="flex items-center">
+          <div className="flex shrink-0 items-center">
             {loggedIn ? (
               <button
                 type="button"
@@ -278,6 +313,8 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </header>
   );
 };

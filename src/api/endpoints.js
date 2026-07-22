@@ -87,6 +87,10 @@ export const API_ENDPOINTS = {
       `/api/notifications/${id(notificationId)}/read`,
     markAllRead: '/api/notifications/read-all',
   },
+
+  contact: {
+    submit: '/api/contact',
+  },
 }
 
 export default API_ENDPOINTS
