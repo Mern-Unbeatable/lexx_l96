@@ -78,22 +78,22 @@ const NotificationBell = ({ className = '' }) => {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-[80] mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-line bg-white shadow-[0_16px_40px_rgba(26,46,38,0.14)]">
-          <div className="flex items-center justify-between border-b border-line px-4 py-3">
+        <div className="fixed left-4 right-4 top-[4.25rem] z-[80] overflow-hidden rounded-xl border border-line bg-white shadow-[0_16px_40px_rgba(26,46,38,0.14)] max-xl:max-h-[min(20rem,calc(100dvh-5.5rem))] xl:absolute xl:left-auto xl:right-0 xl:top-full xl:mt-2 xl:w-[22rem] xl:max-h-none">
+          <div className="flex items-center justify-between gap-2 border-b border-line px-3 py-3 sm:px-4">
             <p className="text-sm font-semibold text-ink">Notifications</p>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={() => markAllAsRead()}
                 disabled={isMarkingAllRead}
-                className="text-xs font-medium text-forest transition hover:text-ink disabled:opacity-50"
+                className="shrink-0 text-xs font-medium text-forest transition hover:text-ink disabled:opacity-50"
               >
                 Mark all read
               </button>
             )}
           </div>
 
-          <div className="max-h-80 overflow-y-auto">
+          <div className="max-h-80 overflow-y-auto overscroll-contain max-xl:max-h-[min(18rem,calc(100dvh-8rem))]">
             {isLoading && (
               <p className="px-4 py-6 text-center text-sm text-muted">
                 Loading notifications…
@@ -110,7 +110,7 @@ const NotificationBell = ({ className = '' }) => {
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`flex items-start gap-2 border-b border-line/70 px-3 py-3 transition last:border-b-0 hover:bg-cream ${
+                  className={`flex flex-col gap-2 border-b border-line/70 px-3 py-3 transition last:border-b-0 hover:bg-cream sm:flex-row sm:items-start sm:gap-2 ${
                     notification.isRead ? 'bg-white' : 'bg-[#f4f8f5]'
                   }`}
                 >
@@ -119,22 +119,24 @@ const NotificationBell = ({ className = '' }) => {
                     onClick={() => handleNotificationClick(notification)}
                     className="min-w-0 flex-1 text-left"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm font-medium text-ink">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-medium text-ink break-words">
                         {notification.title}
                       </p>
                       <span className="shrink-0 text-[11px] text-muted">
                         {formatRelativeTime(notification.createdAt)}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-muted">{notification.body}</p>
+                    <p className="mt-1 text-sm text-muted break-words">
+                      {notification.body}
+                    </p>
                   </button>
                   {!notification.isRead && (
                     <button
                       type="button"
                       onClick={(event) => handleMarkAsRead(event, notification.id)}
                       aria-label="Mark notification as read"
-                      className="mt-0.5 shrink-0 rounded-lg border border-line bg-white px-2 py-1 text-xs font-medium text-forest transition hover:bg-cream"
+                      className="self-end rounded-lg border border-line bg-white px-2.5 py-1 text-xs font-medium text-forest transition hover:bg-cream sm:mt-0.5 sm:shrink-0 sm:self-auto"
                     >
                       Mark
                     </button>
