@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { showLoginRequiredToast } from "../utils/toast";
+import NotificationBell from "./NotificationBell";
 
 const linkBase =
   "inline-flex h-full items-center gap-2 border-b-2 text-sm transition-colors";
@@ -97,7 +98,9 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <button
+        <div className="flex items-center gap-2">
+          {loggedIn && <NotificationBell />}
+          <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
           className="inline-flex size-10 items-center justify-center rounded-lg border border-line bg-[#ffffff] text-ink transition hover:bg-[#f5f5f5]"
@@ -125,6 +128,7 @@ const Navbar = () => {
             />
           </span>
         </button>
+        </div>
       </div>
 
       <button
@@ -246,6 +250,11 @@ const Navbar = () => {
                 {label}
               </NavLink>
             ),
+          )}
+          {loggedIn && (
+            <div className="flex items-center self-stretch">
+              <NotificationBell />
+            </div>
           )}
           <div className="flex items-center">
             {loggedIn ? (

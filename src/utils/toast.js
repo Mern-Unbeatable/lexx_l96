@@ -61,6 +61,14 @@ export const showLoginRequiredToast = (
     title: message,
   })
 
+export const showInfoToast = (title, text) =>
+  Swal.fire({
+    ...toastDefaults,
+    icon: 'info',
+    title,
+    text,
+  })
+
 export const showLoginRequiredAlert = () =>
   Swal.fire({
     icon: 'info',
