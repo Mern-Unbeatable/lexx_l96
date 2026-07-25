@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 const stats = [
   { value: "12,400+", label: "Active Players" },
   { value: "840", label: "Courses Listed" },
@@ -8,7 +6,7 @@ const stats = [
 
 const AuthBrandPanel = () => (
   <aside className="relative hidden w-[48%] flex-col px-12 py-10 text-white lg:flex xl:px-16">
-    <Link to="/" className="mt-10 flex items-center gap-4 xl:mt-14">
+    <div className="mt-10 flex items-center gap-4 xl:mt-14">
       <img
         src="/logoWhite.png"
         alt=""
@@ -17,7 +15,7 @@ const AuthBrandPanel = () => (
       <span className="font-inter text-2xl font-semibold tracking-tight xl:text-3xl">
         Golf Linking
       </span>
-    </Link>
+    </div>
 
     <div className="flex flex-1 flex-col justify-center pb-16">
       <div className="max-w-md">

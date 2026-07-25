@@ -260,10 +260,10 @@ const ForgotPassword = () => {
 
       <main className="flex flex-1 flex-col justify-center bg-white px-6 py-12 sm:px-12 lg:rounded-l-[5rem] lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-md">
-          <Link to="/" className="mb-10 flex items-center gap-2.5 lg:hidden">
+          <div className="mb-10 flex items-center gap-2.5 lg:hidden">
             <img src="/logo.png" alt="" className="h-8 w-auto" />
             <span className="text-base font-semibold text-ink">Golf Linking</span>
-          </Link>
+          </div>
 
           {step === 'email' && (
             <EmailStep
