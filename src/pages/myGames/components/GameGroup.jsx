@@ -12,6 +12,7 @@ const GameGroup = ({
   onDecline,
   onOpenChat,
   onLeaveReview,
+  onViewReviews,
 }) => {
   const [open, setOpen] = useState(defaultOpen)
   const visibleRequests = game.requests || []
@@ -88,6 +89,7 @@ const GameGroup = ({
               onAccept={(player) => onAccept?.(player, game)}
               onDecline={(player) => onDecline?.(player, game)}
               onOpenChat={(player) => onOpenChat?.(player, game)}
+              onViewReviews={onViewReviews}
             />
             )
           })}

@@ -22,6 +22,10 @@ export const queryKeys = {
     list: (params) => ['notifications', 'list', params],
     unreadCount: ['notifications', 'unread-count'],
   },
+  reviews: {
+    all: ['reviews'],
+    forUser: (userId) => ['reviews', 'user', userId],
+  },
   courses: {
     all: ['courses'],
     list: (search) => ['courses', 'list', search],

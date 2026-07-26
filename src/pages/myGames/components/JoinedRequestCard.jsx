@@ -1,5 +1,6 @@
 import { LandPlot, MapPin, MessageCircle } from 'lucide-react'
 import Stars from './Stars'
+import ClickableRating from '../../../components/ClickableRating'
 
 const statusStyles = {
   accepted: 'bg-[#e8f0ea] text-forest',
@@ -7,7 +8,7 @@ const statusStyles = {
   pending: 'bg-[#f0eeea] text-muted',
 }
 
-const JoinedRequestCard = ({ item, onOpenChat, onLeaveReview }) => {
+const JoinedRequestCard = ({ item, onOpenChat, onLeaveReview, onViewReviews }) => {
   const showChat = item.canChat ?? item.status === 'accepted'
   const isPastGame =
     item.isPast || item.status === 'completed' || item.status === 'accepted'
@@ -59,12 +60,16 @@ const JoinedRequestCard = ({ item, onOpenChat, onLeaveReview }) => {
                 Age {item.host.age} · Handicap {item.host.handicap}
               </p>
               {item.host.reviews > 0 ? (
-                <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm text-muted">
-                  <Stars rating={item.host.rating} />
-                  <span>
-                    {item.host.rating.toFixed(1)} · {item.host.reviews} reviews
-                  </span>
-                </p>
+                <ClickableRating
+                  rating={item.host.rating}
+                  reviewCount={item.host.reviews}
+                  onClick={() =>
+                    onViewReviews?.({
+                      userId: item.host.id,
+                      userName: item.host.name,
+                    })
+                  }
+                />
               ) : (
                 <p className="mt-1.5 text-sm text-muted">No reviews yet</p>
               )}

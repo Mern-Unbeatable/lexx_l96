@@ -11,6 +11,7 @@ export const useLeaveReviewMutation = () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myGames.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.myGames.counts })
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.me })
+      queryClient.invalidateQueries({ queryKey: queryKeys.reviews.all })
     },
   })
 }

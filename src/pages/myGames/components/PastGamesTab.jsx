@@ -14,6 +14,7 @@ const PastGamesTab = ({
   reviewedIds,
   onOpenChat,
   onLeaveReview,
+  onViewReviews,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const pastParam = searchParams.get('past')
@@ -52,6 +53,7 @@ const PastGamesTab = ({
           joinedCount={joinedCount}
           onOpenChat={onOpenChat}
           onLeaveReview={onLeaveReview}
+          onViewReviews={onViewReviews}
         />
       )}
     </>

@@ -64,7 +64,7 @@ export const API_ENDPOINTS = {
     list: '/reviews',
     create: '/reviews',
     createForGame: (gameId) => `/api/reviews/${id(gameId)}`,
-    forUser: (userId) => `/users/${id(userId)}/reviews`,
+    forUser: (userId) => `/api/reviews/user/${id(userId)}`,
   },
 
   chats: {

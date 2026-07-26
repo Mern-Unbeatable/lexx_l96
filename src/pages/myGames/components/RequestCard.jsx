@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Loader2, MessageCircle } from 'lucide-react'
-import Stars from './Stars'
+import ClickableRating from '../../../components/ClickableRating'
 
 const RequestCard = ({
   request,
@@ -9,6 +9,7 @@ const RequestCard = ({
   onAccept,
   onDecline,
   onOpenChat,
+  onViewReviews,
 }) => {
   const [accepting, setAccepting] = useState(false)
   const [declining, setDeclining] = useState(false)
@@ -74,12 +75,16 @@ const RequestCard = ({
               Age {request.age} · Handicap {request.handicap}
             </p>
             {request.reviews > 0 ? (
-              <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm text-muted">
-                <Stars rating={request.rating} />
-                <span>
-                  {request.rating.toFixed(1)} · {request.reviews} reviews
-                </span>
-              </p>
+              <ClickableRating
+                rating={request.rating}
+                reviewCount={request.reviews}
+                onClick={() =>
+                  onViewReviews?.({
+                    userId: request.id,
+                    userName: request.name,
+                  })
+                }
+              />
             ) : (
               <p className="mt-1.5 text-sm text-muted">No reviews yet</p>
             )}

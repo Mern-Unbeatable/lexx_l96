@@ -1,7 +1,7 @@
 import { Pencil, Check } from "lucide-react";
-import Stars from "../../myGames/components/Stars";
+import ClickableRating from "../../../components/ClickableRating";
 
-const ProfileHeader = ({ profile, fullName, onEdit }) => (
+const ProfileHeader = ({ profile, fullName, onEdit, onViewReviews }) => (
   <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
     <div className="flex items-start gap-4">
       <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#ebe8e1] text-lg font-semibold text-ink sm:size-18 sm:text-xl">
@@ -21,13 +21,14 @@ const ProfileHeader = ({ profile, fullName, onEdit }) => (
           )}
         </div>
         {profile.totalReviews > 0 ? (
-          <p className="mt-2 flex flex-wrap items-center gap-1.5 text-sm text-muted">
-            <Stars rating={profile.averageRating} />
-            <span>
-              {profile.averageRating.toFixed(1)} out of 5 · {profile.totalReviews}{" "}
-              {profile.totalReviews === 1 ? "review" : "reviews"}
-            </span>
-          </p>
+          <ClickableRating
+            rating={profile.averageRating}
+            reviewCount={profile.totalReviews}
+            suffix={profile.totalReviews === 1 ? "review" : "reviews"}
+            showOutOfFive
+            onClick={onViewReviews}
+            className="mt-2"
+          />
         ) : (
           <p className="mt-2 text-sm text-muted">No reviews yet</p>
         )}

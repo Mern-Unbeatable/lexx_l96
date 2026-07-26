@@ -5,6 +5,7 @@ import PersonalDetails from './components/PersonalDetails'
 import MembershipCard from './components/MembershipCard'
 import ProfileFooter from './components/ProfileFooter'
 import EditPersonalDetailsModal from './components/EditPersonalDetailsModal'
+import ReviewsDetailModal from '../../components/ReviewsDetailModal'
 import { useAuth } from '../../context/AuthContext'
 import { useRequireAuth } from '../../hooks/useRequireAuth'
 import {
@@ -28,6 +29,7 @@ const Profile = () => {
   } = useAuth()
   const updateProfileMutation = useUpdateProfileMutation()
   const [editOpen, setEditOpen] = useState(false)
+  const [reviewsOpen, setReviewsOpen] = useState(false)
   const profile = useMemo(() => mapUserToProfile(user), [user])
   const fullName = getProfileFullName(profile)
 
@@ -66,6 +68,7 @@ const Profile = () => {
           profile={profile}
           fullName={fullName}
           onEdit={() => setEditOpen(true)}
+          onViewReviews={() => setReviewsOpen(true)}
         />
         <ProfileStats profile={profile} />
 
@@ -83,6 +86,13 @@ const Profile = () => {
         profile={profile}
         onClose={() => setEditOpen(false)}
         onSave={handleSave}
+      />
+
+      <ReviewsDetailModal
+        open={reviewsOpen}
+        userId={profile.id}
+        userName={fullName}
+        onClose={() => setReviewsOpen(false)}
       />
     </div>
   )

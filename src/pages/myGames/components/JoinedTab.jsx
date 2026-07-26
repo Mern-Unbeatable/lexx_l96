@@ -4,7 +4,7 @@ import PaymentInfoBox from '../../../components/PaymentInfoBox'
 import { useMyJoinedGames } from '../../../hooks/useMyJoinedGames'
 import { mapJoinedRequest } from '../utils/joinedRequestMapper'
 
-const JoinedTab = ({ joinedCount, onOpenChat }) => {
+const JoinedTab = ({ joinedCount, onOpenChat, onViewReviews }) => {
   const joinedQuery = useMyJoinedGames()
   const requests = useMemo(
     () => (joinedQuery.data?.requests ?? []).map(mapJoinedRequest),
@@ -59,6 +59,7 @@ const JoinedTab = ({ joinedCount, onOpenChat }) => {
               key={item.id}
               item={item}
               onOpenChat={onOpenChat}
+              onViewReviews={onViewReviews}
             />
           ))}
         </div>

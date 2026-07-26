@@ -4,8 +4,32 @@ import { Star, X } from 'lucide-react'
 const ENTER_MS = 20
 const EXIT_MS = 280
 
-const StarPicker = ({ value, onChange }) => (
-  <div className="flex items-center gap-1.5">
+const RATING_CATEGORIES = [
+  {
+    key: 'punctuality',
+    label: 'Punctuality',
+    hint: 'Were they on time?',
+  },
+  {
+    key: 'friendliness',
+    label: 'Friendliness',
+    hint: 'How was the company on the round?',
+  },
+  {
+    key: 'handicapAccuracy',
+    label: 'Handicap accuracy',
+    hint: 'Did their play match their handicap?',
+  },
+]
+
+const emptyRatings = () =>
+  RATING_CATEGORIES.reduce((acc, category) => {
+    acc[category.key] = 0
+    return acc
+  }, {})
+
+const StarPicker = ({ value, onChange, size = 26 }) => (
+  <div className="flex items-center gap-1">
     {[1, 2, 3, 4, 5].map((star) => {
       const active = star <= value
       return (
@@ -17,7 +41,7 @@ const StarPicker = ({ value, onChange }) => (
           aria-label={`${star} star${star > 1 ? 's' : ''}`}
         >
           <Star
-            size={28}
+            size={size}
             strokeWidth={1.5}
             className={active ? 'fill-[#F0A500] text-[#F0A500]' : 'text-line'}
           />
@@ -30,13 +54,15 @@ const StarPicker = ({ value, onChange }) => (
 const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [rating, setRating] = useState(0)
+  const [ratings, setRatings] = useState(emptyRatings)
+  const [notes, setNotes] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     if (open) {
-      setRating(0)
+      setRatings(emptyRatings())
+      setNotes('')
       setError('')
       setSubmitting(false)
       setMounted(true)
@@ -67,10 +93,19 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
       ? `Host · ${game.host.name}`
       : ''
 
+  const updateRating = (key, value) => {
+    setRatings((current) => ({ ...current, [key]: value }))
+    setError('')
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (rating < 1) {
-      setError('Please select a star rating')
+
+    const incomplete = RATING_CATEGORIES.find(
+      (category) => (ratings[category.key] ?? 0) < 1,
+    )
+    if (incomplete) {
+      setError(`Please rate ${incomplete.label.toLowerCase()}`)
       return
     }
 
@@ -79,12 +114,23 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
       return
     }
 
+    const ratingValues = RATING_CATEGORIES.map(
+      (category) => ratings[category.key],
+    )
+    const overallRating = Math.round(
+      ratingValues.reduce((sum, value) => sum + value, 0) / ratingValues.length,
+    )
+
     setSubmitting(true)
     try {
       await onSubmit?.({
         gameId: game.id,
         revieweeId: reviewee.id,
-        rating,
+        rating: overallRating,
+        punctuality: ratings.punctuality,
+        friendliness: ratings.friendliness,
+        handicapAccuracy: ratings.handicapAccuracy,
+        notes: notes.trim(),
       })
       onClose()
     } finally {
@@ -110,13 +156,13 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="leave-review-title"
-        className={`relative z-10 w-full max-w-lg overflow-hidden rounded-t-[1.35rem] border border-white/70 bg-white shadow-[0_24px_60px_rgba(26,46,38,0.22)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:rounded-[1.35rem] ${
+        className={`relative z-10 flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-[1.35rem] border border-white/70 bg-white shadow-[0_24px_60px_rgba(26,46,38,0.22)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:max-h-[85vh] sm:rounded-[1.35rem] ${
           visible
             ? 'translate-y-0 opacity-100 scale-100'
             : 'translate-y-8 opacity-0 scale-[0.97] sm:translate-y-4'
         }`}
       >
-        <header className="flex items-start justify-between gap-3 border-b border-line/70 px-5 py-4 sm:px-6">
+        <header className="flex shrink-0 items-start justify-between gap-3 border-b border-line/70 px-5 py-4 sm:px-6">
           <div>
             <h2
               id="leave-review-title"
@@ -139,24 +185,56 @@ const LeaveReviewModal = ({ open, onClose, game, onSubmit }) => {
           </button>
         </header>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="space-y-5 px-5 py-5 sm:px-6">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+            {RATING_CATEGORIES.map((category) => (
+              <div
+                key={category.key}
+                className="rounded-xl border border-line/80 bg-[#fafafa] px-4 py-3.5"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-base font-medium text-ink">
+                      {category.label}
+                    </p>
+                    <p className="mt-0.5 text-sm text-muted">{category.hint}</p>
+                  </div>
+                  <StarPicker
+                    value={ratings[category.key]}
+                    onChange={(next) => updateRating(category.key, next)}
+                  />
+                </div>
+              </div>
+            ))}
+
             <div>
-              <p className="mb-2 text-base font-medium text-ink">Your rating</p>
-              <StarPicker
-                value={rating}
-                onChange={(next) => {
-                  setRating(next)
-                  setError('')
-                }}
+              <label
+                htmlFor="review-notes"
+                className="mb-2 block text-base font-medium text-ink"
+              >
+                Notes
+                <span className="ml-1.5 text-sm font-normal text-muted">
+                  (optional)
+                </span>
+              </label>
+              <textarea
+                id="review-notes"
+                rows={4}
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                placeholder="Anything else worth mentioning about the round…"
+                className="w-full resize-none rounded-xl border border-line bg-white px-3.5 py-3 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-forest focus:ring-2 focus:ring-forest/15"
               />
             </div>
 
-            {/* Backend expects rating only (no comment/message). */}
             {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 border-t border-line/70 px-5 py-4 sm:px-6">
+          <div className="flex shrink-0 items-center justify-end gap-2.5 border-t border-line/70 px-5 py-4 sm:px-6">
             <button
               type="button"
               onClick={onClose}

@@ -12,6 +12,7 @@ import { showErrorAlert } from '../../../utils/toast'
 const HostingTab = ({
   upcomingCount,
   onOpenChat,
+  onViewReviews,
 }) => {
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
   const [declinedIds, setDeclinedIds] = useState(() => new Set())
@@ -103,6 +104,7 @@ const HostingTab = ({
               onAccept={handleAccept}
               onDecline={handleDecline}
               onOpenChat={onOpenChat}
+              onViewReviews={onViewReviews}
             />
           ))}
         </div>

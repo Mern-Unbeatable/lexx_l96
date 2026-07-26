@@ -3,7 +3,12 @@ import JoinedRequestCard from './JoinedRequestCard'
 import { useMyPastJoinedGames } from '../../../hooks/useMyPastJoinedGames'
 import { mapPastJoinedRequest } from '../utils/joinedRequestMapper'
 
-const PastJoinedGames = ({ joinedCount, onOpenChat, onLeaveReview }) => {
+const PastJoinedGames = ({
+  joinedCount,
+  onOpenChat,
+  onLeaveReview,
+  onViewReviews,
+}) => {
   const pastJoinedQuery = useMyPastJoinedGames()
   const requests = useMemo(
     () => (pastJoinedQuery.data?.requests ?? []).map(mapPastJoinedRequest),
@@ -56,6 +61,7 @@ const PastJoinedGames = ({ joinedCount, onOpenChat, onLeaveReview }) => {
               item={item}
               onOpenChat={onOpenChat}
               onLeaveReview={onLeaveReview}
+              onViewReviews={onViewReviews}
             />
           ))}
         </div>

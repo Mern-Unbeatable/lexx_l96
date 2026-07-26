@@ -11,6 +11,7 @@ import PastGamesTab from './components/PastGamesTab'
 import MyGamesFooter from './components/MyGamesFooter'
 import MatchChat from './components/MatchChat'
 import LeaveReviewModal from './components/LeaveReviewModal'
+import ReviewsDetailModal from '../../components/ReviewsDetailModal'
 import { useMyGamesCounts } from '../../hooks/useMyGamesCounts'
 import { useLeaveReviewMutation } from '../../hooks/useLeaveReviewMutation'
 
@@ -24,6 +25,7 @@ const MyGames = () => {
   const [reviewedIds, setReviewedIds] = useState(() => new Set())
   const [chat, setChat] = useState(null)
   const [reviewGame, setReviewGame] = useState(null)
+  const [reviewsUser, setReviewsUser] = useState(null)
   const countsQuery = useMyGamesCounts()
   const leaveReviewMutation = useLeaveReviewMutation()
 
@@ -130,16 +132,29 @@ const MyGames = () => {
     }
   }, [searchParams, setSearchParams])
 
-  const handleReviewSubmit = async ({ gameId, revieweeId, rating }) => {
+  const handleReviewSubmit = async ({
+    gameId,
+    revieweeId,
+    rating,
+    punctuality,
+    friendliness,
+    handicapAccuracy,
+    notes,
+  }) => {
     await leaveReviewMutation.mutateAsync({
       gameId,
       revieweeId,
       rating,
+      punctuality,
+      friendliness,
+      handicapAccuracy,
+      notes,
     })
 
     setReviewedIds((prev) => new Set(prev).add(gameId))
+    setReviewGame(null)
 
-    await Swal.fire({
+    void Swal.fire({
       icon: 'success',
       title: 'Review submitted!',
       text: 'Thanks for rating your round.',
@@ -166,11 +181,16 @@ const MyGames = () => {
           <HostingTab
             upcomingCount={hostingCount}
             onOpenChat={openChat}
+            onViewReviews={setReviewsUser}
           />
         )}
 
         {tab === 'joined' && (
-          <JoinedTab joinedCount={joinedCount} onOpenChat={openChat} />
+          <JoinedTab
+            joinedCount={joinedCount}
+            onOpenChat={openChat}
+            onViewReviews={setReviewsUser}
+          />
         )}
 
         {tab === 'past' && (
@@ -183,6 +203,7 @@ const MyGames = () => {
             reviewedIds={reviewedIds}
             onOpenChat={openChat}
             onLeaveReview={setReviewGame}
+            onViewReviews={setReviewsUser}
           />
         )}
       </div>
@@ -201,6 +222,13 @@ const MyGames = () => {
         game={reviewGame}
         onClose={() => setReviewGame(null)}
         onSubmit={handleReviewSubmit}
+      />
+
+      <ReviewsDetailModal
+        open={Boolean(reviewsUser?.userId)}
+        userId={reviewsUser?.userId}
+        userName={reviewsUser?.userName}
+        onClose={() => setReviewsUser(null)}
       />
     </div>
   )
