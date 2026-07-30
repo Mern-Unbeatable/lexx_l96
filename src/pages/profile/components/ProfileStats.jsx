@@ -11,7 +11,7 @@ const ProfileStats = ({ profile }) => (
     <StatCard
       icon={Trophy}
       value={profile.roundsPlayed}
-      label="Rounds Played"
+      label="Rounds Joined"
     />
     <StatCard
       icon={Users}
