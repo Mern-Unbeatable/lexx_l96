@@ -45,13 +45,22 @@ const mapJoinRequest = (request) => {
   }
 }
 
-export const mapHostingGame = (game) => ({
-  ...game,
-  course: game.courseName || 'Course unavailable',
-  date: formatGameDate(game.date),
-  time: game.time || 'Time unavailable',
-  pending: Number(game.pendingCount) || 0,
-  requests: Array.isArray(game.joinRequests)
+export const mapHostingGame = (game) => {
+  const requests = Array.isArray(game.joinRequests)
     ? game.joinRequests.map(mapJoinRequest)
-    : [],
-})
+    : []
+  const acceptedCount =
+    Number(game.acceptedCount) ||
+    requests.filter((request) => request.status === 'accepted').length
+
+  return {
+    ...game,
+    course: game.courseName || 'Course unavailable',
+    date: formatGameDate(game.date),
+    time: game.time || 'Time unavailable',
+    pending: Number(game.pendingCount) || 0,
+    acceptedCount,
+    canDelete: game.canDelete ?? acceptedCount === 0,
+    requests,
+  }
+}

@@ -5,9 +5,10 @@ import PaymentInfoBox from '../../../components/PaymentInfoBox'
 import { useMyHostingGames } from '../../../hooks/useMyHostingGames'
 import { useAcceptJoinRequestMutation } from '../../../hooks/useAcceptJoinRequestMutation'
 import { useDeclineJoinRequestMutation } from '../../../hooks/useDeclineJoinRequestMutation'
+import { useDeleteGameMutation } from '../../../hooks/useDeleteGameMutation'
 import { mapHostingGame } from '../utils/hostingGameMapper'
 import { showAcceptSuccess } from '../../../utils/acceptFeedback'
-import { showErrorAlert } from '../../../utils/toast'
+import { showErrorAlert, showSuccessToast } from '../../../utils/toast'
 
 const HostingTab = ({
   upcomingCount,
@@ -16,8 +17,10 @@ const HostingTab = ({
 }) => {
   const [acceptedIds, setAcceptedIds] = useState(() => new Set())
   const [declinedIds, setDeclinedIds] = useState(() => new Set())
+  const [deletingGameId, setDeletingGameId] = useState(null)
   const acceptMutation = useAcceptJoinRequestMutation()
   const declineMutation = useDeclineJoinRequestMutation()
+  const deleteGameMutation = useDeleteGameMutation()
   const hostingQuery = useMyHostingGames()
   const games = useMemo(
     () => (hostingQuery.data?.games ?? []).map(mapHostingGame),
@@ -51,6 +54,31 @@ const HostingTab = ({
     } catch (error) {
       await showErrorAlert(error?.message || 'Unable to decline join request.')
       throw error
+    }
+  }
+
+  const handleDelete = async (game) => {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: 'Delete this game?',
+      text: 'This cannot be undone. You can only delete a game before accepting any players.',
+      showCancelButton: true,
+      confirmButtonText: 'Delete game',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#b42318',
+      cancelButtonColor: '#6b7280',
+    })
+
+    if (!result.isConfirmed) return
+
+    setDeletingGameId(game.id)
+    try {
+      await deleteGameMutation.mutateAsync(game.id)
+      showSuccessToast('Game deleted successfully.')
+    } catch (error) {
+      await showErrorAlert(error?.message || 'Unable to delete game.')
+    } finally {
+      setDeletingGameId(null)
     }
   }
 
@@ -105,6 +133,8 @@ const HostingTab = ({
               onDecline={handleDecline}
               onOpenChat={onOpenChat}
               onViewReviews={onViewReviews}
+              onDelete={handleDelete}
+              deleting={deletingGameId === game.id}
             />
           ))}
         </div>

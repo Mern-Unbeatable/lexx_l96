@@ -54,6 +54,21 @@ export const createGame = async (payload) => {
   return response.data?.data ?? response.data
 }
 
+export const deleteGame = async (gameId) => {
+  const response = await axiosInstance.delete(API_ENDPOINTS.games.remove(gameId))
+  const payload = response.data
+
+  if (payload?.success === false) {
+    throw {
+      status: response.status,
+      message: payload?.message || 'Unable to delete game.',
+      data: payload,
+    }
+  }
+
+  return payload?.data ?? payload
+}
+
 export const requestToJoinGame = async ({ gameId, message }) => {
   const response = await axiosInstance.post(
     API_ENDPOINTS.games.requestToJoin(gameId),

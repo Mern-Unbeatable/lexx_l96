@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, LandPlot } from 'lucide-react'
+import { ChevronDown, LandPlot, Trash2 } from 'lucide-react'
 import RequestCard from './RequestCard'
 
 const GameGroup = ({
@@ -13,9 +13,18 @@ const GameGroup = ({
   onOpenChat,
   onLeaveReview,
   onViewReviews,
+  onDelete,
+  deleting = false,
 }) => {
   const [open, setOpen] = useState(defaultOpen)
   const visibleRequests = game.requests || []
+
+  const hasAcceptedInSession = visibleRequests.some((request) => {
+    const requestKey = request.joinRequestId || request.id
+    return acceptedIds?.has(requestKey) || request.status === 'accepted'
+  })
+
+  const canDelete = (game.canDelete ?? game.acceptedCount === 0) && !hasAcceptedInSession
 
   return (
     <div className="space-y-2.5">
@@ -57,6 +66,18 @@ const GameGroup = ({
             Leave review
           </button>
         )}
+        {canDelete && (
+          <button
+            type="button"
+            onClick={() => onDelete?.(game)}
+            disabled={deleting}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium text-muted transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
+            aria-label="Delete game"
+          >
+            <Trash2 size={14} strokeWidth={1.75} />
+            Delete
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -79,18 +100,18 @@ const GameGroup = ({
               acceptedIds?.has(requestKey) || request.status === 'accepted'
 
             return (
-            <RequestCard
-              key={requestKey}
-              request={request}
-              accepted={isAccepted}
-              declined={
-                declinedIds?.has(requestKey) || request.status === 'declined'
-              }
-              onAccept={(player) => onAccept?.(player, game)}
-              onDecline={(player) => onDecline?.(player, game)}
-              onOpenChat={(player) => onOpenChat?.(player, game)}
-              onViewReviews={onViewReviews}
-            />
+              <RequestCard
+                key={requestKey}
+                request={request}
+                accepted={isAccepted}
+                declined={
+                  declinedIds?.has(requestKey) || request.status === 'declined'
+                }
+                onAccept={(player) => onAccept?.(player, game)}
+                onDecline={(player) => onDecline?.(player, game)}
+                onOpenChat={(player) => onOpenChat?.(player, game)}
+                onViewReviews={onViewReviews}
+              />
             )
           })}
         </div>

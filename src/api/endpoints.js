@@ -36,7 +36,7 @@ export const API_ENDPOINTS = {
     create: '/api/games',
     details: (gameId) => `/games/${id(gameId)}`,
     update: (gameId) => `/games/${id(gameId)}`,
-    remove: (gameId) => `/games/${id(gameId)}`,
+    remove: (gameId) => `/api/games/${id(gameId)}`,
     hosted: '/games/hosted',
     joined: '/games/joined',
     past: '/games/past',
