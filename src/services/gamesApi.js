@@ -69,10 +69,14 @@ export const deleteGame = async (gameId) => {
   return payload?.data ?? payload
 }
 
-export const requestToJoinGame = async ({ gameId, message }) => {
+export const requestToJoinGame = async ({
+  gameId,
+  message,
+  spotsRequested = 1,
+}) => {
   const response = await axiosInstance.post(
     API_ENDPOINTS.games.requestToJoin(gameId),
-    { message },
+    { message, spotsRequested },
   )
   const payload = response.data
 

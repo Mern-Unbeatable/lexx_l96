@@ -73,6 +73,9 @@ const RequestCard = ({
             </div>
             <p className="mt-0.5 text-sm text-muted">
               Age {request.age} · Handicap {request.handicap}
+              {request.spotsRequested > 1
+                ? ` · ${request.spotsRequested} spots`
+                : ''}
             </p>
             {request.reviews > 0 ? (
               <ClickableRating

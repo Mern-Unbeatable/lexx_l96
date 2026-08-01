@@ -89,11 +89,12 @@ const Home = () => {
     setSelectedGame(game)
   }
 
-  const handleJoinRequest = async ({ message, game }) => {
+  const handleJoinRequest = async ({ message, spotsRequested, game }) => {
     try {
       await joinMutation.mutateAsync({
         gameId: game.id,
         message,
+        spotsRequested,
       })
       showSuccessToast('Join request sent successfully.')
     } catch (error) {

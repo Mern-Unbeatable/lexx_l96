@@ -41,6 +41,7 @@ const mapJoinRequest = (request) => {
     handicap: user.handicap ?? '—',
     rating: rating === null || rating === undefined ? null : Number(rating),
     reviews: Number(reviews) || 0,
+    spotsRequested: Number(request.spotsRequested) || 1,
     message: request.message || request.note || '',
   }
 }

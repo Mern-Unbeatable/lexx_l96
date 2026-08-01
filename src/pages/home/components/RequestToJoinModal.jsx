@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { X } from 'lucide-react'
+import { ChevronDown, X } from 'lucide-react'
 import FormField from '../../../components/form/FormField'
 import { inputClass, inputErrorClass } from '../../../components/form/formStyles'
 
@@ -10,12 +10,17 @@ const RequestToJoinModal = ({ open, onClose, game, onSubmit }) => {
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
   const [message, setMessage] = useState('')
+  const [spotsRequested, setSpotsRequested] = useState(1)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  const spotsLeft = Math.max(0, Number(game?.spotsLeft) || 0)
+  const spotOptions = Array.from({ length: spotsLeft }, (_, index) => index + 1)
 
   useEffect(() => {
     if (open) {
       setMessage('')
+      setSpotsRequested(1)
       setError('')
       setSubmitting(false)
       setMounted(true)
@@ -26,7 +31,7 @@ const RequestToJoinModal = ({ open, onClose, game, onSubmit }) => {
     setVisible(false)
     const hideTimer = window.setTimeout(() => setMounted(false), EXIT_MS)
     return () => window.clearTimeout(hideTimer)
-  }, [open])
+  }, [open, game])
 
   useEffect(() => {
     if (!open) return undefined
@@ -47,9 +52,23 @@ const RequestToJoinModal = ({ open, onClose, game, onSubmit }) => {
       return
     }
 
+    if (spotsLeft < 1) {
+      setError('No spots left for this game')
+      return
+    }
+
+    if (spotsRequested < 1 || spotsRequested > spotsLeft) {
+      setError(`Please choose between 1 and ${spotsLeft} spots`)
+      return
+    }
+
     setSubmitting(true)
     try {
-      await onSubmit?.({ message: text, game })
+      await onSubmit?.({
+        message: text,
+        spotsRequested,
+        game,
+      })
       onClose()
     } finally {
       setSubmitting(false)
@@ -116,6 +135,38 @@ const RequestToJoinModal = ({ open, onClose, game, onSubmit }) => {
               </div>
             </div>
 
+            <FormField label="Number of spots" htmlFor="join-spots">
+              <div className="relative">
+                <select
+                  id="join-spots"
+                  value={spotsRequested}
+                  onChange={(event) =>
+                    setSpotsRequested(Number(event.target.value))
+                  }
+                  disabled={spotsLeft < 1}
+                  className={`${inputClass} appearance-none pr-10`}
+                >
+                  {spotOptions.length > 0 ? (
+                    spotOptions.map((count) => (
+                      <option key={count} value={count}>
+                        {count} {count === 1 ? 'spot' : 'spots'}
+                      </option>
+                    ))
+                  ) : (
+                    <option value={1}>No spots left</option>
+                  )}
+                </select>
+                <ChevronDown
+                  size={18}
+                  strokeWidth={1.75}
+                  className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted"
+                />
+              </div>
+              <p className="mt-1.5 text-xs text-muted">
+                {spotsLeft} {spotsLeft === 1 ? 'spot' : 'spots'} available
+              </p>
+            </FormField>
+
             <FormField
               label="Message to host"
               htmlFor="join-message"
@@ -145,7 +196,7 @@ const RequestToJoinModal = ({ open, onClose, game, onSubmit }) => {
             </button>
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || spotsLeft < 1}
               className="rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#244a37] disabled:opacity-60"
             >
               {submitting ? 'Sending…' : 'Send Request'}
