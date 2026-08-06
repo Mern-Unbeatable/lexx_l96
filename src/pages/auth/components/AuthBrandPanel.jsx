@@ -28,7 +28,7 @@ const AuthBrandPanel = () => (
         </p>
       </div>
 
-      <div className="mt-16 grid max-w-lg grid-cols-3 gap-8">
+      {/* <div className="mt-16 grid max-w-lg grid-cols-3 gap-8">
         {stats.map((stat) => (
           <div key={stat.label}>
             <p className="font-inter text-2xl font-semibold text-[#D39000] xl:text-4xl">
@@ -37,7 +37,7 @@ const AuthBrandPanel = () => (
             <p className="mt-1.5 text-base text-white">{stat.label}</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
 
     <p className="text-xs text-white/45">© 2026 Golf Linking</p>
