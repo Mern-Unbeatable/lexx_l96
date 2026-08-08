@@ -122,5 +122,13 @@ export const editPersonalDetailsSchema = z.object({
   phone: z.string().optional(),
   location: z.string().optional(),
   homeCourse: z.string().optional(),
+  handicap: z.preprocess(
+    (val) =>
+      val === '' || val === null || val === undefined ? undefined : Number(val),
+    z
+      .number({ message: 'Handicap is required' })
+      .min(0, 'Handicap must be 0 or higher')
+      .max(54, 'Handicap cannot exceed 54'),
+  ),
   about: z.string().optional(),
 })

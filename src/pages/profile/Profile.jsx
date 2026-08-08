@@ -40,8 +40,10 @@ const Profile = () => {
       phone: data.phone,
       location: data.location,
       homeCourse: data.homeCourse,
+      handicap: Number(data.handicap),
       about: data.about,
     })
+    await refetchUser()
     await showSuccessAlert(
       'Your personal details have been saved.',
       'Profile updated',

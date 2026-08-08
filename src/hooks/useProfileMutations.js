@@ -7,7 +7,11 @@ export const useUpdateProfileMutation = () => {
 
   return useMutation({
     mutationFn: updateMyProfile,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.auth.me }),
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.setQueryData(queryKeys.auth.me, data)
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.me })
+    },
   })
 }

@@ -28,6 +28,7 @@ const EditPersonalDetailsModal = ({ open, profile, onClose, onSave }) => {
       phone: '',
       location: '',
       homeCourse: '',
+      handicap: '',
       about: '',
     },
   })
@@ -41,6 +42,12 @@ const EditPersonalDetailsModal = ({ open, profile, onClose, onSave }) => {
         phone: profile.phone,
         location: profile.location,
         homeCourse: profile.homeCourse,
+        handicap:
+          profile.handicap === null ||
+          profile.handicap === undefined ||
+          profile.handicap === '—'
+            ? ''
+            : profile.handicap,
         about: profile.about,
       })
       setMounted(true)
@@ -210,6 +217,23 @@ const EditPersonalDetailsModal = ({ open, profile, onClose, onSave }) => {
                 />
               </FormField>
             </div>
+
+            <FormField
+              label="Handicap"
+              htmlFor="handicap"
+              error={errors.handicap?.message}
+            >
+              <input
+                id="handicap"
+                type="number"
+                inputMode="decimal"
+                step="0.1"
+                min="0"
+                max="54"
+                className={`${inputClass} ${errors.handicap ? inputErrorClass : ''}`}
+                {...register('handicap')}
+              />
+            </FormField>
 
             <FormField
               label="About"
